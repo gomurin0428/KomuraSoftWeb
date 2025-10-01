@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KomuraSoft</title>
+  <link rel="stylesheet" href="./komura_soft_single_page.css">
+</head>
+<body>
+  <div class="page">
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="brand-badge">K</div>
+          <span class="brand-name">KomuraSoft</span>
+        </div>
+        <nav class="site-nav" aria-label="主要ナビゲーション" data-i18n-aria-label="navAriaLabel">
+          <a class="nav-link" href="#product" data-i18n="navProduct">製品/コンポーネント</a>
+          <a class="nav-link" href="#company" data-i18n="navCompany">会社情報</a>
+        </nav>
+        <div class="language-switch" role="group" aria-label="表示言語の選択" data-i18n-aria-label="languageToggleLabel">
+          <button type="button" class="language-button" data-lang-select="ja" data-i18n="langButtonJa" aria-pressed="true">日本語</button>
+          <button type="button" class="language-button" data-lang-select="en" data-i18n="langButtonEn" aria-pressed="false">English</button>
+        </div>
+        <span class="pill-disabled" aria-disabled="true" data-i18n="consultBadge">相談する（準備中）</span>
+      </div>
+    </header>
+    <main>
+      <section class="section section--hero" id="hero">
+        <div class="hero-grid">
+          <div class="hero-content">
+            <h1 class="hero-title" data-i18n="heroTitle" data-i18n-html="true">高速数値計算を <span class="hero-title-inline">COM</span> で。</h1>
+            <p class="hero-text" data-i18n="heroText" data-i18n-html="true">
+              KomuraSoft は、Windows 向けの <strong>COM コンポーネント</strong>を複数開発・販売する小規模ソフトウェアハウスです。現在はラインアップの一つとして <strong>COM_BLAS</strong> を掲載しています。将来的に他コンポーネントも順次公開予定です。
+            </p>
+            <div class="button-group">
+              <a class="button button--primary" href="#product" data-i18n="primaryButton">COM_BLASを見る</a>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="product">
+        <div class="product-card" role="region" aria-labelledby="product-heading">
+          <div class="product-layout">
+            <div class="product-summary">
+              <h2 class="section-title" id="product-heading" data-i18n="productHeading">製品/コンポーネント</h2>
+              <p class="section-description" data-i18n="productDescription">現在掲載中のコンポーネント：</p>
+              <h3>COM_BLAS</h3>
+              <p data-i18n="productSummary">
+                Windows の COM 対応言語から呼び出せる、数値計算向けのシンプルなコンポーネント。既存アプリに組み込みやすく、演算処理の共通化と保守性向上を狙えます。
+              </p>
+              <ul class="product-list">
+                <li data-i18n="summaryList1">COM/ActiveX 形式（32/64-bit を想定）</li>
+                <li data-i18n="summaryList2">既存プロジェクトへ最小限の変更で統合</li>
+                <li data-i18n="summaryList3">サンプル/ドキュメント（準備中の想定）</li>
+                <li data-i18n="summaryList4">サポート/カスタマイズ相談可</li>
+              </ul>
+              <p class="product-manual">
+                <a class="nav-link" href="https://drive.google.com/file/d/1B5X-SY7mqywWi345NGOvJumycdxX6G0Q/view?usp=drive_link" target="_blank" rel="noopener noreferrer" data-manual-link data-i18n="manualLink" data-i18n-aria-label="manualLinkAria">COM_BLAS マニュアル（日本語）</a>
+              </p>
+            </div>
+            <div class="product-feature-grid">
+              <div class="surface-card">
+                <div class="surface-card-title" data-i18n="featureCardTitle">こんな方に</div>
+                <div class="surface-card-body">
+                  <ul class="product-list">
+                    <li data-i18n="featureList1">既存 Windows アプリの計算処理を部品化したい</li>
+                    <li data-i18n="featureList2">複数言語（例: C#, VB, VBA 等）から共通利用したい</li>
+                    <li data-i18n="featureList3">保守範囲を小さくしつつ機能拡張したい</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="company">
+        <h2 class="section-title" data-i18n="companyTitle">会社情報</h2>
+        <div class="company-card">
+          <dl class="company-dl">
+            <div class="company-row">
+              <dt class="company-dt" data-i18n="companyNameLabel">社名</dt>
+              <dd class="company-dd">KomuraSoft</dd>
+            </div>
+            <div class="company-row">
+              <dt class="company-dt" data-i18n="companyRepresentativeLabel">代表</dt>
+              <dd class="company-dd" data-i18n="companyRepresentativeValue">小村 豪</dd>
+            </div>
+            <div class="company-row">
+              <dt class="company-dt" data-i18n="companyBusinessLabel">事業</dt>
+              <dd class="company-dd" data-i18n="companyBusinessValue">COM コンポーネント製品（COM_BLAS）販売 / 受託開発</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div>© 2025 KomuraSoft</div>
+        <div class="footer-links">
+          <a class="nav-link" href="#product" data-i18n="footerProduct">製品/コンポーネント</a>
+          <a class="nav-link" href="#company" data-i18n="footerCompany">会社情報</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <script>
+    (function () {
+      'use strict';
+
+      const translations = {
+        ja: {
+          documentTitle: 'KomuraSoft',
+          navProduct: '製品/コンポーネント',
+          navCompany: '会社情報',
+          consultBadge: '相談する（準備中）',
+          heroTitle: '高速数値計算を <span class=\'hero-title-inline\'>COM</span> で。',
+          heroText: 'KomuraSoft は、Windows 向けの <strong>COM コンポーネント</strong>を複数開発・販売する小規模ソフトウェアハウスです。現在はラインアップの一つとして <strong>COM_BLAS</strong> を掲載しています。将来的に他コンポーネントも順次公開予定です。',
+          primaryButton: 'COM_BLASを見る',
+          productHeading: '製品/コンポーネント',
+          productDescription: '現在掲載中のコンポーネント：',
+          productSummary: 'Windows の COM 対応言語から呼び出せる、数値計算向けのシンプルなコンポーネント。既存アプリに組み込みやすく、演算処理の共通化と保守性向上を狙えます。',
+          summaryList1: 'COM/ActiveX 形式（32/64-bit を想定）',
+          summaryList2: '既存プロジェクトへ最小限の変更で統合',
+          summaryList3: 'サンプル/ドキュメント（準備中の想定）',
+          summaryList4: 'サポート/カスタマイズ相談可',
+          manualLink: 'COM_BLAS マニュアル（日本語）',
+          manualLinkAria: 'COM_BLASマニュアル（日本語版）',
+          featureCardTitle: 'こんな方に',
+          featureList1: '既存 Windows アプリの計算処理を部品化したい',
+          featureList2: '複数言語（例: C#, VB, VBA 等）から共通利用したい',
+          featureList3: '保守範囲を小さくしつつ機能拡張したい',
+          companyTitle: '会社情報',
+          companyNameLabel: '社名',
+          companyRepresentativeLabel: '代表',
+          companyBusinessLabel: '事業',
+          companyRepresentativeValue: '小村 豪',
+          companyBusinessValue: 'COM コンポーネント製品（COM_BLAS）販売 / 受託開発',
+          footerProduct: '製品/コンポーネント',
+          footerCompany: '会社情報',
+          navAriaLabel: '主要ナビゲーション',
+          languageToggleLabel: '表示言語の選択',
+          langButtonJa: '日本語',
+          langButtonEn: 'English'
+        },
+        en: {
+          documentTitle: 'KomuraSoft | Windows COM Components',
+          navProduct: 'Products / Components',
+          navCompany: 'Company',
+          consultBadge: 'Consultation (coming soon)',
+          heroTitle: 'High-speed numerical computing with <span class=\'hero-title-inline\'>COM</span>.',
+          heroText: 'KomuraSoft is a small software house that develops and sells <strong>COM components</strong> for Windows. COM_BLAS is one of the modules in our line-up, and additional components will be released over time.',
+          primaryButton: 'View COM_BLAS',
+          productHeading: 'Products / Components',
+          productDescription: 'Currently available component:',
+          productSummary: 'A straightforward component for numerical computing that can be called from any COM-capable Windows language. It integrates easily into existing apps, helping you centralize computation and improve maintainability.',
+          summaryList1: 'COM/ActiveX format (32/64-bit support)',
+          summaryList2: 'Integrate with minimum changes to existing projects',
+          summaryList3: 'Samples/Documentation (planned)',
+          summaryList4: 'Support and customization available',
+          manualLink: 'COM_BLAS Manual (English)',
+          manualLinkAria: 'COM_BLAS manual (English edition)',
+          featureCardTitle: 'Ideal When You',
+          featureList1: 'Want to modularize computation in an existing Windows application',
+          featureList2: 'Need shared access from multiple languages (e.g., C#, VB, VBA)',
+          featureList3: 'Aim to extend functionality while keeping the maintenance scope small',
+          companyTitle: 'Company',
+          companyNameLabel: 'Name',
+          companyRepresentativeLabel: 'Representative',
+          companyBusinessLabel: 'Business',
+          companyRepresentativeValue: 'Go Komura',
+          companyBusinessValue: 'Sales of COM component product (COM_BLAS) / Contract development',
+          footerProduct: 'Products / Components',
+          footerCompany: 'Company',
+          navAriaLabel: 'Primary navigation',
+          languageToggleLabel: 'Language selection',
+          langButtonJa: 'Japanese',
+          langButtonEn: 'English'
+        }
+      };
+
+      const manualUrls = {
+        ja: 'https://drive.google.com/file/d/1B5X-SY7mqywWi345NGOvJumycdxX6G0Q/view?usp=drive_link',
+        en: 'https://drive.google.com/file/d/1FQFW3_aD3z3rEIOQB4z2KEyDNOEod8Xx/view?usp=drive_link'
+      };
+
+      const languageButtons = Array.from(document.querySelectorAll('[data-lang-select]'));
+
+      function toAttributeName(datasetKey) {
+        const suffix = datasetKey.slice(4);
+        if (!suffix) {
+          return null;
+        }
+        return suffix
+          .replace(/([A-Z])/g, function (match) {
+            return '-' + match.toLowerCase();
+          })
+          .replace(/^-/, '');
+      }
+
+      function applyLanguage(lang) {
+        const dictionary = translations[lang];
+        if (!dictionary) {
+          throw new Error('Unsupported language: ' + lang);
+        }
+
+        document.documentElement.lang = lang;
+        document.title = dictionary.documentTitle;
+
+        const elements = Array.from(document.querySelectorAll('[data-i18n]'));
+
+        elements.forEach(function (element) {
+          const key = element.dataset.i18n;
+          const value = dictionary[key];
+          if (value === undefined) {
+            throw new Error('Translation missing for key ' + key + ' in language ' + lang);
+          }
+
+          if (element.dataset.i18nHtml === 'true') {
+            element.innerHTML = value;
+          } else {
+            element.textContent = value;
+          }
+
+          Object.keys(element.dataset).forEach(function (datasetKey) {
+            if (datasetKey === 'i18n' || datasetKey === 'i18nHtml') {
+              return;
+            }
+            if (datasetKey.startsWith('i18n')) {
+              const attrName = toAttributeName(datasetKey);
+              if (!attrName) {
+                return;
+              }
+              const attrKey = element.dataset[datasetKey];
+              const attrValue = dictionary[attrKey];
+              if (attrValue === undefined) {
+                throw new Error('Translation missing for key ' + attrKey + ' in language ' + lang);
+              }
+              element.setAttribute(attrName, attrValue);
+            }
+          });
+        });
+
+        const manualLink = document.querySelector('[data-manual-link]');
+        if (!manualLink) {
+          throw new Error('Manual link element not found');
+        }
+        const manualUrl = manualUrls[lang];
+        if (!manualUrl) {
+          throw new Error('Manual URL missing for language ' + lang);
+        }
+        manualLink.setAttribute('href', manualUrl);
+
+        languageButtons.forEach(function (button) {
+          button.setAttribute('aria-pressed', button.dataset.langSelect === lang ? 'true' : 'false');
+        });
+      }
+
+      languageButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          applyLanguage(button.dataset.langSelect);
+        });
+      });
+
+      applyLanguage('ja');
+    })();
+  </script>
+</body>
+</html>
