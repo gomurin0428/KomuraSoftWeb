@@ -13,10 +13,20 @@
     gtag('js', new Date());
     gtag('config', 'AW-17858398153');
   </script>
-  <!-- Event snippet for 見積もりのリクエスト conversion page -->
+  <!-- Event snippet for 見積もりのリクエスト conversion page
+       In your html page, add the snippet and call gtag_report_conversion when someone clicks on the chosen link or button. -->
   <script>
-    function trackConversion() {
-      gtag('event', 'conversion', {'send_to': 'AW-17858398153/q4VPCM_0qt4bEMmPxsNC'});
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof(url) != 'undefined') {
+          window.open(url, '_blank');
+        }
+      };
+      gtag('event', 'conversion', {
+        'send_to': 'AW-17858398153/q4VPCM_0qt4bEMmPxsNC',
+        'event_callback': callback
+      });
+      return false;
     }
   </script>
   <style>
@@ -232,7 +242,7 @@
     </div>
 
     <div style="margin-top: 3rem;">
-      <a class="coconala-button" href="https://coconala.com/services/3305431" target="_blank" rel="noopener noreferrer" onclick="trackConversion()">
+      <a class="coconala-button" href="https://coconala.com/services/3305431" onclick="return gtag_report_conversion('https://coconala.com/services/3305431');">
         ココナラで依頼する →
       </a>
     </div>
