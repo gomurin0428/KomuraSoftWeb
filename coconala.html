@@ -14,17 +14,28 @@
     gtag('config', 'AW-17858398153');
     gtag('config', 'AW-17889204549');
   </script>
-  <!-- Event snippet for 見積もりのリクエスト conversion page
-       In your html page, add the snippet and call gtag_report_conversion when someone clicks on the chosen link or button. -->
+  <!-- Event snippet for conversion tracking
+       Call gtag_report_conversion when someone clicks on the Coconala link button. -->
   <script>
     function gtag_report_conversion(url) {
+      var callbackCount = 0;
       var callback = function () {
-        if (typeof(url) != 'undefined') {
+        callbackCount++;
+        // 両方のイベントが完了したらURLに遷移
+        if (callbackCount >= 2 && typeof(url) != 'undefined') {
           window.open(url, '_blank');
         }
       };
+      // 見積もりのリクエスト conversion (AW-17858398153)
       gtag('event', 'conversion', {
         'send_to': 'AW-17858398153/q4VPCM_0qt4bEMmPxsNC',
+        'event_callback': callback
+      });
+      // Page view conversion (AW-17889204549)
+      gtag('event', 'conversion', {
+        'send_to': 'AW-17889204549/9tmOCKzg2OgbEMWyntJC',
+        'value': 1.0,
+        'currency': 'JPY',
         'event_callback': callback
       });
       return false;
