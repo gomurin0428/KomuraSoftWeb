@@ -107,7 +107,7 @@
         <header class="blog-header">
           <h1 class="blog-title">{{ page.title }}</h1>
           <div class="blog-meta">
-            <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y年%m月%d日" }}</time>
+            <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y年%m月%d日 %H:%M" }}</time>
             {% if page.author %}
             · <span>{{ page.author }}</span>
             {% endif %}

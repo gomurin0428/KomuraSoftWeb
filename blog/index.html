@@ -95,7 +95,7 @@ layout: null
           <li class="blog-list-item">
             <a href="{{ post.url }}">
               <h2 class="blog-list-title">{{ post.title }}</h2>
-              <div class="blog-list-meta">{{ post.date | date: "%Y年%m月%d日" }}</div>
+              <div class="blog-list-meta">{{ post.date | date: "%Y年%m月%d日 %H:%M" }}</div>
               <p class="blog-list-excerpt">{{ post.excerpt | strip_html | truncate: 120 }}</p>
             </a>
           </li>
