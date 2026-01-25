@@ -7,31 +7,25 @@
     <priority>1.00</priority>
   </url>
   <url>
-    <loc>https://comcomponent.com/coconala.html</loc>
-    <lastmod>2026-01-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.80</priority>
-  </url>
-  <url>
     <loc>https://comcomponent.com/blog/</loc>
     <lastmod>2026-01-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
-    <loc>https://comcomponent.com/blog/2026/01/25/hello-world/</loc>
+    <loc>https://comcomponent.com/blog/2026/01/25/000-hello-world/</loc>
     <lastmod>2026-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://comcomponent.com/blog/2026/01/25/comの魅力/</loc>
+    <loc>https://comcomponent.com/blog/2026/01/25/001-why-com-is-beautiful/</loc>
     <lastmod>2026-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://comcomponent.com/blog/2026/01/25/comが役立つケーススタディ-32bitプロセスから64bitdllを呼び出したいとき/</loc>
+    <loc>https://comcomponent.com/blog/2026/01/25/002-com-case-study-32bit-to-64bit/</loc>
     <lastmod>2026-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.70</priority>

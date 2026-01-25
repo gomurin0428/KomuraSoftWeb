@@ -432,32 +432,6 @@ p + p {
   color: var(--color-text);
 }
 
-/* ココナラリンク */
-.coconala-link {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--color-border);
-  text-align: center;
-}
-
-.coconala-link p {
-  font-size: 0.9rem;
-  color: var(--color-text-muted);
-  margin-bottom: 1rem;
-}
-
-.button--coconala {
-  background: linear-gradient(135deg, #40c4a2 0%, #2db88c 100%);
-  color: #fff;
-  box-shadow: 0 0 20px rgba(64, 196, 162, 0.3);
-}
-
-.button--coconala:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 30px rgba(64, 196, 162, 0.4);
-  color: #fff;
-}
-
 /* お問い合わせ */
 .contact-card {
   border-radius: calc(var(--radius-lg) + 0.5rem);
