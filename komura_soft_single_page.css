@@ -89,6 +89,13 @@ a:hover {
   box-shadow: var(--shadow-glow);
 }
 
+.brand-logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  object-fit: contain;
+}
+
 .site-nav {
   display: none;
   align-items: center;
@@ -559,6 +566,11 @@ p + p {
     width: 2rem;
     height: 2rem;
     font-size: 0.875rem;
+  }
+
+  .brand-logo {
+    width: 2rem;
+    height: 2rem;
   }
   
   .site-nav {
