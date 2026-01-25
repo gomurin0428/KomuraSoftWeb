@@ -3,7 +3,6 @@ title: "COMが役立つケーススタディ-32bitアプリから64bit DLLを呼
 date: 2026-01-25 11:00
 tags: [COM, Windows開発, 32bit, 64bit]
 author: Go Komura
-slug: comが役立つケーススタディ-32bitプロセスから64bitdllを呼び出したいとき
 ---
 
 # COMが役立つケーススタディ-32bitアプリから64bit DLLを呼び出したいとき

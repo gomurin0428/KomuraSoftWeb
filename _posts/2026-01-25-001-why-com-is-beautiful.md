@@ -3,7 +3,6 @@ title: "COMはなぜ美しいのか"
 date: 2026-01-25 10:00
 tags: [COM, ActiveX, Windows開発]
 author: Go Komura
-slug: comの魅力
 ---
 
 # COMはなぜ美しいのか
