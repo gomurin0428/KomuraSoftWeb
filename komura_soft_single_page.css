@@ -541,6 +541,28 @@ p + p {
 
 /* レスポンシブ調整 */
 @media (max-width: 639px) {
+  .header-inner {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .language-switch {
+    flex-direction: row;
+    flex-shrink: 0;
+  }
+  
+  .language-button {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+  
+  .pill-contact {
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+  
   .section {
     padding: 3rem 1rem;
   }
