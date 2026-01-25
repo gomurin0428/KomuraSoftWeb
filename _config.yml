@@ -12,11 +12,8 @@ exclude:
   - README.md
   - CNAME
 
-# Collections
-collections:
-  posts:
-    output: true
-    permalink: /blog/:year/:month/:day/:title/
+# Permalink for posts
+permalink: /blog/:year/:month/:day/:slug/
 
 # Defaults
 defaults:
