@@ -92,6 +92,8 @@ a:hover {
 .brand-logo {
   width: 2.5rem;
   height: 2.5rem;
+  max-width: 2.5rem;
+  max-height: 2.5rem;
   border-radius: 0.5rem;
   object-fit: contain;
 }
@@ -545,6 +547,8 @@ p + p {
   .brand-logo {
     width: 2rem;
     height: 2rem;
+    max-width: 2rem;
+    max-height: 2rem;
   }
   
   .site-nav {
