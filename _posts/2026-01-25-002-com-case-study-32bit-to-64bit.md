@@ -46,25 +46,31 @@ author: Go Komura
 <pre class="mermaid">
 sequenceDiagram
     participant App as 32bit クライアントアプリ
-    participant Proxy as COM Proxy<br/>(32bit側)
-    participant RPC as RPC/IPC<br/>(プロセス間通信)
-    participant Stub as COM Stub<br/>(64bit側)
+    box rgba(100,100,255,0.1) COMが自動で処理（開発者は意識不要）
+        participant Proxy as COM Proxy<br/>(32bit側)
+        participant RPC as RPC/IPC<br/>(プロセス間通信)
+        participant Stub as COM Stub<br/>(64bit側)
+    end
     participant Server as 64bit COM Server<br/>(EXE)
     participant DLL as 64bit DLL
 
     App->>Proxy: ICalcService.Add(1, 2)
-    Note over Proxy: パラメータをマーシャリング
-    Proxy->>RPC: シリアライズされたデータ
-    RPC->>Stub: プロセス境界を越えて転送
-    Note over Stub: パラメータをアンマーシャリング
+    rect rgba(100,100,255,0.1)
+        Note over Proxy: パラメータをマーシャリング
+        Proxy->>RPC: シリアライズされたデータ
+        RPC->>Stub: プロセス境界を越えて転送
+        Note over Stub: パラメータをアンマーシャリング
+    end
     Stub->>Server: Add(1, 2)
     Server->>DLL: ネイティブ関数呼び出し
     DLL-->>Server: 結果: 3
     Server-->>Stub: 結果: 3
-    Note over Stub: 戻り値をマーシャリング
-    Stub-->>RPC: シリアライズされた結果
-    RPC-->>Proxy: プロセス境界を越えて転送
-    Note over Proxy: 戻り値をアンマーシャリング
+    rect rgba(100,100,255,0.1)
+        Note over Stub: 戻り値をマーシャリング
+        Stub-->>RPC: シリアライズされた結果
+        RPC-->>Proxy: プロセス境界を越えて転送
+        Note over Proxy: 戻り値をアンマーシャリング
+    end
     Proxy-->>App: 結果: 3
 </pre>
 
