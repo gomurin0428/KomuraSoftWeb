@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>{{ page.title }} | KomuraSoft Blog</title>
+  <meta name="description" content="{{ page.excerpt | strip_html | truncate: 160 }}">
+  <link rel="canonical" href="{{ page.url | absolute_url }}">
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="{{ page.title }}">
+  <meta property="og:description" content="{{ page.excerpt | strip_html | truncate: 160 }}">
+  <meta property="og:url" content="{{ page.url | absolute_url }}">
+  <meta property="og:site_name" content="KomuraSoft">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="{{ page.title }}">
+  <meta name="twitter:description" content="{{ page.excerpt | strip_html | truncate: 160 }}">
+  <link rel="stylesheet" href="/komura_soft_single_page.css">
+  <style>
+    .blog-container {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+    .blog-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .blog-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .blog-meta {
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    }
+    .blog-content {
+      line-height: 1.8;
+      color: var(--color-text);
+    }
+    .blog-content h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    .blog-content h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .blog-content p {
+      margin-bottom: 1rem;
+    }
+    .blog-content code {
+      background: var(--color-surface);
+      padding: 0.125rem 0.375rem;
+      border-radius: 0.25rem;
+      font-size: 0.875em;
+    }
+    .blog-content pre {
+      background: var(--color-surface);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      margin-bottom: 1rem;
+    }
+    .blog-content pre code {
+      background: none;
+      padding: 0;
+    }
+    .blog-content ul, .blog-content ol {
+      margin-bottom: 1rem;
+      padding-left: 1.5rem;
+    }
+    .blog-content li {
+      margin-bottom: 0.5rem;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 2rem;
+      color: var(--color-accent-light);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="site-header">
+      <div class="header-inner">
+        <a href="/" class="brand">
+          <div class="brand-badge">K</div>
+          <span class="brand-name">KomuraSoft</span>
+        </a>
+        <nav class="site-nav">
+          <a class="nav-link" href="/">ホーム</a>
+          <a class="nav-link" href="/blog/">ブログ</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <article class="blog-container">
+        <header class="blog-header">
+          <h1 class="blog-title">{{ page.title }}</h1>
+          <div class="blog-meta">
+            <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y年%m月%d日" }}</time>
+            {% if page.tags %}
+            · {% for tag in page.tags %}<span>{{ tag }}</span>{% unless forloop.last %}, {% endunless %}{% endfor %}
+            {% endif %}
+          </div>
+        </header>
+        <div class="blog-content">
+          {{ content }}
+        </div>
+        <a href="/blog/" class="back-link">← ブログ一覧に戻る</a>
+      </article>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div>© 2025 KomuraSoft</div>
+        <div class="footer-links">
+          <a class="nav-link" href="/">ホーム</a>
+          <a class="nav-link" href="/blog/">ブログ</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

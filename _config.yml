@@ -1,0 +1,27 @@
+title: KomuraSoft
+description: Windowsアプリケーション開発を中心とした受託開発サービス
+url: https://comcomponent.com
+baseurl: ""
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Exclude from build
+exclude:
+  - README.md
+  - CNAME
+
+# Collections
+collections:
+  posts:
+    output: true
+    permalink: /blog/:year/:month/:day/:title/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
