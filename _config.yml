@@ -13,7 +13,7 @@ exclude:
   - CNAME
 
 # Permalink for posts
-permalink: /blog/:year/:month/:day/:slug/
+permalink: /blog/:year/:month/:day/:title/
 
 # Defaults
 defaults:
