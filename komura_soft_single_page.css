@@ -542,24 +542,37 @@ p + p {
 /* レスポンシブ調整 */
 @media (max-width: 639px) {
   .header-inner {
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    flex-wrap: nowrap;
+    gap: 0.25rem;
+    padding: 0.5rem 0.5rem;
+  }
+  
+  .brand-name {
+    display: none;
+  }
+  
+  .brand-badge {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.875rem;
   }
   
   .language-switch {
     flex-direction: row;
     flex-shrink: 0;
+    gap: 0.25rem;
   }
   
   .language-button {
     padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     white-space: nowrap;
+    min-width: max-content;
   }
   
   .pill-contact {
-    padding: 0.25rem 0.625rem;
-    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.6875rem;
     white-space: nowrap;
   }
   
