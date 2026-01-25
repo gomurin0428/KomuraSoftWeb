@@ -39,6 +39,40 @@ author: Go Komura
 
 つまり、**「64bitの処理を別プロセスに逃がして、COMで橋渡しする」**のが王道です。
 
+## 処理の流れ（シーケンス図）
+
+以下は、32bitアプリが64bit DLLの処理を呼び出すときの流れです。
+
+<pre class="mermaid">
+sequenceDiagram
+    participant App as 32bit クライアントアプリ
+    participant Proxy as COM Proxy<br/>(32bit側)
+    participant RPC as RPC/IPC<br/>(プロセス間通信)
+    participant Stub as COM Stub<br/>(64bit側)
+    participant Server as 64bit COM Server<br/>(EXE)
+    participant DLL as 64bit DLL
+
+    App->>Proxy: ICalcService.Add(1, 2)
+    Note over Proxy: パラメータをマーシャリング
+    Proxy->>RPC: シリアライズされたデータ
+    RPC->>Stub: プロセス境界を越えて転送
+    Note over Stub: パラメータをアンマーシャリング
+    Stub->>Server: Add(1, 2)
+    Server->>DLL: ネイティブ関数呼び出し
+    DLL-->>Server: 結果: 3
+    Server-->>Stub: 結果: 3
+    Note over Stub: 戻り値をマーシャリング
+    Stub-->>RPC: シリアライズされた結果
+    RPC-->>Proxy: プロセス境界を越えて転送
+    Note over Proxy: 戻り値をアンマーシャリング
+    Proxy-->>App: 結果: 3
+</pre>
+
+**ポイント:**
+- 32bitアプリは `ICalcService` インターフェースを通じて型安全に呼び出せる
+- COMランタイムが自動的にProxy/Stubを生成・管理
+- プロセス間通信のオーバーヘッドがあるため、細かい呼び出しより一括処理が望ましい
+
 ## サンプルコード(イメージ。全てCSharp)
 
 以下は**概念のイメージ**です。実際には登録やTypeLibの生成などが必要です。
