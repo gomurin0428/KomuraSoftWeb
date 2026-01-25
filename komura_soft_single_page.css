@@ -542,11 +542,15 @@ p + p {
 /* レスポンシブ調整 */
 @media (max-width: 639px) {
   .header-inner {
-    flex-wrap: nowrap;
-    gap: 0.25rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
     padding: 0.5rem 0.5rem;
   }
   
+  .brand {
+    order: 1;
+  }
+
   .brand-name {
     display: none;
   }
@@ -557,10 +561,25 @@ p + p {
     font-size: 0.875rem;
   }
   
+  .site-nav {
+    display: flex;
+    order: 3;
+    width: 100%;
+    gap: 1rem;
+    font-size: 0.75rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+
+  .site-nav .nav-link {
+    white-space: nowrap;
+  }
+
   .language-switch {
     flex-direction: row;
     flex-shrink: 0;
     gap: 0.25rem;
+    order: 2;
   }
   
   .language-button {
@@ -574,6 +593,7 @@ p + p {
     padding: 0.25rem 0.5rem;
     font-size: 0.6875rem;
     white-space: nowrap;
+    order: 2;
   }
   
   .section {
