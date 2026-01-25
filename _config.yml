@@ -6,6 +6,7 @@ baseurl: ""
 # Build settings
 markdown: kramdown
 highlighter: rouge
+future: true
 
 # Exclude from build
 exclude:
