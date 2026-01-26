@@ -115,6 +115,21 @@ int result = calc.Add(1, 2);
 この形にすると、32bit側は**「型付きで」**扱えます。  
 COMが内部でプロキシ/スタブを使い、IPC経由で呼び出してくれます。
 
+## 完全なサンプルコード
+
+上記の概念を実際に動作する形で実装したサンプルを GitHub で公開しています。
+
+**[Call64bitDLLFrom32bitProc - GitHub](https://github.com/gomurin0428/Call64bitDLLFrom32bitProc)**
+
+このリポジトリには以下が含まれています：
+
+- **Call64bitDLLFrom32bitProc/** - 64bit COM LocalServer (EXE)
+- **X64DLL/** - 64bit DLL（実処理）
+- **X86App/** - 32bit クライアント (WinForms)
+- **scripts/** - COM サーバー登録・解除スクリプト
+
+README に記載の手順に従ってビルド・登録すれば、実際に 32bit プロセスから 64bit DLL を呼び出す動作を確認できます。
+
 ## 参考資料
 
 - Component Object Model (COM) の概要  
