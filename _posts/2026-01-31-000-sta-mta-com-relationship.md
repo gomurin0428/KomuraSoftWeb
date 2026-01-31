@@ -247,10 +247,10 @@ CallComObject(comObj);
 
 （※ `CoInitializeEx` / `CoUninitialize` の呼び忘れは普通に事故ります）
 
-### もう一つのハング例: 逆方向コールバック
+### もう一つのハング例: 同期呼び出し中のコールバック
 
 STAは「呼び出しが転送される」だけでなく、状況によっては**逆方向（サーバー→クライアント）にコールバック**が来ます。  
-このとき、クライアント側のSTAスレッドが同期的に詰まっていると、やはり待ち合いになりがちです。
+**同期呼び出し中にコールバックが発生するパターン**は、デッドロックの原因になります。
 
 <pre class="mermaid">
 sequenceDiagram
@@ -258,40 +258,23 @@ sequenceDiagram
     participant Server as COMサーバー
 
     UI->>Server: DoWork()（同期呼び出し）
-    Note over UI: ここでUIスレッドが待っている
+    Note over UI: DoWorkの戻りを待っている<br/>（メッセージを処理していない）
     Server->>UI: ProgressCallback()（コールバック）
-    Note over UI: UIスレッドが処理できず<br/>コールバックが進まない
-    Note over Server: サーバー側も待ってしまい<br/>結果として詰む
+    Note over UI: 待機中なので<br/>コールバックを受け取れない
+    Note over Server: コールバックの完了を待っている
+    Note over UI,Server: お互いが相手を待っている → デッドロック
 </pre>
 
-**ポイント:**  
-UIスレッド（STA）で長い同期処理を回すと、こういう「詰み方」が起きやすいです。
+**なぜデッドロックになるのか:**
 
-## Apartmentを跨ぐ呼び出し（シーケンス図）
+1. UIスレッドが `DoWork()` を**同期呼び出し**（ブロッキング）
+2. UIスレッドは戻りを待っている（メッセージを処理していない）
+3. サーバーが `ProgressCallback()` をUIスレッドに送る
+4. UIスレッドは待機中なので**コールバックを受け取れない**
+5. サーバーはコールバックの完了を待っている
+6. **お互いが相手を待っている → 永遠に進まない**
 
-<pre class="mermaid">
-sequenceDiagram
-    participant STA as STAスレッド
-    participant Proxy as COM Proxy
-    participant RPC as RPC/IPC
-    participant Stub as COM Stub
-    participant MTA as MTAスレッド
-
-    STA->>Proxy: ICalc.Add(1, 2)
-    Proxy->>RPC: パラメータをマーシャリング
-    RPC->>Stub: プロセス/スレッド境界を越えて転送
-    Stub->>MTA: Add(1, 2)
-    MTA-->>Stub: 結果: 3
-    Stub-->>RPC: 結果をマーシャリング
-    RPC-->>Proxy: 転送
-    Proxy-->>STA: 結果: 3
-</pre>
-
-**この図で理解するべきこと:**
-
-- **Apartmentが違うと「直接呼べない」**
-- COMが**Proxy/Stubで境界を越える**
-- 呼び出しは「遅くなる」可能性がある（マーシャリングや待ちが入る）
+処理時間の長さは関係ありません。**同期呼び出し中にコールバックが来る**というパターン自体が問題です。
 
 ## ざっくり使い分け
 
