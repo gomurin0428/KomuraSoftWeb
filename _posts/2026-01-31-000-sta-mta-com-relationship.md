@@ -61,8 +61,17 @@ flowchart LR
 標準的なインターフェースならCOMランタイムが処理してくれます。
 
 **注意:** Proxy/Stubは「何でも自動生成される」わけではありません。  
-標準マーシャリング対応のインターフェースはCOM提供のDLL（Ole32.dllなど）から使えますが、  
-カスタムインターフェースはMIDL等で生成・登録が必要です。
+ただし、実務では多くの場合、明示的な生成は不要です。
+
+| パターン | Proxy/Stubの準備 |
+|---|---|
+| `IDispatch` ベース（Automation） | 不要。`oleaut32.dll` が処理 |
+| タイプライブラリ登録済み | 不要。タイプライブラリマーシャラーが処理 |
+| .NET COM Interop | 通常は不要。タイプライブラリ経由で動く |
+| `IUnknown` 直接派生のカスタムIF | MIDLでProxy/Stub生成・登録が必要 |
+
+つまり、**MIDLでProxy/Stub生成が必要になるのは、`IDispatch` を使わず `IUnknown` 直接派生のインターフェースを作る場合**です。  
+.NETやスクリプト言語から使う一般的なCOMコンポーネントでは、この作業が必要になることは少ないです。
 
 <pre class="mermaid">
 flowchart LR
