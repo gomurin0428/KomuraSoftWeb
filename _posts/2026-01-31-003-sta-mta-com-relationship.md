@@ -10,6 +10,9 @@ author: Go Komura
 COMを使うとき、**「どのスレッドで動くか」**は避けて通れません。  
 その中心にあるのが **Apartment Model（STA/MTA）** です。
 
+STA/MTAは**COMのためのスレッドモデル**です。  
+Windowsの一般的なスレッド概念ではなく、COMオブジェクトの呼び出し規則を決めるための仕組みです。
+
 この記事では、STAとMTAとCOMの関係を**図で整理**し、  
 **「なぜハングすることがあるのか」**までつなげて説明します。
 
@@ -93,6 +96,17 @@ COMのApartmentは、**スレッドごとに初期化する**ことで決まり�
 - `CoInitialize` / `CoInitializeEx` を呼んだ瞬間に、そのスレッドのApartmentが決まる  
 - STA: `COINIT_APARTMENTTHREADED`  
 - MTA: `COINIT_MULTITHREADED`
+
+### .NETでのSTA/MTA
+
+.NETにも `[STAThread]` / `[MTAThread]` 属性や `ApartmentState` がありますが、これらは**COMのApartment Modelを設定するためのラッパー**です。
+
+- `[STAThread]` → 内部で `CoInitializeEx(COINIT_APARTMENTTHREADED)` を呼ぶ
+- `[MTAThread]` → 内部で `CoInitializeEx(COINIT_MULTITHREADED)` を呼ぶ
+- `Thread.SetApartmentState(ApartmentState.STA)` → 同様
+
+つまり、**.NETのSTA/MTAはCOMのSTA/MTAそのもの**です。  
+.NET独自のスレッドモデルではなく、COM Interopのために用意された仕組みです。
 
 **重要:**  
 後からApartmentを変更することはできません。**最初の初期化が全て**です。
