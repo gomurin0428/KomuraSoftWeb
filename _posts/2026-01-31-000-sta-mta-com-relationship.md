@@ -22,37 +22,68 @@ Windowsの一般的なスレッド概念ではなく、COMオブジェクトの�
 - STAは **1スレッドに1Apartment**、MTAは **複数スレッドで1Apartment** と考えると理解しやすい
 - Apartmentを跨ぐ呼び出しは、**COMがProxy/Stubで自動的にマーシャリング**する
 
-## Apartment Modelの全体像（図）
+## Apartment Modelの呼び出しパターン（図）
+
+COMオブジェクトの呼び出しには、大きく3つのパターンがあります。
+
+### パターン1: 同一STAスレッド内での呼び出し
+
+同じSTAスレッド内なら、**直接呼び出し**できます。オーバーヘッドなし。
 
 <pre class="mermaid">
 flowchart LR
-    subgraph STA[STAスレッド（例: UI）]
-        direction TB
-        StaCaller[呼び出し元コード]
-        StaObj[STAのCOMオブジェクト]
-        StaCaller -->|同一スレッドなら直接| StaObj
+    subgraph STA[STAスレッド]
+        Caller[呼び出し元コード]
+        Obj[COMオブジェクト]
+        Caller -->|直接呼び出し| Obj
     end
+</pre>
 
-    subgraph MTA[MTA（ワーカースレッド群）]
-        direction TB
-        MtaCaller[呼び出し元コード]
-        MtaObj[MTAのCOMオブジェクト]
-        MtaCaller -->|同一Apartmentなら直接| MtaObj
+### パターン2: 同一MTA内での呼び出し
+
+MTA内の複数スレッドからは、**どのスレッドからでも直接呼び出し**できます。  
+ただしオブジェクト側は**スレッドセーフ設計が必須**。
+
+<pre class="mermaid">
+flowchart LR
+    subgraph MTA[MTA（1つのApartment）]
+        Thread1[ワーカースレッド1]
+        Thread2[ワーカースレッド2]
+        Obj[COMオブジェクト]
+        Thread1 -->|直接呼び出し| Obj
+        Thread2 -->|直接呼び出し| Obj
+    end
+</pre>
+
+### パターン3: Apartmentを跨ぐ呼び出し
+
+異なるApartment間では、**COMがProxy/Stubを自動生成**して転送します。  
+開発者が意識しなくても、COMランタイムが処理してくれます。
+
+<pre class="mermaid">
+flowchart LR
+    subgraph STA[STAスレッド]
+        StaCaller[呼び出し元コード]
     end
 
     subgraph RT[COMランタイム（自動）]
-        direction TB
         Proxy[Proxy]
         RPC[RPC/IPC]
         Stub[Stub]
         Proxy --> RPC --> Stub
     end
 
-    StaCaller -->|Apartmentを跨ぐ| Proxy
-    MtaCaller -->|Apartmentを跨ぐ| Proxy
-    Stub -->|本来の所属スレッドへ転送| StaObj
-    Stub -->|本来の所属スレッドへ転送| MtaObj
+    subgraph MTA[MTAスレッド]
+        MtaObj[COMオブジェクト]
+    end
+
+    StaCaller -->|呼び出し| Proxy
+    Stub -->|転送| MtaObj
 </pre>
+
+**ポイント:**  
+Apartmentを跨ぐと**マーシャリングのオーバーヘッド**が発生します。  
+高頻度の呼び出しでは性能に影響するため、設計時に考慮が必要です。
 
 ## STA（Single-Threaded Apartment）
 
