@@ -1,11 +1,11 @@
 ---
-title: "STAとMTAとCOMの関係を図で理解する"
+title: "COMのSTA/MTAでハングを避けるための基礎知識"
 date: 2026-01-31 10:00
 tags: [COM, Windows開発, STA, MTA, スレッド]
 author: Go Komura
 ---
 
-# STAとMTAとCOMの関係を図で理解する
+# COMのSTA/MTAでハングを避けるための基礎知識
 
 COMを使うとき、**「どのスレッドで動くか」**は避けて通れません。  
 その中心にあるのが **Apartment Model（STA/MTA）** です。
