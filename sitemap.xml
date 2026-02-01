@@ -13,6 +13,12 @@
     <priority>0.90</priority>
   </url>
   <url>
+    <loc>https://comcomponent.com/privacy/</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.30</priority>
+  </url>
+  <url>
     <loc>https://comcomponent.com/blog/2026/01/25/000-hello-world/</loc>
     <lastmod>2026-01-25</lastmod>
     <changefreq>monthly</changefreq>
