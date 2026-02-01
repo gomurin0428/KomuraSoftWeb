@@ -406,3 +406,7 @@ sequenceDiagram
   https://learn.microsoft.com/en-us/windows/win32/com/com-apartments
 - CoInitializeEx  
   https://learn.microsoft.com/en-us/windows/win32/api/objbase/nf-objbase-coinitializeex
+
+---
+
+[この記事のWordファイルをダウンロード](/assets/downloads/2026-01-31-sta-mta-com-relationship.docx)

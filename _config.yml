@@ -12,6 +12,7 @@ future: true
 exclude:
   - README.md
   - CNAME
+  - docs
 
 # Permalink for posts
 permalink: /blog/:year/:month/:day/:title/
