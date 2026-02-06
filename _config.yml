@@ -8,6 +8,9 @@ markdown: kramdown
 highlighter: rouge
 future: true
 
+include:
+  - .well-known
+
 # Exclude from build
 exclude:
   - README.md
