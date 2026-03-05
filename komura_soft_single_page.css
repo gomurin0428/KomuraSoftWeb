@@ -488,7 +488,7 @@ p + p {
 
 @media (max-width: 991px) {
   body {
-    background-attachment: scroll, scroll, scroll;
+    background-attachment: fixed, fixed, fixed;
     background-position: center, left top, center 4.5rem;
     background-size: cover, cover, contain;
   }
