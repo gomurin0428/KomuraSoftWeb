@@ -492,6 +492,13 @@ p + p {
   }
 }
 
+@media (max-width: 767px) {
+  body {
+    background-position: center, left top, center 5rem;
+    background-size: cover, cover, contain;
+  }
+}
+
 .footer-inner {
   max-width: var(--max-width);
   margin: 0 auto;
