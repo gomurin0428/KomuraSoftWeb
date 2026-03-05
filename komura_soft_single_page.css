@@ -489,13 +489,15 @@ p + p {
 @media (max-width: 991px) {
   body {
     background-attachment: scroll, scroll, scroll;
+    background-position: center, left top, center 4.5rem;
+    background-size: cover, cover, contain;
   }
 }
 
 @media (max-width: 767px) {
   body {
-    background-position: center, left top, center 5rem;
-    background-size: cover, cover, contain;
+    background-position: center, left top, center 4.25rem;
+    background-size: cover, cover, min(92vw, 28rem);
   }
 }
 
