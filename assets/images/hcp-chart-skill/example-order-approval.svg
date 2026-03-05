@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="425px" height="732px" viewBox="0 0 425 732">
+  <rect x="0" y="0" width="425" height="732" fill="#FFFFFF" />
+  <rect x="0" y="0" width="425" height="156" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="24" y="31.6" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">Title: 受注承認と出荷指示</text>
+  <text x="24" y="55.6" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">Module: main</text>
+  <text x="24" y="79.6" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">Author: Skill Repository</text>
+  <text x="24" y="103.6" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">Date: </text>
+  <text x="24" y="127.6" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">Version: </text>
+  <text x="24" y="151.6" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">Data: 注文情報, 在庫結果, 承認結果, 出荷指示</text>
+  <line x1="52" y1="209.88" x2="52" y2="258.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="52" y1="269.88" x2="52" y2="678.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="88" y1="293.88" x2="88" y2="330.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="88" y1="341.88" x2="88" y2="360" stroke="#111111" stroke-width="1.5" />
+  <line x1="88" y1="360" x2="88" y2="432" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="461.88" x2="124" y2="498.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="509.88" x2="124" y2="528" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="528" x2="124" y2="600" stroke="#111111" stroke-width="1.5" />
+  <line x1="52" y1="240" x2="88" y2="240" stroke="#111111" stroke-width="1.5" />
+  <line x1="52" y1="288" x2="88" y2="288" stroke="#111111" stroke-width="1.5" />
+  <line x1="88" y1="312" x2="124" y2="312" stroke="#111111" stroke-width="1.5" />
+  <line x1="88" y1="384" x2="124" y2="384" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="408" x2="160" y2="408" stroke="#111111" stroke-width="1.5" />
+  <line x1="88" y1="456" x2="124" y2="456" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="480" x2="160" y2="480" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="552" x2="160" y2="552" stroke="#111111" stroke-width="1.5" />
+  <line x1="160" y1="576" x2="196" y2="576" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="624" x2="160" y2="624" stroke="#111111" stroke-width="1.5" />
+  <line x1="160" y1="648" x2="196" y2="648" stroke="#111111" stroke-width="1.5" />
+  <text x="46" y="208.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">1</text>
+  <circle cx="52" cy="204" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="67.88" y="196.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">受注内容を受け付ける</text>
+  <text x="67.88" y="220.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">in: 注文情報</text>
+  <text x="46" y="244.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">2</text>
+  <circle cx="88" cy="240" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="103.88" y="244.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">入力必須項目を確認する</text>
+  <text x="46" y="268.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">3</text>
+  <circle cx="52" cy="264" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="67.88" y="268.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">出荷可否を判定する</text>
+  <text x="46" y="292.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">4</text>
+  <circle cx="88" cy="288" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="103.88" y="292.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">在庫を引き当てる</text>
+  <text x="46" y="316.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">5</text>
+  <circle cx="124" cy="312" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="139.88" y="316.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">在庫結果 &lt;- 在庫照会(注文情報)</text>
+  <text x="46" y="340.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">6</text>
+  <circle cx="88" cy="336" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <path d="M 86.236 333.354 L 91.234 336 L 86.236 338.646 Z" fill="#111111" />
+  <text x="103.88" y="340.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">在庫結果 が不足を含む</text>
+  <text x="46" y="364.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">7</text>
+  <line x1="88" y1="360" x2="100.936" y2="360" stroke="#111111" stroke-width="1.5" />
+  <path d="M 100.936 360 L 97.536 357.6 L 97.536 362.4 Z" fill="#111111" />
+  <text x="110.936" y="364.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">(はい)</text>
+  <text x="46" y="388.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">8</text>
+  <circle cx="124" cy="384" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="139.88" y="388.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">欠品を利用者へ通知する</text>
+  <text x="46" y="412.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">9</text>
+  <circle cx="160" cy="408" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="175.88" y="412.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">承認結果 &lt;- 差し戻し</text>
+  <text x="46" y="436.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">10</text>
+  <line x1="88" y1="432" x2="100.936" y2="432" stroke="#111111" stroke-width="1.5" />
+  <path d="M 100.936 432 L 97.536 429.6 L 97.536 434.4 Z" fill="#111111" />
+  <text x="110.936" y="436.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">(いいえ)</text>
+  <text x="46" y="460.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">11</text>
+  <circle cx="124" cy="456" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="139.88" y="460.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">承認依頼を実施する</text>
+  <text x="46" y="484.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">12</text>
+  <circle cx="160" cy="480" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="175.88" y="484.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">承認結果 &lt;- 承認申請(注文情報)</text>
+  <text x="46" y="508.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">13</text>
+  <circle cx="124" cy="504" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <path d="M 122.236 501.354 L 127.234 504 L 122.236 506.646 Z" fill="#111111" />
+  <text x="139.88" y="508.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">承認結果 は承認済み</text>
+  <text x="46" y="532.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">14</text>
+  <line x1="124" y1="528" x2="136.936" y2="528" stroke="#111111" stroke-width="1.5" />
+  <path d="M 136.936 528 L 133.536 525.6 L 133.536 530.4 Z" fill="#111111" />
+  <text x="146.936" y="532.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">(はい)</text>
+  <text x="46" y="556.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">15</text>
+  <circle cx="160" cy="552" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="175.88" y="556.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">出荷を手配する</text>
+  <text x="46" y="580.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">16</text>
+  <circle cx="196" cy="576" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="211.88" y="580.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">出荷指示 &lt;- 出荷登録(注文情報)</text>
+  <text x="46" y="604.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">17</text>
+  <line x1="124" y1="600" x2="136.936" y2="600" stroke="#111111" stroke-width="1.5" />
+  <path d="M 136.936 600 L 133.536 597.6 L 133.536 602.4 Z" fill="#111111" />
+  <text x="146.936" y="604.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">(いいえ)</text>
+  <text x="46" y="628.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">18</text>
+  <circle cx="160" cy="624" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="175.88" y="628.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">保留として記録する</text>
+  <text x="46" y="652.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">19</text>
+  <circle cx="196" cy="648" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="211.88" y="652.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">承認待ちキューへ登録する</text>
+  <text x="46" y="688.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">20</text>
+  <circle cx="52" cy="684" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="67.88" y="676.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">処理結果を返す</text>
+  <text x="67.88" y="700.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">out: 承認結果, 出荷指示</text>
+</svg>

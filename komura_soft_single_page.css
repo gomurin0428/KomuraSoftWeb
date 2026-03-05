@@ -1,20 +1,20 @@
 :root {
-  --color-background: #0a0a0f;
-  --color-surface: #14141a;
-  --color-surface-elevated: #1a1a22;
-  --color-border: #2a2a35;
-  --color-text: #f0f0f5;
-  --color-text-muted: #a0a0b0;
-  --color-text-subtle: #707080;
-  --color-text-disabled: #505060;
-  --color-accent: #6366f1;
-  --color-accent-glow: rgba(99, 102, 241, 0.3);
-  --color-accent-light: #818cf8;
+  --color-background: #eff5fb;
+  --color-surface: rgba(255, 255, 255, 0.8);
+  --color-surface-elevated: rgba(255, 255, 255, 0.92);
+  --color-border: rgba(47, 111, 221, 0.24);
+  --color-text: #142033;
+  --color-text-muted: #2f445e;
+  --color-text-subtle: #5c718b;
+  --color-text-disabled: #8ca0b8;
+  --color-accent: #2f6fdd;
+  --color-accent-glow: rgba(47, 111, 221, 0.28);
+  --color-accent-light: #1d4fbf;
   --max-width: 64rem;
   --radius-lg: 1.5rem;
   --radius-md: 1rem;
   --radius-sm: 0.75rem;
-  --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 12px 28px rgba(20, 32, 51, 0.14);
   --shadow-glow: 0 0 40px var(--color-accent-glow);
 }
 
@@ -29,10 +29,15 @@ body {
   min-height: 100vh;
   font-family: 'Noto Sans JP', 'Segoe UI', 'Hiragino Sans', 'Meiryo', sans-serif;
   color: var(--color-text);
-  background: var(--color-background);
-  background-image: 
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.15), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139, 92, 246, 0.08), transparent);
+  background-color: var(--color-background);
+  background-image:
+    linear-gradient(145deg, rgba(251, 254, 255, 0.88), rgba(243, 249, 255, 0.84)),
+    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0)),
+    url('/IMG_7729.PNG');
+  background-position: center, left top, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-size: cover, cover, cover;
+  background-attachment: fixed, fixed, fixed;
 }
 
 a {
@@ -56,8 +61,9 @@ a:hover {
   top: 0;
   z-index: 10;
   backdrop-filter: blur(14px);
-  background: rgba(10, 10, 15, 0.85);
+  background: rgba(251, 254, 255, 0.78);
   border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 8px 22px rgba(20, 32, 51, 0.08);
 }
 
 .header-inner {
@@ -242,7 +248,7 @@ main {
 .button--secondary {
   border: 1px solid var(--color-border);
   color: var(--color-text);
-  background: transparent;
+  background: rgba(255, 255, 255, 0.55);
 }
 
 .button--secondary:hover {
@@ -478,6 +484,12 @@ p + p {
   border-top: 1px solid var(--color-border);
   margin-top: 4rem;
   background: var(--color-surface);
+}
+
+@media (max-width: 991px) {
+  body {
+    background-attachment: scroll, scroll, scroll;
+  }
 }
 
 .footer-inner {

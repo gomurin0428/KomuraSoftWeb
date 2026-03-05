@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="345px" height="708px" viewBox="0 0 345 708">
+  <rect x="0" y="0" width="345" height="708" fill="#FFFFFF" />
+  <rect x="0" y="0" width="345" height="156" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="24" y="31.6" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">Title: 最大公約数を求める手順</text>
+  <text x="24" y="55.6" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">Module: main</text>
+  <text x="24" y="79.6" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">Author: Skill Repository</text>
+  <text x="24" y="103.6" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">Date: </text>
+  <text x="24" y="127.6" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">Version: </text>
+  <text x="24" y="151.6" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">Data: a, b, r</text>
+  <line x1="52" y1="209.88" x2="52" y2="258.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="52" y1="269.88" x2="52" y2="630.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="88" y1="293.88" x2="88" y2="306.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="88" y1="317.88" x2="88" y2="522.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="341.88" x2="124" y2="360" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="360" x2="124" y2="480" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="557.88" x2="124" y2="570.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="581.88" x2="124" y2="594.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="196" y1="413.88" x2="196" y2="426.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="196" y1="437.88" x2="196" y2="450.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="52" y1="240" x2="88" y2="240" stroke="#111111" stroke-width="1.5" />
+  <line x1="52" y1="288" x2="88" y2="288" stroke="#111111" stroke-width="1.5" />
+  <line x1="88" y1="336" x2="124" y2="336" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="384" x2="160" y2="384" stroke="#111111" stroke-width="1.5" />
+  <line x1="160" y1="408" x2="196" y2="408" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="504" x2="160" y2="504" stroke="#111111" stroke-width="1.5" />
+  <line x1="88" y1="552" x2="124" y2="552" stroke="#111111" stroke-width="1.5" />
+  <line x1="52" y1="672" x2="88" y2="672" stroke="#111111" stroke-width="1.5" />
+  <text x="46" y="208.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">1</text>
+  <circle cx="52" cy="204" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="67.88" y="196.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">入力値を受け取り計算の準備をする</text>
+  <text x="67.88" y="220.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">in: a, b</text>
+  <text x="46" y="244.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">2</text>
+  <circle cx="88" cy="240" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="103.88" y="244.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">どちらも正の整数として扱う</text>
+  <text x="46" y="268.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">3</text>
+  <circle cx="52" cy="264" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <path d="M 50.4712 267.4398 A 3.822 3.822 0 1 1 55.4398 263.2356" fill="none" stroke="#111111" stroke-width="1.5" />
+  <path d="M 55.4398 263.2356 L 52.4398 261.0356 L 54.4398 265.8356 Z" fill="#111111" />
+  <text x="67.88" y="268.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">余りが残る間に最大公約数へ近づける</text>
+  <text x="46" y="292.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">4</text>
+  <circle cx="88" cy="288" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="103.88" y="292.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">判定条件: b != 0</text>
+  <text x="46" y="316.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">5</text>
+  <circle cx="88" cy="312" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="103.88" y="316.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">次の計算を成立させる</text>
+  <text x="46" y="340.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">6</text>
+  <circle cx="124" cy="336" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <path d="M 122.236 333.354 L 127.234 336 L 122.236 338.646 Z" fill="#111111" />
+  <text x="139.88" y="340.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">a &lt; b</text>
+  <text x="46" y="364.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">7</text>
+  <line x1="124" y1="360" x2="136.936" y2="360" stroke="#111111" stroke-width="1.5" />
+  <path d="M 136.936 360 L 133.536 357.6 L 133.536 362.4 Z" fill="#111111" />
+  <text x="146.936" y="364.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">(はい)</text>
+  <text x="46" y="388.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">8</text>
+  <circle cx="160" cy="384" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="175.88" y="388.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">計算しやすい順序に整える</text>
+  <text x="46" y="412.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">9</text>
+  <circle cx="196" cy="408" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="211.88" y="412.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">temp &lt;- a</text>
+  <text x="46" y="436.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">10</text>
+  <circle cx="196" cy="432" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="211.88" y="436.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">a &lt;- b</text>
+  <text x="46" y="460.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">11</text>
+  <circle cx="196" cy="456" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="211.88" y="460.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">b &lt;- temp</text>
+  <text x="46" y="484.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">12</text>
+  <line x1="124" y1="480" x2="136.936" y2="480" stroke="#111111" stroke-width="1.5" />
+  <path d="M 136.936 480 L 133.536 477.6 L 133.536 482.4 Z" fill="#111111" />
+  <text x="146.936" y="484.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">(いいえ)</text>
+  <text x="46" y="508.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">13</text>
+  <circle cx="160" cy="504" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="175.88" y="508.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">現在の順序を維持する</text>
+  <text x="46" y="532.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">14</text>
+  <circle cx="88" cy="528" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="103.88" y="532.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">次に引き継ぐ値を決める</text>
+  <text x="46" y="556.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">15</text>
+  <circle cx="124" cy="552" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="139.88" y="556.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">r &lt;- a mod b</text>
+  <text x="46" y="580.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">16</text>
+  <circle cx="124" cy="576" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="139.88" y="580.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">a &lt;- b</text>
+  <text x="46" y="604.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">17</text>
+  <circle cx="124" cy="600" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="139.88" y="604.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">b &lt;- r</text>
+  <text x="46" y="640.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">18</text>
+  <circle cx="52" cy="636" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="67.88" y="628.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">結果を利用者に返す</text>
+  <text x="67.88" y="652.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">out: a</text>
+  <text x="46" y="676.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">19</text>
+  <circle cx="88" cy="672" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="103.88" y="676.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">a を最大公約数として返す</text>
+</svg>

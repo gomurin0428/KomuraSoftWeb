@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="398px" height="636px" viewBox="0 0 398 636">
+  <rect x="0" y="0" width="398" height="636" fill="#FFFFFF" />
+  <rect x="0" y="0" width="398" height="132" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="24" y="31.6" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">Title: </text>
+  <text x="24" y="55.6" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">Module: main</text>
+  <text x="24" y="79.6" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">Author: </text>
+  <text x="24" y="103.6" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">Date: </text>
+  <text x="24" y="127.6" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">Version: </text>
+  <line x1="52" y1="173.88" x2="52" y2="210.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="52" y1="221.88" x2="52" y2="282.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="52" y1="293.88" x2="52" y2="594.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="88" y1="245.88" x2="88" y2="258.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="88" y1="317.88" x2="88" y2="336" stroke="#111111" stroke-width="1.5" />
+  <line x1="88" y1="336" x2="88" y2="384" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="413.88" x2="124" y2="426.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="437.88" x2="124" y2="456" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="456" x2="124" y2="528" stroke="#111111" stroke-width="1.5" />
+  <line x1="160" y1="485.88" x2="160" y2="498.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="160" y1="557.88" x2="160" y2="570.12" stroke="#111111" stroke-width="1.5" />
+  <line x1="52" y1="192" x2="88" y2="192" stroke="#111111" stroke-width="1.5" />
+  <line x1="52" y1="240" x2="88" y2="240" stroke="#111111" stroke-width="1.5" />
+  <line x1="52" y1="312" x2="88" y2="312" stroke="#111111" stroke-width="1.5" />
+  <line x1="88" y1="360" x2="124" y2="360" stroke="#111111" stroke-width="1.5" />
+  <line x1="88" y1="408" x2="124" y2="408" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="480" x2="160" y2="480" stroke="#111111" stroke-width="1.5" />
+  <line x1="124" y1="552" x2="160" y2="552" stroke="#111111" stroke-width="1.5" />
+  <text x="46" y="172.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">1</text>
+  <circle cx="52" cy="168" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="67.88" y="172.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">リクエストを受け取り前提を確認する</text>
+  <text x="46" y="196.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">2</text>
+  <circle cx="88" cy="192" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="103.88" y="196.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">入力JSONの必須項目を検証する</text>
+  <text x="46" y="220.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">3</text>
+  <circle cx="52" cy="216" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="67.88" y="220.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">DSLを解析して構造化する</text>
+  <text x="46" y="244.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">4</text>
+  <circle cx="88" cy="240" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="103.88" y="244.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">モジュールと階層を解釈する</text>
+  <text x="46" y="268.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">5</text>
+  <circle cx="88" cy="264" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="103.88" y="268.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">diagnostics を収集する</text>
+  <text x="46" y="292.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">6</text>
+  <circle cx="52" cy="288" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="67.88" y="292.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">診断結果に応じて応答経路を選ぶ</text>
+  <text x="46" y="316.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">7</text>
+  <circle cx="88" cy="312" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <path d="M 86.236 309.354 L 91.234 312 L 86.236 314.646 Z" fill="#111111" />
+  <text x="103.88" y="316.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">error が存在するか</text>
+  <text x="46" y="340.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">8</text>
+  <line x1="88" y1="336" x2="100.936" y2="336" stroke="#111111" stroke-width="1.5" />
+  <path d="M 100.936 336 L 97.536 333.6 L 97.536 338.4 Z" fill="#111111" />
+  <text x="110.936" y="340.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">(はい)</text>
+  <text x="46" y="364.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">9</text>
+  <circle cx="124" cy="360" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="139.88" y="364.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">空の SVG 系ペイロードを返す</text>
+  <text x="46" y="388.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">10</text>
+  <line x1="88" y1="384" x2="100.936" y2="384" stroke="#111111" stroke-width="1.5" />
+  <path d="M 100.936 384 L 97.536 381.6 L 97.536 386.4 Z" fill="#111111" />
+  <text x="110.936" y="388.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">(いいえ)</text>
+  <text x="46" y="412.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">11</text>
+  <circle cx="124" cy="408" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="139.88" y="412.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">描画対象モジュールを決定する</text>
+  <text x="46" y="436.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">12</text>
+  <circle cx="124" cy="432" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <path d="M 122.236 429.354 L 127.234 432 L 122.236 434.646 Z" fill="#111111" />
+  <text x="139.88" y="436.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">renderAllModules が true か</text>
+  <text x="46" y="460.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">13</text>
+  <line x1="124" y1="456" x2="136.936" y2="456" stroke="#111111" stroke-width="1.5" />
+  <path d="M 136.936 456 L 133.536 453.6 L 133.536 458.4 Z" fill="#111111" />
+  <text x="146.936" y="460.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">(はい)</text>
+  <text x="46" y="484.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">14</text>
+  <circle cx="160" cy="480" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="175.88" y="484.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">全モジュールの SVG を生成する</text>
+  <text x="46" y="508.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">15</text>
+  <circle cx="160" cy="504" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="175.88" y="508.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">svgs を含む応答JSONを組み立てる</text>
+  <text x="46" y="532.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">16</text>
+  <line x1="124" y1="528" x2="136.936" y2="528" stroke="#111111" stroke-width="1.5" />
+  <path d="M 136.936 528 L 133.536 525.6 L 133.536 530.4 Z" fill="#111111" />
+  <text x="146.936" y="532.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">(いいえ)</text>
+  <text x="46" y="556.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">17</text>
+  <circle cx="160" cy="552" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="175.88" y="556.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">単一モジュールの SVG を生成する</text>
+  <text x="46" y="580.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">18</text>
+  <circle cx="160" cy="576" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="175.88" y="580.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">svg を含む応答JSONを組み立てる</text>
+  <text x="46" y="604.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="end" dominant-baseline="alphabetic" fill="#374151">19</text>
+  <circle cx="52" cy="600" r="5.88" fill="none" stroke="#111111" stroke-width="1.5" />
+  <text x="67.88" y="604.2" font-family="Noto Sans JP, Meiryo, sans-serif" font-size="12" text-anchor="start" dominant-baseline="alphabetic" fill="#111111">結果を呼び出し元へ返す</text>
+</svg>
