@@ -8,7 +8,7 @@
   </url>
   <url>
     <loc>https://comcomponent.com/blog/</loc>
-    <lastmod>2026-02-22</lastmod>
+    <lastmod>2026-03-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
@@ -45,6 +45,12 @@
   <url>
     <loc>https://comcomponent.com/blog/2026/02/22/000-what-is-hcp-chart-and-making-hcp-chart-skill/</loc>
     <lastmod>2026-02-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://comcomponent.com/blog/2026/03/07/000-cpp-cli-wrapper-for-native-dlls/</loc>
+    <lastmod>2026-03-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.70</priority>
   </url>
