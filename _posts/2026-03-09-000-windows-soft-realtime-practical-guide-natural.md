@@ -1,121 +1,154 @@
 ---
-title: "Windowsでソフトリアルタイムをできるだけ実現するための実践ガイド - 設計、実装、電源設定、計測"
+title: "普通のWindowsでソフトリアルタイムをできるだけ実現するための実践ガイド"
 date: 2026-03-09 10:00
 tags: [Windows開発, ソフトリアルタイム, 設計, 計測]
 author: Go Komura
 ---
 
-Windows で周期処理、音声処理、映像処理、計測、装置制御のような「遅れると困る」処理を作ると、「Windows では厳しいのでは」という印象を持たれがちです。  
-これは半分正しく、半分は違います。 Windows は hard real-time OS ではありませんが、設計、実装、計測、運用をきちんと詰めると、soft real-time としてかなり実用的な状態まで持っていけます。
+Windows で周期処理、音声処理、映像処理、計測、装置制御のような「遅れると困る」処理を作ると、
+「Windows では厳しいのでは」という印象を持たれがちです。
 
-この記事では、Windows で **ソフトリアルタイムをできるだけ安定して実現する** ために、設計、実装、スレッド、タイマ、メモリ、電源設定、計測までを実務寄りに整理します。  
-音声、映像、周期制御、データ取得では細部は違いますが、問題になりやすい点はかなり共通しています。 その共通部分を順番に見ていきます。
+これは半分正しく、半分は違います。
+Windows は hard real-time OS ではありませんが、**設計、実装、計測、運用** をきちんと詰めると、**soft real-time** としてかなり実用的な状態まで持っていけます。
+
+この記事で扱うのは、**特別な RTOS 拡張や独自のカーネルドライバ、専用コントローラを前提にしない、普通の Windows 10 / 11** です。
+つまり、**普段のデスクトップ / ノート PC 上の user-mode アプリで、どこまで遅延とジッタを詰められるか** を実務寄りに整理します。
+
+音声、映像、周期制御、データ取得では細部は違いますが、問題になりやすい場所はかなり共通しています。
+今回はその共通部分を、**チェックリストで見やすく** まとめます。
 
 ## 目次
 
 1. まず結論（ひとことで）
-2. Windows で「ソフトリアルタイム」とは何か
-   - 2.1. 何ができるか
-   - 2.2. どこから難しくなるか
+2. 普通のWindowsで「ソフトリアルタイム」とは何か
+   - 2.1. この記事でいう「普通のWindows」
+   - 2.2. 何ができて、どこから難しくなるか
+   - 2.3. 用語を先にひとこと
 3. 遅延とジッタの主な原因
    - 3.1. スケジューラと優先度
-   - 3.2. DPC/ISR とドライバ
+   - 3.2. DPC / ISR とドライバ
    - 3.3. ページフォルトとメモリ
    - 3.4. タイマ分解能と電源管理
    - 3.5. コア移動と熱
-4. アンチパターン
-   - 4.1. `Sleep` 任せの周期ループ
-   - 4.2. ホットパスでブロッキング I/O
-   - 4.3. ホットパスで確保・解放・GC
-   - 4.4. 無制限キュー
-   - 4.5. いきなり `REALTIME_PRIORITY_CLASS`
-5. 設計の基本方針
-   - 5.1. fast path / slow path を分ける
-   - 5.2. 固定長キューとドロップ方針を先に決める
-   - 5.3. マルチレート設計にする
-   - 5.4. deadline miss を観測可能にする
-6. 実装の基本方針
-   - 6.1. 優先度の基本方針
-   - 6.2. MMCSS を使う場面
-   - 6.3. タイマと時計の選び方
-   - 6.4. メモリの扱い
-   - 6.5. CPU の置き方
-   - 6.6. 周期ループの擬似コード
-   - 6.7. .NET 側の注意
-7. 電源設定・OS設定の考え方
-   - 7.1. まず触る設定
-   - 7.2. 電源プランの考え方
-   - 7.3. Process Power Throttling / EcoQoS
-   - 7.4. バックグラウンド負荷と運用
-   - 7.5. BIOS / UEFI は最後に
-8. 計測と評価
-   - 8.1. 何を記録するか
-   - 8.2. 何で見るか
-   - 8.3. テストの作法
-9. ざっくり使い分け
-10. まとめ
-11. 参考資料
+4. 普通のWindowsで遅れを減らす実践チェックリスト
+   - 4.1. 周期ループと待機方法
+   - 4.2. fast path / slow path と固定長キュー
+   - 4.3. 優先度 / MMCSS / background mode
+   - 4.4. メモリ / GC / 初回コスト
+   - 4.5. 電源設定 / EcoQoS / timer resolution
+   - 4.6. CPU 配置 / コア移動 / 熱
+   - 4.7. ドライバ / DPC / ISR / 外乱の切り分け
+5. 計測と評価
+   - 5.1. 何を記録するか
+   - 5.2. p99 / p99.9 / max の見方
+   - 5.3. 何で見るか
+   - 5.4. テストの作法
+6. ざっくり使い分け
+7. まとめ
+8. 参考資料
 
 * * *
 
 ## 1. まず結論（ひとことで）
 
-- Windows で目指すのは hard real-time の保証ではなく、**遅延とジッタを抑え、deadline miss を少なくすること**
-- 一番効果が大きいのは、**ホットパスを短く・固定長に・非ブロッキングにする設計**
-- fast path（取得 / 制御）と slow path（保存 / 通信 / UI）を分け、間は **固定長キュー** でつなぐ
-- 音声や映像のような連続ストリームでは、まず **MMCSS** を検討する
-- 時間計測は **QueryPerformanceCounter / Stopwatch**、待機は **デバイスイベント** か **高精度 waitable timer** を優先する
-- `timeBeginPeriod` は必要な間だけ使う。 常時有効にする前提で設計しない
-- 実運用では **AC 給電 / 本番向けの電源設定 / HighQoS / バックグラウンド負荷の整理** が効く
-- 評価は平均値ではなく、**p99 / p99.9 / max / miss 回数 / DPC/ISR / page fault / queue 深さ** で見る
+- **普通のWindowsで目指すのは、hard real-time の保証ではなく、soft real-time として「遅れにくく、遅れても壊れにくい」構成** です。
+- 一番効果が大きいのは、**ホットパスを短く・固定長に・非ブロッキングにすること** です。
+- fast path（取得 / 制御）と slow path（保存 / 通信 / UI）を分け、間は **固定長キュー** でつなぎます。
+- 周期ループは `Sleep(1)` 任せではなく、**絶対期限** で回します。
+- 音声や映像のような連続ストリームでは、まず **MMCSS** を検討します。
+- 時間計測は **QueryPerformanceCounter（QPC）**、.NET なら **`Stopwatch`** を使います。
+- 待機は **デバイスイベント** か **高精度 waitable timer（待機可能タイマ）** を優先します。
+- `timeBeginPeriod` は必要な間だけ使います。常時有効にする前提で設計しません。
+- 実運用では **AC 給電 / 電源モード / EcoQoS の扱い / バックグラウンド負荷の整理** が効きます。
+- 評価は平均値だけでなく、**p99（100回測って遅い方 1 回が見え始める境目） / p99.9 / max / miss 回数 / DPC / ISR / page fault / queue 深さ** で見ます。
 
-要するに、Windows では **優先度を上げることより、遅れる理由を設計で減らすこと** のほうが効果的です。  
+要するに、普通の Windows では **優先度を上げることより、遅れる理由を設計で減らすこと** のほうが効きます。
 優先度や電源設定は重要ですが、それだけで安定性は作れません。
 
-## 2. Windows で「ソフトリアルタイム」とは何か
+## 2. 普通のWindowsで「ソフトリアルタイム」とは何か
 
-### 2.1. 何ができるか
+### 2.1. この記事でいう「普通のWindows」
 
-Windows では、たとえば次のような処理なら、かなり現実的に「遅れにくい」状態を作れます。
+ここでいう **普通の Windows** は、だいたい次を前提にしています。
+
+- Windows 10 / 11 の一般的なデスクトップ / ノート PC
+- 独自の RTOS 拡張なし
+- 独自のカーネルモードドライバ開発なし
+- ふつうの user-mode アプリ
+- 一般的な Windows API と設定で調整する
+
+つまり、**「専用機を 1 台丸ごとリアルタイム制御用に作り込む」話ではなく、「普通の Windows PC 上でどこまで現実的に詰められるか」** という話です。
+
+```mermaid
+flowchart LR
+    A["普通の Windows 10 / 11 PC"] --> B["user-mode アプリ"]
+    B --> C["soft real-time を目指す"]
+    C --> D["遅延を低くする"]
+    C --> E["ジッタを小さくする"]
+    C --> F["deadline miss を観測して壊れないようにする"]
+    G["期限違反ゼロを保証したい"] -.-> H["RTOS / 専用コントローラ / FPGA / デバイス側処理"]
+```
+
+### 2.2. 何ができて、どこから難しくなるか
+
+普通の Windows でも、たとえば次のような処理なら、かなり現実的に「遅れにくい」状態を作れます。
 
 - 数ミリ秒〜数十ミリ秒の周期処理
 - 音声 / 映像のバッファ駆動
-- センサー取得と制御のループ
-- 一定周期のソフト PLC 風処理
+- センサー取得と制御ループ
+- ソフト PLC 風の一定周期処理
 - UI とは別スレッドで動く低遅延パイプライン
 
-ただし、ここでいう「できる」は、**たまの遅延スパイクを完全にゼロにできる** という意味ではありません。  
-狙うのは、
+ただし、ここでいう「できる」は、**たまの遅延スパイクを完全にゼロにできる** という意味ではありません。
+狙うのは、次の状態です。
 
 - 通常時の遅延を低くする
 - ジッタを小さくする
 - たまに期限を外しても壊れない
 - 外した事実を観測できる
 
-という状態です。
-
-### 2.2. どこから難しくなるか
-
-難しくなるのは、たとえば次のような要求です。
+逆に、次のような要求になると、普通の Windows の user-mode だけで満たすのはかなり厳しくなります。
 
 - 期限違反ゼロを保証したい
 - 数百マイクロ秒以下を長時間安定して守りたい
-- 重い GUI やネットワークやストレージと同居したい
-- ノート PC のバッテリー駆動や省電力優先のままやりたい
+- 重い GUI、ネットワーク、ストレージと同居したい
+- バッテリー駆動や省電力優先のままやりたい
 - ドライバやデバイス由来のスパイクも許されない
 
-このあたりになると、user-mode の Windows だけで満たすのはかなり難しくなります。  
-その場合は、**本当に時間に厳しい部分だけを、デバイス側のファームウェア、専用コントローラ、FPGA、別の RTOS、あるいは少なくとも Windows の外側に寄せる** ことも考えたほうがよいです。
+このあたりは、**本当に時間に厳しい部分だけをデバイス側ファームウェア、専用コントローラ、FPGA、RTOS へ寄せる** ことも考えたほうが安全です。
 
-大事なのは、**周期を守ること** と **周期が破れたときに壊れないこと** を分けて考えることです。  
-前者はチューニングの話で、後者は設計の話です。
+### 2.3. 用語を先にひとこと
+
+この記事で出てくる用語を、先にざっくり整理しておきます。
+
+| 用語 | ひとことでいうと | 実務での見方 |
+| --- | --- | --- |
+| soft real-time | たまの遅れはあり得るが、遅れを小さくし、遅れても壊れないようにする考え方 | 普通の Windows でまず狙うのはこれ |
+| hard real-time | 期限違反ゼロを保証したい世界 | 普通の Windows の user-mode 単独で狙う対象ではない |
+| ジッタ | 周期や応答時間の揺れ | 平均が良くてもジッタが大きいと実運用では不安定 |
+| deadline miss | 予定時刻までに処理が終わらないこと | 隠さず、数えて、ログに出す |
+| p99 / p99.9 | 遅い側のしっぽを見る指標 | p99 は「100回中、遅い方 1 回が見え始める境目」 |
+| DPC / ISR | ドライバや割り込み周辺のカーネル側処理 | 長いと user-mode スレッドは待たされる |
+| MMCSS | 音声 / 映像など時間に敏感な処理へ CPU を配分する Windows の仕組み | バッファを切らしたくない処理で有力 |
+| QPC | `QueryPerformanceCounter` のこと | 経過時間計測の基本。壁時計ではなく高精度カウンタ |
 
 ## 3. 遅延とジッタの主な原因
 
+普通の Windows で周期処理が遅れる理由は、だいたい次のどれかです。
+
+```mermaid
+flowchart TD
+    Late["周期処理が遅れる"] --> S["スケジューラ / 優先度"]
+    Late --> D["DPC / ISR / ドライバ"]
+    Late --> M["ページフォルト / メモリ"]
+    Late --> T["タイマ分解能 / 電源管理"]
+    Late --> C["コア移動 / 熱"]
+```
+
 ### 3.1. スケジューラと優先度
 
-Windows のスレッドは優先度で実行順が決まります。  
-同じ優先度ならラウンドロビンで回り、より高い優先度のスレッドが実行可能になると、低い優先度のスレッドはその場で押しのけられます。
+Windows のスレッドは優先度で実行順が決まります。
+同じ優先度ならラウンドロビンで回り、より高い優先度のスレッドが実行可能になると、低い優先度のスレッドは押しのけられます。
 
 つまり、周期スレッドを真面目に書いても、
 
@@ -123,14 +156,15 @@ Windows のスレッドは優先度で実行順が決まります。
 - 別プロセス
 - OS の内部処理
 - セキュリティ製品
-- デバイスまわりの補助処理
+- デバイス補助処理
+- バックグラウンド同期
 
 が先に走ることは普通にあります。
 
-### 3.2. DPC/ISR とドライバ
+### 3.2. DPC / ISR とドライバ
 
-ここはかなり重要です。  
-アプリ側のスレッド優先度を整えても、**DPC（Deferred Procedure Call）や ISR（Interrupt Service Routine）** が長いと、その間は user-mode のスレッドは実行できません。
+ここはかなり重要です。
+アプリ側の優先度を整えても、**DPC（Deferred Procedure Call）や ISR（Interrupt Service Routine）** が長いと、その間は user-mode のスレッドは実行できません。
 
 原因になりやすいのは、たとえば次です。
 
@@ -141,13 +175,14 @@ Windows のスレッドは優先度で実行順が決まります。
 - GPU
 - ACPI / 電源まわり
 
-アプリのコードが悪くなくても、ドライバやハードウェアの都合で止められることがあります。  
-ここはアプリ側だけでは完全に制御できません。
+アプリのコードが悪くなくても、ドライバやハードウェア都合で止められることがあります。
+ここは「アプリの優先度をもっと上げれば勝てるだろう」と考えると、だいたい痛い目を見ます。
 
 ### 3.3. ページフォルトとメモリ
 
-ホットパスでページフォルトが起きると、遅延が一気に大きくなります。  
-特に避けたいのは、次のようなものです。
+ホットパスで page fault（必要なページがメモリになく、取りに行くこと）が起きると、遅延が一気に大きくなります。
+
+特に避けたいのは次です。
 
 - 初回アクセスでのページコミット
 - 遅延ロード
@@ -159,24 +194,27 @@ Windows のスレッドは優先度で実行順が決まります。
 
 ### 3.4. タイマ分解能と電源管理
 
-「1ms ごとに動かしたいから `Sleep(1)`」は、ほとんどの場合うまくいきません。  
+「1ms ごとに動かしたいから `Sleep(1)`」は、ほとんどの場合うまくいきません。
 Windows の待機精度は、タイマ分解能、スケジューリング、電源状態の影響を受けます。
 
-さらに、タイマ分解能を上げる設定は、**待機精度を少し改善できる一方で、消費電力やシステム全体の挙動に副作用がある** ことも押さえておく必要があります。
+さらに、タイマ分解能を上げる設定は、**待機精度を少し改善できる一方で、消費電力やシステム全体の挙動に副作用がある** ことも押さえる必要があります。
 
 ### 3.5. コア移動と熱
 
-スレッドがコア間を移動すると、キャッシュの温まり直しが発生します。  
-これ自体は OS がうまく処理してくれることも多いのですが、負荷が高い環境では揺れの原因になります。
+スレッドがコア間を移動すると、キャッシュの温まり直しが発生します。
+これ自体は OS がうまく処理することも多いですが、負荷が高い環境では揺れの原因になります。
 
-さらに、長時間回すと熱の影響も無視できません。  
+さらに、長時間回すと熱も無視できません。
 **サーマルスロットリングが入ると、それまで安定していた周期が崩れる** ことがあります。
 
-## 4. アンチパターン
+## 4. 普通のWindowsで遅れを減らす実践チェックリスト
 
-### 4.1. `Sleep` 任せの周期ループ
+ここからが実務パートです。
+前の節で見た原因に対して、**普通の Windows で何を確認し、何を避け、何を先に決めるべきか** をチェックリスト形式でまとめます。
 
-まず典型例です。
+### 4.1. 周期ループと待機方法
+
+まず典型的なアンチパターンはこれです。
 
 ```cpp
 while (running)
@@ -186,67 +224,77 @@ while (running)
 }
 ```
 
-これは「1ms 周期」ではなく、**だいたい 1ms 以上待ってから、そこに `Step()` の実行時間を足す** ループです。  
+これは「1ms 周期」ではなく、**だいたい 1ms 以上待ってから、その上に `Step()` の実行時間を足す** ループです。
 しかも待機オーバーシュートがそのまま累積します。
-
-周期処理は、**相対時間でなく絶対期限** で回したほうが安定します。
-
-### 4.2. ホットパスでブロッキング I/O
-
-ホットパスで次をやると、後で問題になります。
-
-- ファイル書き込み
-- ネットワーク送信
-- DB 書き込み
-- 重いログ出力
-- 同期 RPC
-- `Flush` 系の処理
-
-開発中はたまたま速く見えても、本番の揺れには耐えません。  
-ホットパスでは **最小限のコピーだけして、後段へ流す** のが基本です。
-
-### 4.3. ホットパスで確保・解放・GC
-
-ホットパスで毎回 `new` / `malloc` / `List<T>.Add` / 文字列連結 / LINQ を使うと、いつか回収や再配置の都合が表に出ます。
-
-GC 自体が悪いわけではありません。  
-ただ、割り当ての多いコードを書けば、その影響は遅延として表面化します。 ホットパスでは、そもそも回収を呼び込まない書き方を優先したほうがよいです。
-
-### 4.4. 無制限キュー
-
-「遅れたらキューに積めばよい」は、一見安全そうで、実際には危険です。  
-無制限キューは、**取りこぼしを見えなくして、遅延を未来へ先送りするだけ** になりがちです。
-
-必要なのは、
-
-- 上限
-- 溢れたときの方針
-- 溢れた事実の観測
-
-です。
-
-### 4.5. いきなり `REALTIME_PRIORITY_CLASS`
-
-これは強い手段ですが、使い方を誤ると危険です。  
-Windows のドキュメントでも、`REALTIME_PRIORITY_CLASS` は他のプロセスだけでなく **OS の重要処理より先に走り得る** とされていて、ディスクキャッシュが流れない、マウスが反応しない、といった副作用まで書かれています。
-
-つまり、「最優先にすれば解決するだろう」という発想で最初に入れるものではありません。  
-専用機で十分に挙動を理解し、必要性が明確になってから検討するべき設定です。
-
-## 5. 設計の基本方針
-
-### 5.1. fast path / slow path を分ける
-
-構成の基本はこれです。
 
 ```mermaid
 flowchart LR
-    Device[デバイス / 高精度イベント] --> RT[fast path<br/>取得・制御・最小限のコピー]
-    RT --> Ring[固定長リングバッファ]
-    Ring --> Worker[slow path<br/>整形・保存・送信]
-    Worker --> UI[UI / ログ / DB / ネットワーク]
-    RT --> Stat[ジッタ・overrun計測]
-    Stat --> Worker
+    subgraph Bad["相対時間ベース"]
+        B1["Sleep(1)"] --> B2["Step()"]
+        B2 --> B1
+    end
+    B2 --> B3["待機誤差と実行時間が少しずつ積み上がる"]
+
+    subgraph Good["絶対期限ベース"]
+        G1["next += period"] --> G2["WaitUntil(next - margin)"]
+        G2 --> G3["必要なら短い spin"]
+        G3 --> G4["FastStep()"]
+        G4 --> G1
+    end
+    G4 --> G5["ドリフトを溜めにくい"]
+```
+
+**チェックリスト**
+
+- [ ] `Sleep(1)` を周期ループの土台にしていない
+- [ ] 周期は `next += period` の **絶対期限** で回している
+- [ ] 待機は **デバイスイベント** か **waitable timer（待機可能タイマ）** を優先している
+- [ ] 最後の微調整だけ、ごく短い busy-spin（空回し待機）に限定している
+- [ ] `timeBeginPeriod` は必要な間だけ使い、終わったら戻している
+- [ ] 最小化 / 非表示 / 見えない状態でも挙動を確認している
+
+周期ループは、相対時間ではなく **絶対期限** で回したほうが安定します。
+
+```cpp
+int64_t next = QpcNow() + periodTicks;
+
+while (running)
+{
+    WaitUntil(next - wakeMarginTicks);
+
+    while (QpcNow() < next)
+    {
+        CpuRelax(); // 最後だけ短く spin
+    }
+
+    int64_t started = QpcNow();
+    FastStep();
+    int64_t finished = QpcNow();
+
+    RecordTiming(next, started, finished);
+
+    next += periodTicks;
+
+    while (finished > next)
+    {
+        ++missedDeadlines;
+        next += periodTicks;
+    }
+}
+```
+
+### 4.2. fast path / slow path と固定長キュー
+
+構成の基本はこれです。
+**fast path には「期限に敏感な仕事」だけを置き、それ以外は slow path へ追い出す** のが基本です。
+
+```mermaid
+flowchart LR
+    Input["デバイス / 取得イベント"] --> Fast["fast path: 取得・制御・最小限のコピー"]
+    Fast --> Queue["固定長キュー"]
+    Queue --> Slow["slow path: 保存・送信・UI・集計"]
+    Fast --> Metrics["lateness / miss / queue depth を記録"]
+    Metrics --> Slow
 ```
 
 fast path でやるのは、たとえば次だけです。
@@ -260,85 +308,54 @@ fast path でやるのは、たとえば次だけです。
 
 それ以外は slow path に落とします。
 
-### 5.2. 固定長キューとドロップ方針を先に決める
+**チェックリスト**
 
-キューは **固定長** が基本です。  
-さらに、溢れたときの方針を先に決めておきます。
+- [ ] ホットパスでファイル書き込み、ネットワーク送信、DB 書き込みをしていない
+- [ ] ホットパスで重いログ出力、`Flush`、同期 RPC をしていない
+- [ ] fast path / slow path をスレッドや責務で明確に分けている
+- [ ] キューは **固定長** にしている
+- [ ] キューが溢れたときの方針を先に決めている
+- [ ] miss 回数、drop 数、queue depth を観測している
+- [ ] UI 更新やログ集約は低い周期へ分離している
 
-たとえば、
+キューが満杯になったときは、方針を曖昧にしないほうが安全です。
 
-- **latest wins**  
-  最新値だけ意味があるなら、古いものを捨てる
-- **all data matters**  
-  欠落が許されないなら、静かに遅延させず、アラートや停止にする
-- **logging only**  
-  ログなら古いものを落としてカウンタだけ残す
+```mermaid
+flowchart TD
+    Overflow["キューが満杯"] --> Policy{"何を守る?"}
+    Policy -->|最新値が大事| Latest["古い要素を捨てて最新を残す"]
+    Policy -->|全件が大事| All["アラート / 停止 / 上流制御"]
+    Policy -->|ログ用途| Log["古い要素を落として drop 数だけ記録"]
+```
 
-この方針が曖昧だと、本番で問題が起きたときに「何が失われたか」が分からなくなります。
-
-### 5.3. マルチレート設計にする
-
-全部を同じ周期で回す必要はありません。  
-役割ごとに周期を分けたほうが自然です。
-
-たとえば、
-
-- 1kHz: 取得 / 制御
-- 100Hz: 推定 / フィルタ更新
-- 20Hz: UI 更新 / ログ集約
-
-のように分けます。
-
-UI を高い周期で更新したくなる場面はありますが、多くの場合は分けたほうがシステム全体が安定します。
-
-### 5.4. deadline miss を観測可能にする
-
-周期違反は、例外ではなく **運用上のメトリクス** として扱ったほうが強いです。  
-最低でも次は持っておくとよいです。
-
-- 予定開始時刻
-- 実開始時刻
-- 実終了時刻
-- lateness
-- 実行時間
-- missed deadline 回数
-- 連続 miss 回数
-- キュー最大深さ
-
-遅れたら隠すのではなく、数える。  
-このほうが後で原因を詰めやすくなります。
-
-## 6. 実装の基本方針
-
-### 6.1. 優先度の基本方針
+### 4.3. 優先度 / MMCSS / background mode
 
 優先度の基本は、**全部を上げない** ことです。
+普通の Windows では、「大事なスレッドだけを上げ、後ろ仕事はちゃんと下げる」ほうがうまくいきます。
+background mode は、CPU だけでなく I/O などの資源も低優先度寄りに扱うための仕組みです。
 
-おすすめの考え方はこうです。
+```mermaid
+flowchart TD
+    Work["仕事を分ける"] --> Critical["期限に敏感なスレッド"]
+    Work --> Worker["保存 / 送信 / 圧縮 / 集計"]
+    Work --> UI["UI"]
+    Critical --> P1["必要なら高めの優先度 or MMCSS"]
+    Worker --> P2["background mode / 低めの優先度"]
+    UI --> P3["通常優先度"]
+    P1 --> Warn["最初から REALTIME_PRIORITY_CLASS にはしない"]
+```
 
-- UI や通常ワーカーは普通の優先度
-- 本当に時間が厳しいスレッドだけを上げる
-- ログ保存や送信のような後ろ仕事は background mode へ落とす
-- プロセス全体より、まず **スレッド単位** で考える
+**チェックリスト**
 
-Windows のドキュメントでも、背景処理については CPU 優先度だけでなく、**resource scheduling priority** を下げる background mode を使うよう書かれています。  
-つまり、保存やアップロードのような遅れてもよい仕事は、明示的に優先度を下げたほうが全体が安定します。
+- [ ] 全スレッドを高優先度にしていない
+- [ ] 本当に時間が厳しいスレッドだけを上げている
+- [ ] 保存、送信、圧縮、同期などの後ろ仕事は background mode に落としている
+- [ ] 音声、映像、キャプチャ、再生など連続バッファ処理では MMCSS を検討している
+- [ ] プロセス全体より、まず **スレッド単位** で考えている
+- [ ] `REALTIME_PRIORITY_CLASS` は、必要性が明確になるまで使わない
 
-### 6.2. MMCSS を使う場面
-
-音声、映像、連続ストリーミングのような「一定時間内にバッファを埋める」タイプの処理では、まず **MMCSS** を検討します。
-
-MMCSS は、時間に敏感な処理へ CPU を優先配分しつつ、低優先度タスクを完全に止めないようにする仕組みです。  
-単純に高優先度スレッドを常時走らせるより、Windows の設計に沿ったやり方です。
-
-イメージとしてはこうです。
-
-- 音声 / 映像 / キャプチャ / 再生系  
-  → MMCSS をまず検討
-- 一般的な周期制御  
-  → 専用スレッド + 適切な優先度 + 計測から始める
-- 何でもかんでも MMCSS  
-  → 向いていないことが多い
+MMCSS（Multimedia Class Scheduler Service）は、**音声 / 映像のような「一定時間内にバッファを埋めたい」処理** で特に有効です。
+単純に高優先度スレッドを常時回すより、Windows の設計に沿っています。
 
 コードの雰囲気はこんな感じです。
 
@@ -350,7 +367,7 @@ if (!avrt)
     throw std::runtime_error("AvSetMmThreadCharacteristicsW failed");
 }
 
-// ここで時間に敏感なループを回す
+// 時間に敏感なループを回す
 
 if (!AvRevertMmThreadCharacteristics(avrt))
 {
@@ -358,225 +375,72 @@ if (!AvRevertMmThreadCharacteristics(avrt))
 }
 ```
 
-「常時高優先度で回す」というより、**このスレッドは期限に敏感な処理を担当している** と OS に伝えるイメージです。
+### 4.4. メモリ / GC / 初回コスト
 
-### 6.3. タイマと時計の選び方
+ホットパスで毎回 `new` / `malloc` / `List<T>.Add` / 文字列連結 / LINQ を使うと、
+いつか回収や再配置の都合が表に出ます。
 
-ここは役割で分けると整理しやすいです。
+GC（ガベージコレクション）が悪いわけではありません。
+ただ、**割り当ての多いコードを書けば、その影響はジッタとして表面化します。**
 
-#### 6.3.1. 経過時間を測る時計
+```mermaid
+flowchart LR
+    Start["起動"] --> Alloc["必要バッファを確保"]
+    Alloc --> Touch["一度触ってページを温める"]
+    Touch --> Warm["JIT / DLL 読み込み / 初回 I/O を済ませる"]
+    Warm --> Measure["その後に本計測 / 本運転"]
+```
 
-経過時間の計測は、**QueryPerformanceCounter（QPC）** を使います。  
-.NET なら `Stopwatch` / `Stopwatch.GetTimestamp()` です。
+**チェックリスト**
 
-壁時計の時刻ではなく、「前回から何 ticks 経ったか」を測る道具として使います。  
-`DateTime.Now` を周期ループの基準に持ち込むのは避けたほうがよいです。
+- [ ] ホットパスで毎回メモリ確保 / 解放をしていない
+- [ ] 必要なバッファを起動時に事前確保している
+- [ ] 起動時に一度触ってページを温めている
+- [ ] 初回 JIT、初回 DLL 読み込み、初回 I/O を本計測に混ぜていない
+- [ ] ループ中に巨大な構造や可変長ログを育てていない
+- [ ] `VirtualLock` を使うとしても、ごく小さいクリティカル領域だけにしている
 
-一方で、外部ログと突き合わせるための UTC 時刻が必要なら、`GetSystemTimePreciseAsFileTime` のような壁時計系を別に持ちます。  
-**経過時間用の時計** と **実時刻用の時計** を分ける、ということです。
+**.NET 側のチェック**
 
-#### 6.3.2. 待機の道具
+- [ ] 時刻計測に `Stopwatch` / `Stopwatch.GetTimestamp()` を使っている
+- [ ] ホットパスで LINQ、文字列連結、`ToString()`、巨大ログ生成をしていない
+- [ ] `async/await` を hot path に持ち込んでいない
+- [ ] ウォームアップ前と後を分けて評価している
 
-優先順位としては、だいたい次です。
+### 4.5. 電源設定 / EcoQoS / timer resolution
 
-1. デバイスや API が持つイベント駆動
-2. 高精度 waitable timer
-3. 通常の待機 + 必要なら `timeBeginPeriod`
-4. 最後の微調整だけ短い busy-spin
+ここは地味ですが効きます。
+コードを詰めても、上位の電源制御が強く効いていると結果は安定しません。
 
-特に `CreateWaitableTimerEx` の **`CREATE_WAITABLE_TIMER_HIGH_RESOLUTION`** は、数ミリ秒級の短い期限で待機遅れを減らしたい場面で有力です。
+```mermaid
+flowchart TD
+    Power["普通のWindowsの電源まわり"] --> AC["AC 給電で実行"]
+    Power --> Mode["電源モード: 最適なパフォーマンス寄り"]
+    Power --> Plan["必要なら本番用の専用電源プラン"]
+    Power --> QoS["時間に敏感なプロセスは EcoQoS を避ける"]
+    Power --> Timer["タイマ分解能要求の扱いを確認"]
+```
 
-#### 6.3.3. `timeBeginPeriod` の扱い
+**チェックリスト**
 
-`timeBeginPeriod` は、使い方を整理しておけば役に立ちます。  
-ただし、次の点は押さえておく必要があります。
+- [ ] 本番評価はまず **AC 給電** で行っている
+- [ ] `[設定] > [システム] > [電源 & バッテリー] > [電源モード]` を **最適なパフォーマンス** 寄りにしている
+- [ ] battery saver / 省エネ優先モードを実行中に使っていない
+- [ ] ベンダー独自ユーティリティの静音 / eco / battery 優先モードを確認している
+- [ ] 時間に敏感なプロセスを不用意に EcoQoS（省電力寄りの QoS）にしていない
+- [ ] `IGNORE_TIMER_RESOLUTION` が時間に敏感なプロセス側で有効になっていない
+- [ ] 最小化 / 非表示時にタイマ分解能要求の効きが変わらないか確認している
+- [ ] 普段使い用と、本番 / 計測 / デモ用の電源設定を分けている
+
+`timeBeginPeriod` は整理して使えば役に立ちますが、**万能薬ではありません。**
 
 - 必要な直前に呼ぶ
 - 終わったら `timeEndPeriod` で戻す
 - Windows 10 version 2004 以降は、昔のような完全なグローバル挙動ではない
-- Windows 11 では、**ウィンドウを持つプロセスが完全に隠れる / 最小化される / 見えない / 聞こえない状態** だと、高い分解能が保証されないことがある
+- Windows 11 では、ウィンドウを持つプロセスが完全に隠れる / 最小化される / 見えない / 聞こえない状態だと、高い分解能が保証されないことがある
 - 分解能を上げても **QPC の精度が上がるわけではない**
-- 分解能を上げると、消費電力とシステム全体の挙動には副作用がある
 
-つまり、`timeBeginPeriod(1)` を入れれば終わり、という話ではありません。  
-必要なところにだけ、必要な時間だけ使います。
-
-#### 6.3.4. 実用的な待ち方
-
-周期ループでは、次のような「待機 + 短い微調整」が現実的です。
-
-```mermaid
-sequenceDiagram
-    participant Loop as 制御スレッド
-    participant Timer as waitable timer / device event
-    participant CPU as CPU
-
-    Loop->>Timer: 次の期限の少し手前まで待つ
-    Timer-->>Loop: 起床
-    Loop->>CPU: 数十〜数百マイクロ秒だけ短く spin
-    Loop->>Loop: FastStep() 実行
-    Loop->>Loop: next += period
-```
-
-長い busy-spin は CPU 使用率を上げやすいですが、**最後のごく短い区間だけ** なら有効です。  
-長く回すのではなく、最後の調整に限定して使います。
-
-### 6.4. メモリの扱い
-
-ホットパスでは次を徹底したいです。
-
-- バッファは先に確保する
-- 起動時に一度触ってページを温める
-- オブジェクト再利用を前提にする
-- ループ中に巨大な構造を育てない
-- 共有ヒープへ無計画に集めない
-
-必要なら `VirtualLock` で **ごく小さいクリティカルな領域だけ** 固定する手もあります。  
-ただしこれは乱用しないほうがよいです。 Windows のドキュメントでも、ロックしたページが増えると他の重要ページが追い出され、全体性能を悪くし得るとされています。
-
-要するに、`VirtualLock` は補助的な手段であって、設計上の問題をまとめて解決してくれるものではありません。
-
-### 6.5. CPU の置き方
-
-CPU 配置は、いきなり hard pin するより、**soft affinity に近い指定から始める** ほうがうまくいくことが多いです。
-
-候補としてはこうです。
-
-- `SetThreadIdealProcessor`  
-  まず「このあたりのコアで実行されると望ましい」と伝える
-- **CPU Sets**  
-  OS の電源管理と両立しやすい soft affinity として使う
-- `SetThreadAffinityMask`  
-  本当に必要なときだけ固定する
-
-特に CPU Sets は、ドキュメント上でも **OS power management と両立する soft affinity** として説明されています。  
-「このスレッドはこの集合のどこかで走ってくれればよい」という指定ができるので、完全固定より扱いやすいです。
-
-一方で `SetThreadAffinityMask` のドキュメントには、**多くの場合は OS に選ばせたほうがよい** とも書かれています。  
-固定すると、その分だけスケジューラの逃げ道を減らすからです。
-
-なので順番としては、
-
-1. まず計測する
-2. 必要なら ideal processor / CPU Sets
-3. それでも改善が必要なら hard affinity
-
-がよいです。  
-CPU pinning は効果がありそうに見えますが、安易に使うと単に融通が利かなくなることがあります。
-
-### 6.6. 周期ループの擬似コード
-
-周期ループは、相対時間ではなく **絶対期限** で回したほうが安定します。
-
-```cpp
-int64_t next = QpcNow() + periodTicks;
-
-while (running)
-{
-    WaitUntil(next - wakeMarginTicks);   // event / waitable timer
-    while (QpcNow() < next)
-    {
-        CpuRelax();                      // 最後だけ短く spin
-    }
-
-    int64_t started = QpcNow();
-    FastStep();                          // no blocking, no alloc, no heavy lock
-    int64_t finished = QpcNow();
-
-    RecordTiming(next, started, finished);
-
-    next += periodTicks;
-
-    // 遅れたときの catch-up policy
-    while (finished > next)
-    {
-        ++missedDeadlines;
-        next += periodTicks;
-    }
-}
-```
-
-ポイントは 2 つです。
-
-- `next = now + period` にしない  
-  → オーバーシュートが毎回ドリフトとして積み上がるため
-- 遅れたときの方針を明示する  
-  → 追いつくまでスキップするのか、最新値だけ取るのか、停止するのか
-
-「いつも間に合う前提」のコードより、**遅れたときの動きが先に決まっている** コードのほうが、本番で扱いやすいです。
-
-### 6.7. .NET 側の注意
-
-C# / .NET でやるなら、特に次は効きます。
-
-- 時刻計測は `Stopwatch` / `Stopwatch.GetTimestamp()`
-- ホットパスでアロケーションしない
-- LINQ、文字列連結、`ToString()`、巨大なログ生成を持ち込まない
-- `async/await` は slow path には便利だが、hot path には慎重に
-- 起動直後の JIT や初回実行コストを甘く見ない
-- 初回ウォームアップを本計測に混ぜない
-
-C# / .NET でも十分実装できます。  
-ただし、managed runtime の便利さを hot path にそのまま持ち込むと、GC や初回コストがジッタとして表に出ます。
-
-## 7. 電源設定・OS設定の考え方
-
-### 7.1. まず触る設定
-
-まずはここです。
-
-- **AC 給電で動かす**
-- **[設定] > [システム] > [電源 & バッテリー] > [電源モード]** を **[最適なパフォーマンス]** 寄りにする
-- 省エネルギー / battery saver 的な設定を実行中は使わない
-- ノート PC のベンダー独自ユーティリティで、静音 / eco / battery 優先モードになっていないか確認する
-
-ここは地味ですが、効果があります。  
-ループを詰めても、上位の電源制御が強く効いていると結果は安定しません。
-
-### 7.2. 電源プランの考え方
-
-より詰めるなら、**専用の電源プラン** を用意したほうがよいです。  
-普段使いと、本番実行時を分けます。
-
-実務的には、
-
-- 普段使い: バランス
-- 本番 / 計測 / デモ: 専用プラン
-
-が扱いやすいです。
-
-さらに、専用機または専用時間帯なら、AC 時のみ次も検討できます。
-
-- **最小のプロセッサの状態 = 100%**
-- **最大のプロセッサの状態 = 100%**
-- スリープ / 休止を実行中は無効化
-- ディスプレイや周辺機器の積極的な省電力を避ける
-
-Microsoft の電源設定ドキュメントでも、**最小のプロセッサ性能状態を 100% にすると CPU を performance 寄りに bias する** 例が示されています。  
-ただし、これは熱・消費電力・ファン騒音と引き換えです。 ノート PC で常用する設定ではありません。
-
-また、**カスタム電源プランが選ばれていると、設定アプリ側の [電源モード] が変えられないことがある** 点も押さえておきたいです。  
-その場合はいったんバランス プランを選んでから調整します。
-
-### 7.3. Process Power Throttling / EcoQoS
-
-Windows には、プロセス単位の power throttling があります。  
-省電力寄りに動かしたい処理には便利ですが、ソフトリアルタイムの本体には逆効果になることがあります。
-
-特に見たいのは次です。
-
-- `PROCESS_POWER_THROTTLING_EXECUTION_SPEED`
-- `PROCESS_POWER_THROTTLING_IGNORE_TIMER_RESOLUTION`
-
-ドキュメントのサンプルでも、
-
-- `EXECUTION_SPEED` をオンにすると EcoQoS
-- `EXECUTION_SPEED` をオフにすると HighQoS
-- `IGNORE_TIMER_RESOLUTION` をオフにすると timer resolution request を尊重
-
-という形が示されています。
-
-実行時に critical process だけ HighQoS 寄りにするなら、たとえば次のようになります。
+電源や QoS の影響が疑わしいなら、`SetProcessInformation` で power throttling の状態を確認します。
 
 ```cpp
 PROCESS_POWER_THROTTLING_STATE state{};
@@ -584,7 +448,7 @@ state.Version = PROCESS_POWER_THROTTLING_CURRENT_VERSION;
 state.ControlMask =
     PROCESS_POWER_THROTTLING_EXECUTION_SPEED |
     PROCESS_POWER_THROTTLING_IGNORE_TIMER_RESOLUTION;
-state.StateMask = 0; // HighQoS + timer resolution request を尊重
+state.StateMask = 0; // HighQoS（性能優先寄り） + タイマ分解能要求を尊重
 
 if (!SetProcessInformation(
         GetCurrentProcess(),
@@ -596,98 +460,140 @@ if (!SetProcessInformation(
 }
 ```
 
-ここは、タイマ分解能や CPU throttling の影響が疑わしいときに確認したい設定です。
+### 4.6. CPU 配置 / コア移動 / 熱
 
-### 7.4. バックグラウンド負荷と運用
+CPU 配置は、いきなり **特定コアへ固定（hard affinity / CPU pinning）** するより、**「なるべくこのコア群で動いてほしい」という soft affinity に近い指定** から始めるほうがうまくいくことが多いです。
 
-OS 設定だけでなく、運用も効きます。
+```mermaid
+flowchart LR
+    Measure["まず計測"] --> Ideal["SetThreadIdealProcessor / CPU Sets"]
+    Ideal --> Check{"十分改善した?"}
+    Check -->|はい| Keep["そこで止める"]
+    Check -->|いいえ| Hard["最後に SetThreadAffinityMask を検討"]
+    Measure --> Therm["同時に温度 / クロック / 長時間運転も確認"]
+```
 
-- 重いクラウド同期
-- 大量ログの圧縮
-- インデックス作成
-- 自動アップデート
-- 常駐監視の走査
-- ブラウザのタブを大量に開いた状態
+**チェックリスト**
 
-このあたりが並ぶと、周期スレッドへの干渉要因が一気に増えます。
+- [ ] まず計測してから CPU 配置をいじっている
+- [ ] いきなり特定コアへ固定していない
+- [ ] まず `SetThreadIdealProcessor` や CPU Sets を試している
+- [ ] `SetThreadAffinityMask` は最後の手段として扱っている
+- [ ] 長時間運転で温度、クロック、サーマルスロットリングを確認している
+- [ ] ノート PC の静音モードや低騒音モードを確認している
 
-おすすめは、
+順番としては、だいたい次が安全です。
 
-- 本番時間帯は不要な常駐を減らす
-- 自分の slow path は background mode に落とす
-- USB / Wi-Fi / ストレージ起因が疑わしいなら、まず **ドライバ / ファームウェア更新** を見る
-- 「最小化したら崩れる」「画面を消したら崩れる」もちゃんと試す
+1. まず計測する
+2. 必要なら ideal processor / CPU Sets
+3. それでも改善が必要なら特定コア固定
 
-です。
+特定コア固定は効きそうに見えますが、**OS の逃げ道を減らす** ので、安易に使うと逆に融通が利かなくなることがあります。
 
-特に Windows 11 のタイマ分解能の挙動を見ると、**GUI の見え方** が影響することがあるので、  
-「前面表示でしか試していない」という状態は避けたいです。
+### 4.7. ドライバ / DPC / ISR / 外乱の切り分け
 
-### 7.5. BIOS / UEFI は最後に
+「たまに max だけ爆発する」「平均は良いのに p99.9 が悪い」というときは、
+アプリのコード以外の外乱も疑ったほうがよいです。
 
-BIOS / UEFI 側にも、
+```mermaid
+flowchart TD
+    Spike["late / miss / max spike が出た"] --> Q1{"自分の処理時間も長い?"}
+    Q1 -->|はい| App["ホットパス短縮 / 割り当て削減 / I/O 除去"]
+    Q1 -->|いいえ| Q2{"DPC / ISR スパイクがある?"}
+    Q2 -->|はい| Driver["USB / Wi-Fi / Bluetooth / GPU / Audio / Storage / ACPI / ドライバ更新を確認"]
+    Q2 -->|いいえ| Q3{"page fault / GC / 初回コストがある?"}
+    Q3 -->|はい| Mem["事前確保 / ウォームアップ / ヒープ負荷削減"]
+    Q3 -->|いいえ| Q4{"バッテリー / 省電力 / 熱の影響がある?"}
+    Q4 -->|はい| Pow["AC 給電 / 電源設定 / 冷却 / 長時間テスト"]
+    Q4 -->|いいえ| ETW["ETW / WPA / LatencyMon で深掘り"]
+```
 
-- 省電力プロファイル
-- 静音プロファイル
-- ベンダー独自の boost / eco 制御
-- C-state や周波数関連の設定
+**チェックリスト**
 
-があります。
+- [ ] Wi-Fi / Bluetooth / USB / ストレージ / GPU / オーディオまわりのドライバを確認している
+- [ ] 不要なクラウド同期、インデックス作成、自動更新を止めて比較している
+- [ ] 最小化したら崩れるか、画面を消したら崩れるかも試している
+- [ ] LatencyMon や ETW で DPC / ISR の傾向を見ている
+- [ ] 「自分の処理が重い」のか「外から止められている」のかを分けて見ている
 
-ただし、ここは機種依存が強いです。  
-最初から全部触るのではなく、
+## 5. 計測と評価
 
-1. Windows 側で詰める
-2. 計測する
-3. 本当に BIOS / UEFI が怪しいと分かってから触る
+### 5.1. 何を記録するか
 
-の順がよいです。
-
-最初から一律に C-state を切る、周波数を固定する、という進め方より、**どの設定で p99 と max がどう変わったか** を見るほうが確実です。  
-効く設定もあれば、ほとんど差が出ない設定もあります。
-
-## 8. 計測と評価
-
-### 8.1. 何を記録するか
-
-最低限、次は見たいです。
+最低限、次は取りたいです。
 
 - 周期予定時刻
 - 実開始時刻
 - 実終了時刻
-- lateness
+- lateness（予定開始に対してどれだけ遅れて始まったか）
 - 実行時間
 - missed deadline 数
 - 連続 missed deadline 数
-- キュー深さ
-- ドロップ数
+- queue depth
+- drop 数
 - CPU 使用率
 - コア別の偏り
-- DPC/ISR スパイク
+- DPC / ISR スパイク
 - page fault
 - 温度 / クロック変動
 
-平均だけ見ても、本質はつかみにくいです。  
-本番で問題になるのは、たまに出る大きな遅延です。
+平均だけ見ても、本質はつかみにくいです。
+本番で困るのは、たまに出る大きな遅延スパイクです。
 
-### 8.2. 何で見るか
+### 5.2. p99 / p99.9 / max の見方
+
+p99 などの指標は、**遅い側のしっぽを見るためのもの** です。
+平均だけだと、たまに出る大きな遅延が隠れます。
+
+| 指標 | 意味 | 10,000 回測ったときのイメージ |
+| --- | --- | --- |
+| 平均 | 全体のならし値 | スパイクが埋もれやすい |
+| p50 | 真ん中の値 | ふだんの体感に近い |
+| p95 | 遅い方 5% が見え始める境目 | 遅い 500 回を除いた境目 |
+| p99 | 遅い方 1% が見え始める境目 | 遅い 100 回を除いた境目 |
+| p99.9 | 遅い方 0.1% が見え始める境目 | 遅い 10 回を除いた境目 |
+| max | 最悪値 | いちばん遅かった 1 回 |
+
+たとえば、
+
+- 平均: 0.8ms
+- p99: 1.2ms
+- p99.9: 3.5ms
+- max: 28ms
+
+なら、**普段は速いが、たまに大きなスパイクがある** ということです。
+普通の Windows では、だいたいこの **p99 から max のしっぽ** に本当の問題が出ます。
+
+### 5.3. 何で見るか
 
 道具としては、だいたい次です。
 
-- **アプリ内計測**  
-  まず自前で、period / lateness / execution time / queue depth を取る
-- **ETW / WPR / WPA**  
-  CPU、context switch、DPC/ISR、page fault を掘る
-- **LatencyMon**  
+- **アプリ内計測**
+  まず自前で `period / lateness / execution time / queue depth / drop` を取る
+- **ETW / WPR / WPA**
+  CPU、context switch、DPC / ISR、page fault を掘る
+- **LatencyMon**
   ドライバ起因の揺れのあたりを付ける
-- **温度 / クロック監視**  
+- **温度 / クロック監視**
   熱の影響を見る
 
-WPA まで行くと少し骨が折れますが、**DPC/ISR が原因なのか、単に自分の処理が重いのか** を分けるにはかなり有効です。
+```mermaid
+flowchart LR
+    App["アプリ内計測"] --> Dist["p50 / p95 / p99 / p99.9 / max"]
+    App --> Miss["miss / drop / queue depth"]
+    ETW["ETW / WPR / WPA"] --> Root["context switch / DPC / ISR / page fault"]
+    Temp["温度 / クロック監視"] --> Root
+    Dist --> Decide["改善の優先順位を決める"]
+    Miss --> Decide
+    Root --> Decide
+```
 
-### 8.3. テストの作法
+WPA まで行くと少し骨が折れますが、
+**DPC / ISR が原因なのか、単に自分の処理が重いのか** を分けるにはかなり有効です。
 
-テストは、静かなベンチだけでは足りません。  
+### 5.4. テストの作法
+
+テストは、静かなベンチだけでは足りません。
 少なくとも次を分けて見ます。
 
 - 起動直後のウォームアップ前
@@ -699,48 +605,48 @@ WPA まで行くと少し骨が折れますが、**DPC/ISR が原因なのか、
 - バッテリー駆動
 - ネットワークやディスクに負荷がある状態
 
-ベンチ環境だけで評価すると、実運用で出る問題を見落としやすくなります。  
-実際に使う条件に近づけて確認しておくと、後で慌てにくくなります。
+ベンチ環境だけで評価すると、実運用で出る問題を見落としやすくなります。
+**普通の Windows は「使われ方」に挙動が引っ張られやすい** ので、実際に使う条件へ寄せて確認するのが大事です。
 
-## 9. ざっくり使い分け
+## 6. ざっくり使い分け
 
-- **10〜20ms 級で、たまの揺れは吸収できる**  
-  → fast/slow 分離、固定長キュー、通常優先度〜やや高め、イベント駆動で十分なことが多い
+- **10〜20ms 級で、たまの揺れは吸収できる**
+  → fast / slow 分離、固定長キュー、通常優先度〜やや高め、イベント駆動で十分なことが多い
 
-- **1〜5ms 級で、継続的に間に合わせたい**  
-  → ホットパスの無割り当て化、専用スレッド、MMCSS または慎重な優先度調整、高精度 waitable timer、AC 給電、最適なパフォーマンス寄りの電源設定
+- **1〜5ms 級で、継続的に間に合わせたい**
+  → ホットパスの無割り当て化、専用スレッド、MMCSS または慎重な優先度調整、高精度 waitable timer（待機可能タイマ）、AC 給電、最適なパフォーマンス寄りの電源設定
 
-- **1ms 未満に近づき、しかも長時間・高負荷でも外したくない**  
-  → user-mode Windows 単独では厳しくなってくる。 クリティカル部分を別の場所へ逃がす設計を考える
+- **1ms 未満に近づき、しかも長時間・高負荷でも外したくない**
+  → 普通の Windows の user-mode 単独ではかなり厳しい。クリティカル部分を別の場所へ逃がす設計を考える
 
-- **GUI / ログ / 通信 / DB と全部同居**  
-  → 「全部 1 プロセス 1 ループ」で抱え込まず、責務を分離する。 後段の都合が前段の期限を壊しやすくなるため
+- **GUI / ログ / 通信 / DB と全部同居**
+  → 「全部 1 プロセス 1 ループ」で抱え込まず、責務を分離する。後段の都合が前段の期限を壊しやすいため
 
-## 10. まとめ
+## 7. まとめ
 
-押さえておきたい前提:
+押さえておきたい前提は、次の 2 つです。
 
-- Windows で目指すのは hard real-time の保証ではなく、遅延とジッタを小さくし、期限違反が起きても壊れない構成にすること
-- 一番効果が大きいのは、優先度調整よりもホットパスの整理です
+- **普通の Windows で目指すのは hard real-time の保証ではなく、soft real-time として遅延とジッタを小さくし、期限違反が起きても壊れない構成にすること**
+- **一番効果が大きいのは、優先度調整よりホットパスの整理**
 
-実装で効くこと:
+実装で効くことは、次の通りです。
 
 - fast path / slow path を分ける
-- 固定長キューとあふれたときの方針を先に決める
-- QPC で測り、event / waitable timer で待つ
+- 固定長キューと、あふれたときの方針を先に決める
+- QPC で測り、event / waitable timer（待機可能タイマ）で待つ
 - ホットパスでは割り当て、ブロッキング I/O、重いロックを避ける
 
-運用で効くこと:
+運用で効くことは、次の通りです。
 
 - AC 給電で動かす
 - 本番用の電源設定を分ける
 - 不要なバックグラウンド負荷を減らす
 - p99 / p99.9 / max と miss 回数で評価する
 
-要するに、Windows でのソフトリアルタイムは、優先度の設定だけで決まるものではありません。  
-設計、実装、計測、運用を分けて詰めていくと、かなり安定したシステムにできます。
+要するに、普通の Windows でのソフトリアルタイムは、優先度設定だけで決まるものではありません。
+**設計、実装、電源設定、計測、運用を分けて詰めると、かなり安定したシステムにできます。**
 
-## 11. 参考資料
+## 8. 参考資料
 
 - [Multimedia Class Scheduler Service](https://learn.microsoft.com/en-us/windows/win32/procthread/multimedia-class-scheduler-service)
 - [AvSetMmThreadCharacteristicsW function](https://learn.microsoft.com/en-us/windows/win32/api/avrt/nf-avrt-avsetmmthreadcharacteristicsw)
@@ -749,6 +655,7 @@ WPA まで行くと少し骨が折れますが、**DPC/ISR が原因なのか、
 - [timeBeginPeriod function](https://learn.microsoft.com/en-us/windows/win32/api/timeapi/nf-timeapi-timebeginperiod)
 - [CreateWaitableTimerExW function](https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-createwaitabletimerexw)
 - [Acquiring high-resolution time stamps](https://learn.microsoft.com/en-us/windows/win32/sysinfo/acquiring-high-resolution-time-stamps)
+- [QueryPerformanceCounter function](https://learn.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancecounter)
 - [GetSystemTimePreciseAsFileTime function](https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimepreciseasfiletime)
 - [SetProcessInformation function](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setprocessinformation)
 - [VirtualLock function](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtuallock)
@@ -756,7 +663,6 @@ WPA まで行くと少し骨が折れますが、**DPC/ISR が原因なのか、
 - [SetThreadIdealProcessor function](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreadidealprocessor)
 - [SetThreadAffinityMask function](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setthreadaffinitymask)
 - [Processor power management options](https://learn.microsoft.com/en-us/windows-hardware/customize/power-settings/configure-processor-power-management-options)
-- [Windows PCの電源モードを変更する](https://support.microsoft.com/ja-jp/windows/windows-pc%E3%81%AE%E9%9B%BB%E6%BA%90%E3%83%A2%E3%83%BC%E3%83%89%E3%82%92%E5%A4%89%E6%9B%B4%E3%81%99%E3%82%8B-c2aff038-22c9-f46d-5ca0-78696fdf2de8)
-- [Windows で PC のパフォーマンスを向上させるためのヒント](https://support.microsoft.com/ja-jp/windows/windows-%E3%81%A7-pc-%E3%81%AE%E3%83%91%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%B3%E3%82%B9%E3%82%92%E5%90%91%E4%B8%8A%E3%81%95%E3%81%9B%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AE%E3%83%92%E3%83%B3%E3%83%88-b3b3ef5b-5953-fb6a-2528-4bbed82fba96)
-- [CPU の分析 (WPA / WPT)](https://learn.microsoft.com/ja-jp/windows-hardware/test/wpt/cpu-analysis)
-- [Using the Windows Performance Toolkit (WPT) with WDF](https://learn.microsoft.com/en-us/windows-hardware/drivers/wdf/using-the-windows-performance-toolkit--wpt--with-wdf)
+- [Change the power mode for your Windows PC](https://support.microsoft.com/en-us/windows/change-the-power-mode-for-your-windows-pc-c2aff038-22c9-f46d-5ca0-78696fdf2de8)
+- [Power settings in Windows 11](https://support.microsoft.com/en-us/windows/power-settings-in-windows-11-0d6a2b6b-2e87-4611-9980-ac9ea2175734)
+- [CPU Analysis (WPA / WPT)](https://learn.microsoft.com/en-us/windows-hardware/test/wpt/cpu-analysis)
