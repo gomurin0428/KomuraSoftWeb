@@ -236,6 +236,13 @@ main {
   gap: 1rem;
 }
 
+.hero-support-note {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: var(--color-text-subtle);
+  line-height: 1.7;
+}
+
 .button--primary {
   background: linear-gradient(135deg, var(--color-accent) 0%, #8b5cf6 100%);
   color: #fff;
@@ -330,6 +337,33 @@ p + p {
 .tech-stack-section {
   margin-top: 3rem;
   text-align: center;
+}
+
+.consultation-examples {
+  margin-top: 2rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-elevated);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.consultation-examples-title {
+  margin: 0 0 0.875rem 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.consultation-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--color-text-muted);
+  line-height: 1.8;
+}
+
+.consultation-list li + li {
+  margin-top: 0.35rem;
 }
 
 .tech-stack-title {
@@ -454,6 +488,35 @@ p + p {
 
 .contact-info {
   margin-top: 2rem;
+}
+
+.contact-actions {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.contact-example-list {
+  margin: 1.25rem auto 0 auto;
+  max-width: 44rem;
+  padding-left: 1.25rem;
+  text-align: left;
+  color: var(--color-text-muted);
+  line-height: 1.8;
+}
+
+.contact-example-list li + li {
+  margin-top: 0.35rem;
+}
+
+.contact-guidance {
+  margin: 1.25rem auto 0 auto;
+  max-width: 44rem;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  line-height: 1.8;
 }
 
 .contact-email {

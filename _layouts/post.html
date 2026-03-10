@@ -253,6 +253,40 @@
       color: var(--color-accent-light);
       text-decoration: underline;
     }
+    .article-consult-cta {
+      margin: 2.5rem 0;
+      padding: 1.5rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-elevated);
+      box-shadow: var(--shadow-sm);
+    }
+    .article-consult-cta-title {
+      margin: 0 0 0.75rem 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .article-consult-cta-text {
+      margin: 0;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+    }
+    .article-consult-cta-button {
+      display: inline-block;
+      margin-top: 1rem;
+      border-radius: 999px;
+      border: 1px solid var(--color-accent);
+      padding: 0.7rem 1rem;
+      font-weight: 700;
+      color: var(--color-accent-light);
+      text-decoration: none;
+    }
+    .article-consult-cta-button:hover,
+    .article-consult-cta-button:focus-visible {
+      background: var(--color-accent);
+      color: #fff;
+    }
     body.toc-drawer-open {
       overflow: hidden;
     }
@@ -367,6 +401,8 @@
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     mermaid.initialize({ startOnLoad: false, theme: 'default' });
+
+    const inquiryUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform';
 
     const normalizeText = (value) => value.replace(/\s+/g, ' ').trim();
 
@@ -525,6 +561,38 @@
       sidebarRoot.replaceChildren(panel);
     };
 
+    const insertArticleConsultCta = () => {
+      const blogContent = document.querySelector('.blog-content');
+      if (!blogContent || blogContent.querySelector('.article-consult-cta')) {
+        return;
+      }
+
+      const cta = document.createElement('section');
+      cta.className = 'article-consult-cta';
+      cta.innerHTML = `
+        <h2 class="article-consult-cta-title">この記事のテーマで相談できます</h2>
+        <p class="article-consult-cta-text">この記事で扱ったテーマに近い課題がある場合、技術相談も受け付けています。既存システムの改修方針の整理、設計レビュー、不具合の切り分けなど、まずは状況をお知らせください。</p>
+        <a class="article-consult-cta-button" href="${inquiryUrl}" target="_blank" rel="noopener">この記事のテーマで相談する</a>
+      `;
+
+      const referenceHeading = Array.from(
+        blogContent.querySelectorAll('h2, h3')
+      ).find((heading) => normalizeText(heading.textContent) === '参考資料');
+
+      if (referenceHeading) {
+        blogContent.insertBefore(cta, referenceHeading);
+        return;
+      }
+
+      const backLink = document.querySelector('.back-link');
+      if (backLink && backLink.parentElement === blogContent.parentElement) {
+        blogContent.insertAdjacentElement('afterend', cta);
+        return;
+      }
+
+      blogContent.append(cta);
+    };
+
     const setupMobileToc = (headings) => {
       const trigger = document.querySelector('#mobile-toc-trigger');
       const backdrop = document.querySelector('#mobile-toc-backdrop');
@@ -589,6 +657,8 @@
       createSidebarToc(headings);
       setupMobileToc(headings);
     }
+
+    insertArticleConsultCta();
 
     const mermaidCandidates = document.querySelectorAll(
       '.language-mermaid, pre code[data-lang="mermaid"], pre code.lang-mermaid, pre code.language-mermaid'

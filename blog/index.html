@@ -32,6 +32,33 @@ layout: null
       padding: 0;
       margin: 2rem 0 0 0;
     }
+    .blog-cta {
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-elevated);
+      box-shadow: var(--shadow-sm);
+    }
+    .blog-cta-text {
+      margin: 0;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+    }
+    .blog-cta-button {
+      display: inline-block;
+      margin-top: 1rem;
+      border-radius: 999px;
+      border: 1px solid var(--color-accent);
+      padding: 0.65rem 1rem;
+      font-weight: 700;
+      color: var(--color-accent-light);
+      text-decoration: none;
+    }
+    .blog-cta-button:hover {
+      background: var(--color-accent);
+      color: #fff;
+    }
     .blog-list-item {
       padding: 1.5rem;
       margin-bottom: 1rem;
@@ -89,6 +116,10 @@ layout: null
       <div class="blog-container">
         <h1 class="section-title">技術ブログ</h1>
         <p class="section-description">Windows開発、C#、.NET、その他技術的なトピックについて発信します。</p>
+        <div class="blog-cta">
+          <p class="blog-cta-text">記事で扱っているテーマに関する技術相談も受け付けています。COM / ActiveX、C# / .NET、WPF / WinForms、Windows アプリの改修や設計レビュー、不具合調査など、お困りごとがあればお問い合わせください。</p>
+          <a class="blog-cta-button" href="https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform" target="_blank" rel="noopener">技術相談をする</a>
+        </div>
         
         {% if site.posts.size > 0 %}
         <ul class="blog-list">
