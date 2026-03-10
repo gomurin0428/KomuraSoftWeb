@@ -336,7 +336,7 @@
           <a class="nav-link" href="/">ホーム</a>
           <a class="nav-link" href="/blog/">ブログ</a>
         </nav>
-        <a class="pill-contact" href="https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform" target="_blank" rel="noopener">お問い合わせ</a>
+        <a class="pill-contact" href="https://docs.google.com/forms/d/e/1FAIpQLSfL2fpq-Jdhi9CxYJJTdIiks0lE79EnlmQqUEFOLkI2s5_96g/viewform?usp=pp_url&entry.1371322625=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87" target="_blank" rel="noopener">お問い合わせ</a>
       </div>
     </header>
     <main>
@@ -398,11 +398,13 @@
     </div>
     <div id="mobile-toc-body" class="mobile-toc-body"></div>
   </section>
+  {% capture article_reference %}{{ page.title }} | {{ page.url | absolute_url }}{% endcapture %}
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     mermaid.initialize({ startOnLoad: false, theme: 'default' });
 
-    const inquiryUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform';
+    const technicalConsultationUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfL2fpq-Jdhi9CxYJJTdIiks0lE79EnlmQqUEFOLkI2s5_96g/viewform?usp=pp_url&entry.1371322625=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87';
+    const articleConsultationUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfL2fpq-Jdhi9CxYJJTdIiks0lE79EnlmQqUEFOLkI2s5_96g/viewform?usp=pp_url&entry.1371322625=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87&entry.1581236537={{ article_reference | uri_escape }}';
 
     const normalizeText = (value) => value.replace(/\s+/g, ' ').trim();
 
@@ -572,7 +574,7 @@
       cta.innerHTML = `
         <h2 class="article-consult-cta-title">この記事のテーマで相談できます</h2>
         <p class="article-consult-cta-text">この記事で扱ったテーマに近い課題がある場合、技術相談も受け付けています。既存システムの改修方針の整理、設計レビュー、不具合の切り分けなど、まずは状況をお知らせください。</p>
-        <a class="article-consult-cta-button" href="${inquiryUrl}" target="_blank" rel="noopener">この記事のテーマで相談する</a>
+        <a class="article-consult-cta-button" href="${articleConsultationUrl}" target="_blank" rel="noopener">この記事のテーマで相談する</a>
       `;
 
       const referenceHeading = Array.from(
