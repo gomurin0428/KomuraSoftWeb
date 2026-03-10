@@ -54,6 +54,11 @@
       margin-top: 1.5rem;
       margin-bottom: 0.75rem;
     }
+    .blog-content h2[id],
+    .blog-content h3[id],
+    .blog-content h4[id] {
+      scroll-margin-top: 6rem;
+    }
     .blog-content p {
       margin-bottom: 1rem;
     }
@@ -107,6 +112,15 @@
     }
     .blog-content li {
       margin-bottom: 0.5rem;
+    }
+    .blog-content .toc-link {
+      color: inherit;
+      text-decoration: none;
+    }
+    .blog-content .toc-link:hover,
+    .blog-content .toc-link:focus-visible {
+      color: var(--color-accent-light);
+      text-decoration: underline;
     }
     .back-link {
       display: inline-block;
@@ -164,6 +178,92 @@
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     mermaid.initialize({ startOnLoad: false, theme: 'default' });
+
+    const normalizeText = (value) => value.replace(/\s+/g, ' ').trim();
+
+    const findTocList = () => {
+      const tocHeading = Array.from(
+        document.querySelectorAll('.blog-content h2, .blog-content h3')
+      ).find((heading) => normalizeText(heading.textContent) === '目次');
+
+      if (!tocHeading) {
+        return { tocHeading: null, tocList: null };
+      }
+
+      let tocList = tocHeading.nextElementSibling;
+      while (tocList && tocList.tagName !== 'OL' && tocList.tagName !== 'UL') {
+        tocList = tocList.nextElementSibling;
+      }
+
+      return { tocHeading, tocList };
+    };
+
+    const getInlineText = (listItem) => {
+      let text = '';
+      for (const node of listItem.childNodes) {
+        if (node.nodeType === Node.ELEMENT_NODE && (node.tagName === 'UL' || node.tagName === 'OL')) {
+          break;
+        }
+
+        text += node.textContent ?? '';
+      }
+
+      return normalizeText(text);
+    };
+
+    const buildHeadingMap = (tocHeading) => {
+      const headingMap = new Map();
+      let isAfterToc = false;
+
+      for (const heading of document.querySelectorAll('.blog-content h2[id], .blog-content h3[id], .blog-content h4[id]')) {
+        if (heading === tocHeading) {
+          isAfterToc = true;
+          continue;
+        }
+
+        if (!isAfterToc) {
+          continue;
+        }
+
+        headingMap.set(normalizeText(heading.textContent), heading.id);
+      }
+
+      return headingMap;
+    };
+
+    const linkTocItems = (listElement, headingMap) => {
+      for (const listItem of listElement.children) {
+        if (listItem.tagName !== 'LI') {
+          continue;
+        }
+
+        const targetId = headingMap.get(getInlineText(listItem));
+        const nestedList = Array.from(listItem.children).find(
+          (child) => child.tagName === 'UL' || child.tagName === 'OL'
+        );
+
+        if (targetId) {
+          const link = document.createElement('a');
+          link.className = 'toc-link';
+          link.href = `#${targetId}`;
+
+          while (listItem.firstChild && listItem.firstChild !== nestedList) {
+            link.append(listItem.firstChild);
+          }
+
+          listItem.insertBefore(link, nestedList);
+        }
+
+        if (nestedList) {
+          linkTocItems(nestedList, headingMap);
+        }
+      }
+    };
+
+    const { tocHeading, tocList } = findTocList();
+    if (tocHeading && tocList) {
+      linkTocItems(tocList, buildHeadingMap(tocHeading));
+    }
 
     const mermaidCandidates = document.querySelectorAll(
       '.language-mermaid, pre code[data-lang="mermaid"], pre code.lang-mermaid, pre code.language-mermaid'
