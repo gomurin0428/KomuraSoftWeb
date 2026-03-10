@@ -20,9 +20,20 @@
   <link rel="stylesheet" href="/komura_soft_single_page.css">
   <style>
     .blog-container {
-      max-width: 48rem;
+      max-width: 72rem;
       margin: 0 auto;
       padding: 2rem 1rem;
+    }
+    .article-layout {
+      display: block;
+    }
+    .article-sidebar {
+      display: none;
+    }
+    .article-main {
+      min-width: 0;
+      max-width: 48rem;
+      margin: 0 auto;
     }
     .blog-header {
       margin-bottom: 2rem;
@@ -122,10 +133,72 @@
       color: var(--color-accent-light);
       text-decoration: underline;
     }
+    .sidebar-toc {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-elevated);
+      box-shadow: var(--shadow-sm);
+      padding: 1rem;
+    }
+    .sidebar-toc-title {
+      margin: 0 0 0.875rem 0;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      letter-spacing: 0.02em;
+    }
+    .sidebar-toc-list,
+    .sidebar-toc-list ol,
+    .sidebar-toc-list ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .sidebar-toc-list ol,
+    .sidebar-toc-list ul {
+      margin-top: 0.25rem;
+      padding-left: 0.875rem;
+      border-left: 1px solid var(--color-border);
+    }
+    .sidebar-toc-list li {
+      margin-bottom: 0.25rem;
+    }
+    .sidebar-toc-list a {
+      display: block;
+      padding: 0.2rem 0;
+      color: var(--color-text-muted);
+      text-decoration: none;
+      line-height: 1.5;
+      font-size: 0.92rem;
+    }
+    .sidebar-toc-list a:hover,
+    .sidebar-toc-list a:focus-visible {
+      color: var(--color-accent-light);
+      text-decoration: underline;
+    }
     .back-link {
       display: inline-block;
       margin-top: 2rem;
       color: var(--color-accent-light);
+    }
+    @media (min-width: 1100px) {
+      .article-layout {
+        display: grid;
+        grid-template-columns: minmax(15rem, 18rem) minmax(0, 48rem);
+        gap: 2rem;
+        align-items: start;
+      }
+      .article-sidebar {
+        display: block;
+        position: sticky;
+        top: 5.5rem;
+      }
+      .article-main {
+        margin: 0;
+      }
+      .blog-content .is-inline-toc {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -146,22 +219,29 @@
     </header>
     <main>
       <article class="blog-container">
-        <header class="blog-header">
-          <h1 class="blog-title">{{ page.title }}</h1>
-          <div class="blog-meta">
-            <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y年%m月%d日 %H:%M" }}</time>
-            {% if page.author %}
-            · <span>{{ page.author }}</span>
-            {% endif %}
-            {% if page.tags %}
-            · {% for tag in page.tags %}<span>{{ tag }}</span>{% unless forloop.last %}, {% endunless %}{% endfor %}
-            {% endif %}
+        <div class="article-layout">
+          <aside class="article-sidebar" aria-label="記事目次">
+            <nav id="sidebar-toc-root"></nav>
+          </aside>
+          <div class="article-main">
+            <header class="blog-header">
+              <h1 class="blog-title">{{ page.title }}</h1>
+              <div class="blog-meta">
+                <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y年%m月%d日 %H:%M" }}</time>
+                {% if page.author %}
+                · <span>{{ page.author }}</span>
+                {% endif %}
+                {% if page.tags %}
+                · {% for tag in page.tags %}<span>{{ tag }}</span>{% unless forloop.last %}, {% endunless %}{% endfor %}
+                {% endif %}
+              </div>
+            </header>
+            <div class="blog-content">
+              {{ content }}
+            </div>
+            <a href="/blog/" class="back-link">← ブログ一覧に戻る</a>
           </div>
-        </header>
-        <div class="blog-content">
-          {{ content }}
         </div>
-        <a href="/blog/" class="back-link">← ブログ一覧に戻る</a>
       </article>
     </main>
     <footer class="site-footer">
@@ -260,9 +340,33 @@
       }
     };
 
+    const createSidebarToc = (tocList) => {
+      const sidebarRoot = document.querySelector('#sidebar-toc-root');
+      if (!sidebarRoot) {
+        return;
+      }
+
+      const panel = document.createElement('div');
+      panel.className = 'sidebar-toc';
+
+      const title = document.createElement('p');
+      title.className = 'sidebar-toc-title';
+      title.textContent = '目次';
+
+      const list = tocList.cloneNode(true);
+      list.classList.add('sidebar-toc-list');
+
+      panel.append(title, list);
+      sidebarRoot.replaceChildren(panel);
+    };
+
     const { tocHeading, tocList } = findTocList();
     if (tocHeading && tocList) {
-      linkTocItems(tocList, buildHeadingMap(tocHeading));
+      const headingMap = buildHeadingMap(tocHeading);
+      linkTocItems(tocList, headingMap);
+      tocHeading.classList.add('is-inline-toc');
+      tocList.classList.add('is-inline-toc');
+      createSidebarToc(tocList);
     }
 
     const mermaidCandidates = document.querySelectorAll(
