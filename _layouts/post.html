@@ -30,6 +30,81 @@
     .article-sidebar {
       display: none;
     }
+    .mobile-toc-trigger {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 12;
+      display: none;
+      align-items: center;
+      gap: 0.4rem;
+      border: 1px solid var(--color-accent);
+      border-radius: 999px;
+      background: var(--color-surface-elevated);
+      color: var(--color-accent-light);
+      box-shadow: var(--shadow-sm);
+      padding: 0.7rem 1rem;
+      font: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .mobile-toc-trigger:hover,
+    .mobile-toc-trigger:focus-visible {
+      background: #fff;
+    }
+    .mobile-toc-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 13;
+      display: none;
+      background: rgba(20, 32, 51, 0.42);
+      backdrop-filter: blur(6px);
+    }
+    .mobile-toc-panel {
+      position: fixed;
+      inset: auto 0 0 0;
+      z-index: 14;
+      display: none;
+      max-height: min(75vh, 42rem);
+      background: var(--color-surface-elevated);
+      border-top-left-radius: var(--radius-lg);
+      border-top-right-radius: var(--radius-lg);
+      box-shadow: 0 -14px 34px rgba(20, 32, 51, 0.18);
+      padding: 1rem 1rem 1.25rem 1rem;
+    }
+    .mobile-toc-panel.is-open,
+    .mobile-toc-backdrop.is-open {
+      display: block;
+    }
+    .mobile-toc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .mobile-toc-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .mobile-toc-close {
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--color-text-muted);
+      padding: 0.35rem 0.8rem;
+      font: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .mobile-toc-body {
+      overflow-y: auto;
+      max-height: calc(min(75vh, 42rem) - 4.5rem);
+      padding-right: 0.25rem;
+    }
     .article-main {
       min-width: 0;
       max-width: 48rem;
@@ -178,10 +253,21 @@
       color: var(--color-accent-light);
       text-decoration: underline;
     }
+    body.toc-drawer-open {
+      overflow: hidden;
+    }
     .back-link {
       display: inline-block;
       margin-top: 2rem;
       color: var(--color-accent-light);
+    }
+    @media (max-width: 1099px) {
+      .mobile-toc-trigger.is-visible {
+        display: inline-flex;
+      }
+      .blog-content .is-inline-toc {
+        display: none;
+      }
     }
     @media (min-width: 1100px) {
       .article-layout {
@@ -257,6 +343,27 @@
       </div>
     </footer>
   </div>
+  <button
+    id="mobile-toc-trigger"
+    class="mobile-toc-trigger"
+    type="button"
+    aria-controls="mobile-toc-panel"
+    aria-expanded="false">
+    目次
+  </button>
+  <div id="mobile-toc-backdrop" class="mobile-toc-backdrop" hidden></div>
+  <section
+    id="mobile-toc-panel"
+    class="mobile-toc-panel"
+    aria-labelledby="mobile-toc-title"
+    aria-hidden="true"
+    hidden>
+    <div class="mobile-toc-header">
+      <p id="mobile-toc-title" class="mobile-toc-title">目次</p>
+      <button id="mobile-toc-close" class="mobile-toc-close" type="button">閉じる</button>
+    </div>
+    <div id="mobile-toc-body" class="mobile-toc-body"></div>
+  </section>
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     mermaid.initialize({ startOnLoad: false, theme: 'default' });
@@ -418,13 +525,69 @@
       sidebarRoot.replaceChildren(panel);
     };
 
+    const setupMobileToc = (headings) => {
+      const trigger = document.querySelector('#mobile-toc-trigger');
+      const backdrop = document.querySelector('#mobile-toc-backdrop');
+      const panel = document.querySelector('#mobile-toc-panel');
+      const body = document.querySelector('#mobile-toc-body');
+      const closeButton = document.querySelector('#mobile-toc-close');
+
+      if (!trigger || !backdrop || !panel || !body || !closeButton || headings.length === 0) {
+        return;
+      }
+
+      body.replaceChildren(buildSidebarList(headings));
+      trigger.classList.add('is-visible');
+
+      const openDrawer = () => {
+        document.body.classList.add('toc-drawer-open');
+        trigger.setAttribute('aria-expanded', 'true');
+        backdrop.hidden = false;
+        panel.hidden = false;
+        backdrop.classList.add('is-open');
+        panel.classList.add('is-open');
+        panel.setAttribute('aria-hidden', 'false');
+      };
+
+      const closeDrawer = () => {
+        document.body.classList.remove('toc-drawer-open');
+        trigger.setAttribute('aria-expanded', 'false');
+        backdrop.classList.remove('is-open');
+        panel.classList.remove('is-open');
+        backdrop.hidden = true;
+        panel.hidden = true;
+        panel.setAttribute('aria-hidden', 'true');
+      };
+
+      trigger.addEventListener('click', openDrawer);
+      closeButton.addEventListener('click', closeDrawer);
+      backdrop.addEventListener('click', closeDrawer);
+      body.addEventListener('click', (event) => {
+        if (event.target instanceof HTMLAnchorElement) {
+          closeDrawer();
+        }
+      });
+      window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeDrawer();
+        }
+      });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 1100) {
+          closeDrawer();
+        }
+      });
+    };
+
     const { tocHeading, tocList } = findTocList();
     if (tocHeading && tocList) {
       const headingMap = buildHeadingMap(tocHeading);
+      const headings = collectArticleHeadings(tocHeading);
       linkTocItems(tocList, headingMap);
       tocHeading.classList.add('is-inline-toc');
       tocList.classList.add('is-inline-toc');
-      createSidebarToc(collectArticleHeadings(tocHeading));
+      createSidebarToc(headings);
+      setupMobileToc(headings);
     }
 
     const mermaidCandidates = document.querySelectorAll(
