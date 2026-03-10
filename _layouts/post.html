@@ -139,6 +139,8 @@
       background: var(--color-surface-elevated);
       box-shadow: var(--shadow-sm);
       padding: 1rem;
+      max-height: calc(100vh - 7rem);
+      overflow-y: auto;
     }
     .sidebar-toc-title {
       margin: 0 0 0.875rem 0;
@@ -340,9 +342,66 @@
       }
     };
 
-    const createSidebarToc = (tocList) => {
+    const collectArticleHeadings = (tocHeading) => {
+      const headings = [];
+      let isAfterToc = false;
+
+      for (const heading of document.querySelectorAll('.blog-content h2[id], .blog-content h3[id], .blog-content h4[id]')) {
+        if (heading === tocHeading) {
+          isAfterToc = true;
+          continue;
+        }
+
+        if (!isAfterToc) {
+          continue;
+        }
+
+        headings.push({
+          id: heading.id,
+          text: normalizeText(heading.textContent),
+          level: Number.parseInt(heading.tagName.slice(1), 10)
+        });
+      }
+
+      return headings;
+    };
+
+    const buildSidebarList = (headings) => {
+      const rootList = document.createElement('ul');
+      rootList.className = 'sidebar-toc-list';
+
+      const stack = [{ level: 1, list: rootList }];
+
+      for (const heading of headings) {
+        while (stack.length > 1 && heading.level <= stack[stack.length - 1].level) {
+          stack.pop();
+        }
+
+        const currentList = stack[stack.length - 1].list;
+        const listItem = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.text;
+        listItem.append(link);
+        currentList.append(listItem);
+
+        const childList = document.createElement('ul');
+        listItem.append(childList);
+        stack.push({ level: heading.level, list: childList });
+      }
+
+      for (const list of rootList.querySelectorAll('ul')) {
+        if (list.children.length === 0) {
+          list.remove();
+        }
+      }
+
+      return rootList;
+    };
+
+    const createSidebarToc = (headings) => {
       const sidebarRoot = document.querySelector('#sidebar-toc-root');
-      if (!sidebarRoot) {
+      if (!sidebarRoot || headings.length === 0) {
         return;
       }
 
@@ -353,8 +412,7 @@
       title.className = 'sidebar-toc-title';
       title.textContent = '目次';
 
-      const list = tocList.cloneNode(true);
-      list.classList.add('sidebar-toc-list');
+      const list = buildSidebarList(headings);
 
       panel.append(title, list);
       sidebarRoot.replaceChildren(panel);
@@ -366,7 +424,7 @@
       linkTocItems(tocList, headingMap);
       tocHeading.classList.add('is-inline-toc');
       tocList.classList.add('is-inline-toc');
-      createSidebarToc(tocList);
+      createSidebarToc(collectArticleHeadings(tocHeading));
     }
 
     const mermaidCandidates = document.querySelectorAll(
