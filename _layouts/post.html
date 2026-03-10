@@ -404,7 +404,8 @@
     mermaid.initialize({ startOnLoad: false, theme: 'default' });
 
     const technicalConsultationUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfywSpD36AGXdQ70iNTNUgmZl6aFa7fTUT-PcyS9DY185pejw/viewform?usp=pp_url&entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87';
-    const articleConsultationUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfywSpD36AGXdQ70iNTNUgmZl6aFa7fTUT-PcyS9DY185pejw/viewform?usp=pp_url&entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87&entry.1150553057={{ article_reference | uri_escape }}';
+    const articleReference = {{ article_reference | jsonify }};
+    const articleConsultationUrl = `https://docs.google.com/forms/d/e/1FAIpQLSfywSpD36AGXdQ70iNTNUgmZl6aFa7fTUT-PcyS9DY185pejw/viewform?usp=pp_url&entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87&entry.1150553057=${encodeURIComponent(articleReference)}`;
 
     const normalizeText = (value) => value.replace(/\s+/g, ' ').trim();
 
