@@ -8,7 +8,7 @@
   </url>
   <url>
     <loc>https://comcomponent.com/blog/</loc>
-    <lastmod>2026-03-09</lastmod>
+    <lastmod>2026-03-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
@@ -75,6 +75,12 @@
   <url>
     <loc>https://comcomponent.com/blog/2026/03/09/002-media-foundation-why-it-feels-like-com/</loc>
     <lastmod>2026-03-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://comcomponent.com/blog/2026/03/10/000-filesystemwatcher-safe-basics/</loc>
+    <lastmod>2026-03-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.70</priority>
   </url>
