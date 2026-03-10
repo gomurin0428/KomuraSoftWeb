@@ -28,11 +28,25 @@ function buildKomuraSoftInquiryForm() {
     other: createOtherSection_(form)
   };
   setInquiryTypeChoices_(common.inquiryType, sections);
+  setSectionSubmitFlow_(sections);
 
   Logger.log('Form edit URL: ' + form.getEditUrl());
   Logger.log('Form published URL: ' + form.getPublishedUrl());
 
-  const links = createDefaultPrefilledUrls_(form);
+  const links = createDefaultPrefilledUrls_(form, common.inquiryType, sections);
+  Logger.log('Generic URL: ' + links.generic);
+  Logger.log('Technical consultation URL: ' + links.technicalConsultation);
+  Logger.log('Article template URL: ' + links.articleTemplate);
+}
+
+function logExistingFormUrls() {
+  const form = openConfiguredForm_();
+  const inquiryType = findItemByTitle_(form, 'お問い合わせ種別').asMultipleChoiceItem();
+  const sections = findSections_(form);
+  const links = createDefaultPrefilledUrls_(form, inquiryType, sections);
+
+  Logger.log('Form edit URL: ' + form.getEditUrl());
+  Logger.log('Form published URL: ' + form.getPublishedUrl());
   Logger.log('Generic URL: ' + links.generic);
   Logger.log('Technical consultation URL: ' + links.technicalConsultation);
   Logger.log('Article template URL: ' + links.articleTemplate);
@@ -40,11 +54,11 @@ function buildKomuraSoftInquiryForm() {
 
 function logArticlePrefilledUrl() {
   const form = openConfiguredForm_();
+  const inquiryType = findItemByTitle_(form, 'お問い合わせ種別').asMultipleChoiceItem();
+  const sections = findSections_(form);
   const articleReference = 'REPLACE_WITH_ARTICLE_TITLE_OR_URL';
-  const url = createPrefilledUrl_(form, {
-    'お問い合わせ種別': '技術相談',
-    '参考にした記事 / ページ': articleReference
-  });
+  const links = createDefaultPrefilledUrls_(form, inquiryType, sections);
+  const url = links.articleTemplate.replace('REPLACE_WITH_ARTICLE_TITLE_OR_URL', encodeURIComponent(articleReference));
 
   Logger.log(url);
 }
@@ -130,6 +144,12 @@ function setInquiryTypeChoices_(inquiryType, sections) {
     inquiryType.createChoice('既存システムの改修・保守', sections.maintenance),
     inquiryType.createChoice('その他', sections.other)
   ]);
+}
+
+function setSectionSubmitFlow_(sections) {
+  sections.development.setGoToPage(FormApp.PageNavigationType.SUBMIT);
+  sections.maintenance.setGoToPage(FormApp.PageNavigationType.SUBMIT);
+  sections.other.setGoToPage(FormApp.PageNavigationType.SUBMIT);
 }
 
 function createTechnicalConsultingSection_(form) {
@@ -275,22 +295,68 @@ function createOtherSection_(form) {
   return section;
 }
 
-function createDefaultPrefilledUrls_(form) {
+function createDefaultPrefilledUrls_(form, inquiryType, sections) {
+  inquiryType.setChoiceValues([
+    '開発依頼',
+    '技術相談',
+    '既存システムの改修・保守',
+    'その他'
+  ]);
+
+  try {
+    return {
+      generic: createGenericUrl_(form),
+      technicalConsultation: createPrefilledUrl_(form, {
+        'お問い合わせ種別': '技術相談'
+      }),
+      articleTemplate: createPrefilledUrl_(form, {
+        'お問い合わせ種別': '技術相談',
+        '参考にした記事 / ページ': 'REPLACE_WITH_ARTICLE_TITLE_OR_URL'
+      })
+    };
+  } finally {
+    setInquiryTypeChoices_(inquiryType, sections);
+    setSectionSubmitFlow_(sections);
+  }
+}
+
+function createGenericUrl_(form) {
+  return form.getPublishedUrl() + '?usp=pp_url';
+}
+
+function findItemByTitle_(form, title) {
+  const item = form.getItems().find(function (candidate) {
+    return candidate.getTitle() === title;
+  });
+
+  if (!item) {
+    throw new Error('指定したタイトルの質問が見つかりません: ' + title);
+  }
+
+  return item;
+}
+
+function findSections_(form) {
+  const pageBreakItems = form.getItems(FormApp.ItemType.PAGE_BREAK).map(function (item) {
+    return item.asPageBreakItem();
+  });
+
+  const byTitle = {};
+  pageBreakItems.forEach(function (item) {
+    byTitle[item.getTitle()] = item;
+  });
+
   return {
-    generic: createPrefilledUrl_(form, {}),
-    technicalConsultation: createPrefilledUrl_(form, {
-      'お問い合わせ種別': '技術相談'
-    }),
-    articleTemplate: createPrefilledUrl_(form, {
-      'お問い合わせ種別': '技術相談',
-      '参考にした記事 / ページ': 'REPLACE_WITH_ARTICLE_TITLE_OR_URL'
-    })
+    technical: byTitle[SECTION_TITLES.technical],
+    development: byTitle[SECTION_TITLES.development],
+    maintenance: byTitle[SECTION_TITLES.maintenance],
+    other: byTitle[SECTION_TITLES.other]
   };
 }
 
 function createPrefilledUrl_(form, valuesByTitle) {
+  const response = form.createResponse();
   const items = form.getItems();
-  const params = ['usp=pp_url'];
 
   Object.keys(valuesByTitle).forEach(function (title) {
     const item = items.find(function (candidate) {
@@ -301,18 +367,24 @@ function createPrefilledUrl_(form, valuesByTitle) {
       throw new Error('指定したタイトルの質問が見つかりません: ' + title);
     }
 
-    const entryName = 'entry.' + item.getId();
     const value = valuesByTitle[title];
-
-    if (Array.isArray(value)) {
-      value.forEach(function (singleValue) {
-        params.push(entryName + '=' + encodeURIComponent(String(singleValue)));
-      });
-      return;
-    }
-
-    params.push(entryName + '=' + encodeURIComponent(String(value)));
+    response.withItemResponse(createItemResponse_(item, value));
   });
 
-  return form.getPublishedUrl().split('?')[0] + '?' + params.join('&');
+  return response.toPrefilledUrl();
+}
+
+function createItemResponse_(item, value) {
+  switch (item.getType()) {
+    case FormApp.ItemType.TEXT:
+      return item.asTextItem().createResponse(String(value));
+    case FormApp.ItemType.PARAGRAPH_TEXT:
+      return item.asParagraphTextItem().createResponse(String(value));
+    case FormApp.ItemType.MULTIPLE_CHOICE:
+      return item.asMultipleChoiceItem().createResponse(String(value));
+    case FormApp.ItemType.CHECKBOX:
+      return item.asCheckboxItem().createResponse(Array.isArray(value) ? value : [String(value)]);
+    default:
+      throw new Error('プリフィル未対応の質問種別です: ' + item.getType());
+  }
 }
