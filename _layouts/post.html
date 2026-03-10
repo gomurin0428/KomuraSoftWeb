@@ -261,6 +261,35 @@
       background: var(--color-surface-elevated);
       box-shadow: var(--shadow-sm);
     }
+    .article-github-links {
+      margin: 2.5rem 0 0 0;
+      padding: 1.25rem 1.5rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-elevated);
+      box-shadow: var(--shadow-sm);
+    }
+    .article-github-links-title {
+      margin: 0 0 0.75rem 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .article-github-links-text {
+      margin: 0;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+    }
+    .article-github-links-text + .article-github-links-text {
+      margin-top: 0.75rem;
+    }
+    .article-github-links a {
+      color: var(--color-accent-light);
+    }
+    .article-github-links a:hover,
+    .article-github-links a:focus-visible {
+      color: var(--color-accent);
+    }
     .article-consult-cta-title {
       margin: 0 0 0.75rem 0;
       font-size: 1.1rem;
@@ -361,6 +390,21 @@
             <div class="blog-content">
               {{ content }}
             </div>
+            <section class="article-github-links" aria-label="GitHub links">
+              <h2 class="article-github-links-title">Related GitHub Projects</h2>
+              <p class="article-github-links-text">
+                この記事の著者 Go Komura の GitHub アカウントは
+                <a href="https://github.com/gomurin0428" target="_blank" rel="noopener">gomurin0428</a>
+                です。
+              </p>
+              <p class="article-github-links-text">
+                関連する公開リポジトリとして
+                <a href="https://github.com/gomurin0428/COM_BLAS" target="_blank" rel="noopener">COM_BLAS</a>
+                と
+                <a href="https://github.com/LongTail-Software/COM_BigDecimal" target="_blank" rel="noopener">COM_BigDecimal</a>
+                があります。
+              </p>
+            </section>
             <a href="/blog/" class="back-link">← ブログ一覧に戻る</a>
           </div>
         </div>
