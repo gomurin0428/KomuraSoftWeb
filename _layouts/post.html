@@ -301,6 +301,11 @@
       color: var(--color-text-muted);
       line-height: 1.8;
     }
+    .article-consult-cta-note {
+      margin: 0.9rem 0 0 0;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+    }
     .article-consult-cta-button {
       display: inline-block;
       margin-top: 1rem;
@@ -619,6 +624,7 @@
       cta.innerHTML = `
         <h2 class="article-consult-cta-title">この記事のテーマで相談できます</h2>
         <p class="article-consult-cta-text">この記事で扱ったテーマに近い課題がある場合、技術相談も受け付けています。既存システムの改修方針の整理、設計レビュー、不具合の切り分けなど、まずは状況をお知らせください。</p>
+        <p class="article-consult-cta-note">Windows / COM 関係のトラブル調査や設計相談も対応しています。困っている場合はお問い合わせからご相談ください。</p>
         <a class="article-consult-cta-button" href="${articleConsultationUrl}" target="_blank" rel="noopener">この記事のテーマで相談する</a>
       `;
 
