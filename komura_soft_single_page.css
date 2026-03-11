@@ -397,6 +397,52 @@ p + p {
   color: var(--color-accent-light);
 }
 
+/* 技術事例 */
+.case-studies-card {
+  border-radius: calc(var(--radius-lg) + 0.5rem);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.case-studies-note {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--color-text-subtle);
+  line-height: 1.7;
+}
+
+.case-study-list {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.case-study-item {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-elevated);
+  padding: 1.5rem;
+}
+
+.case-study-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.case-study-body {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  line-height: 1.8;
+}
+
+.case-studies-actions {
+  margin-top: 2rem;
+}
+
 /* 強み */
 .strength-card {
   border-radius: calc(var(--radius-lg) + 0.5rem);
@@ -697,6 +743,10 @@ p + p {
   }
   
   .contact-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .case-studies-card {
     padding: 2rem 1.5rem;
   }
   

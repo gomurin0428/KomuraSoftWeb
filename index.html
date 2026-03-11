@@ -102,7 +102,6 @@
         </a>
         <nav class="site-nav" aria-label="主要ナビゲーション" data-i18n-aria-label="navAriaLabel">
           <a class="nav-link" href="#service" data-i18n="navService">サービス</a>
-          <a class="nav-link" href="#portfolio" data-i18n="navPortfolio">取引実績</a>
           <a class="nav-link" href="#company" data-i18n="navCompany">会社情報</a>
           <a class="nav-link" href="#profile" data-i18n="navProfile">代表略歴</a>
           <a class="nav-link" href="/blog/" data-i18n="navBlog">ブログ</a>
@@ -147,7 +146,7 @@
           <div class="services-card">
             <div class="services-card-title" data-i18n="serviceCard3Title">技術コンサルティング</div>
             <div class="services-card-body" data-i18n="serviceCard3Body">
-              技術選定、アーキテクチャ設計、コードレビューに加え、既存システムの改修方針整理、COM / ActiveX の保守・移行、32bit / 64bit の相互運用、不具合調査などの技術相談に対応します。
+              技術選定、アーキテクチャ設計、コードレビューに加え、既存システムの改修方針整理、COM / ActiveX の保守・移行、32bit / 64bit の相互運用、不具合調査、長期稼働時障害の切り分け、ログ設計、異常系テスト基盤の整備などの技術相談に対応します。
             </div>
           </div>
         </div>
@@ -157,9 +156,9 @@
             <li data-i18n="consultationExample1">COM / ActiveX / OCX の保守・移行</li>
             <li data-i18n="consultationExample2">C# / .NET / WPF / WinForms の設計レビュー</li>
             <li data-i18n="consultationExample3">32bit / 64bit の相互運用や C++/CLI の整理</li>
-            <li data-i18n="consultationExample4">ハング、デッドロック、性能問題の切り分け</li>
-            <li data-i18n="consultationExample5">既存 Windows アプリの改修方針の整理</li>
-            <li data-i18n="consultationExample6">受託開発に入る前の技術的な壁打ち</li>
+            <li data-i18n="consultationExample4">まれに発生する通信遅延・停止の原因調査</li>
+            <li data-i18n="consultationExample5">長期稼働後に発生するクラッシュや不安定化の調査</li>
+            <li data-i18n="consultationExample6">メモリリーク / ハンドルリークを見据えたログ設計・異常系テスト基盤の整備</li>
           </ul>
         </div>
         <div class="tech-stack-section">
@@ -176,6 +175,30 @@
             <span class="tech-tag">ActiveX</span>
             <span class="tech-tag">Media Foundation</span>
             <span class="tech-tag">UML</span>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="case-studies">
+        <div class="case-studies-card">
+          <h2 class="section-title" data-i18n="caseStudiesHeading">技術事例</h2>
+          <p class="section-description" data-i18n="caseStudiesDescription">再現しにくい障害の調査、長期稼働時の不具合解析、再発防止のためのログ設計・異常系テスト基盤の整備に対応しています。</p>
+          <p class="case-studies-note" data-i18n="caseStudiesNote">※ 顧客名・製品名は非公開です。内容は特定されない形に要約しています。</p>
+          <div class="case-study-list">
+            <article class="case-study-item">
+              <h3 class="case-study-title" data-i18n="caseStudy1Title">まれに数秒止まる通信遅延の原因を特定</h3>
+              <p class="case-study-body" data-i18n="caseStudy1Body">産業用カメラ制御アプリとホストの通信で、まれに数秒間通信が止まる事象を調査。パケットロスにより発生した再送待ちの遅延が原因と見抜き、RFC1323 のタイムスタンプ機能を有効にすることで、待機時間を最小限に抑えました。</p>
+            </article>
+            <article class="case-study-item">
+              <h3 class="case-study-title" data-i18n="caseStudy2Title">長期稼働後のクラッシュをハンドルリークと特定</h3>
+              <p class="case-study-body" data-i18n="caseStudy2Body">産業用カメラ制御アプリが約1か月の連続稼働後に突然落ちる事象を調査。ハンドルリークが原因と判明し、再発時に原因を追いやすくするために、必要なログを整理してログ出力を強化しました。</p>
+            </article>
+            <article class="case-study-item">
+              <h3 class="case-study-title" data-i18n="caseStudy3Title">Application Verifier を使った異常系テスト基盤の整備</h3>
+              <p class="case-study-body" data-i18n="caseStudy3Body">産業用カメラ制御アプリで、想定外のプログラムミスによりメモリリークやハンドルリークが発生しても何が起きたか追えるように、Application Verifier を用いた異常系テスト基盤を構築しました。</p>
+            </article>
+          </div>
+          <div class="case-studies-actions">
+            <a class="button button--primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfywSpD36AGXdQ70iNTNUgmZl6aFa7fTUT-PcyS9DY185pejw/viewform?usp=pp_url&entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87" target="_blank" rel="noopener" data-i18n="caseStudiesButton" onclick="return gtag_report_conversion('https://docs.google.com/forms/d/e/1FAIpQLSfywSpD36AGXdQ70iNTNUgmZl6aFa7fTUT-PcyS9DY185pejw/viewform?usp=pp_url&entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87');">原因調査・技術相談はこちら</a>
           </div>
         </div>
       </section>
@@ -273,35 +296,17 @@
           </dl>
         </div>
       </section>
-      <section class="section" id="portfolio">
-        <h2 class="section-title" data-i18n="portfolioTitle">取引実績</h2>
-        <p class="section-description" data-i18n="portfolioDescription">これまでにお手伝いさせていただいたお客様の一部をご紹介します。</p>
-        <div class="services-grid">
-          <div class="services-card">
-            <div class="services-card-title" data-i18n="portfolioClient1Title">宮崎赤帽引越しのドーズキャリーサービス 様</div>
-            <div class="services-card-body" data-i18n="portfolioClient1Body">
-              SEOの技術的対策（構造化データ、メタタグ最適化、URL正規化）およびGoogle広告の運用管理を担当しました。
-            </div>
-            <a class="button button--secondary" href="https://xn--68jv81kg4a51apiu8b749q0ia.com/" target="_blank" rel="noopener" data-i18n="portfolioClient1Link">サイトを見る</a>
-          </div>
-          <div class="services-card">
-            <div class="services-card-title" data-i18n="portfolioClient2Title">KomuraSoft コーポレートサイト</div>
-            <div class="services-card-body" data-i18n="portfolioClient2Body">
-              本サイト。HTML/CSS/JavaScriptによるレスポンシブ対応のシングルページサイト。SEO対策、多言語対応、GitHub Pages でのホスティング。
-            </div>
-            <a class="button button--secondary" href="https://comcomponent.com/" data-i18n="portfolioClient2Link">このサイト</a>
-          </div>
-        </div>
-      </section>
       <section class="section" id="contact">
         <div class="contact-card">
           <h2 class="section-title" data-i18n="contactTitle">お問い合わせ</h2>
           <p class="section-description" data-i18n="contactDescription" data-i18n-html="true">開発のご依頼だけでなく、技術相談も受け付けています。</p>
           <ul class="contact-example-list">
-            <li data-i18n="contactExample1">「改修するべきか作り直すべきか迷っている」</li>
+            <li data-i18n="contactExample1">「まれにしか起きない通信停止の原因を調べたい」</li>
             <li data-i18n="contactExample2">「原因切り分けだけお願いしたい」</li>
-            <li data-i18n="contactExample3">「設計レビューをしてほしい」</li>
+            <li data-i18n="contactExample3">「長期稼働後に落ちる障害を切り分けたい」</li>
+            <li data-i18n="contactExample4">「リークや異常終了に備えたログやテスト基盤を整えたい」</li>
           </ul>
+          <p class="contact-guidance" data-i18n="contactProblemNote">再現しにくい障害や、長時間運転でしか表面化しない問題の調査もご相談ください。</p>
           <p class="contact-guidance" data-i18n="contactGuidance">内容確認後、対応可否と進め方をご案内します。具体的な調査・レビュー・原因分析が必要な場合は、有償対応としてご案内します。</p>
           <div class="contact-actions">
             <a class="button button--primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfywSpD36AGXdQ70iNTNUgmZl6aFa7fTUT-PcyS9DY185pejw/viewform?usp=pp_url&entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87" target="_blank" rel="noopener" data-i18n="contactTechButton" onclick="return gtag_report_conversion('https://docs.google.com/forms/d/e/1FAIpQLSfywSpD36AGXdQ70iNTNUgmZl6aFa7fTUT-PcyS9DY185pejw/viewform?usp=pp_url&entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87');">技術相談はこちら</a>
@@ -318,7 +323,6 @@
         <div>© 2026 KomuraSoft</div>
         <div class="footer-links">
           <a class="nav-link" href="#service" data-i18n="footerService">サービス</a>
-          <a class="nav-link" href="#portfolio" data-i18n="footerPortfolio">取引実績</a>
           <a class="nav-link" href="#company" data-i18n="footerCompany">会社情報</a>
           <a class="nav-link" href="#profile" data-i18n="footerProfile">代表略歴</a>
           <a class="nav-link" href="/blog/" data-i18n="footerBlog">ブログ</a>
@@ -337,7 +341,6 @@
           documentTitle: 'KomuraSoft | Windows受託開発・技術相談',
           metaDescription: 'Windows 開発、COM / ActiveX、C# / .NET、WPF / WinForms、C++/CLI などの受託開発と技術相談を承ります。既存システムの改修、設計レビュー、不具合調査、移行相談にも対応します。',
           navService: 'サービス',
-          navPortfolio: '対応実績',
           navCompany: '会社情報',
           navProfile: '代表略歴',
           navBlog: 'ブログ',
@@ -354,15 +357,25 @@
           serviceCard2Title: '既存システムの改修・保守',
           serviceCard2Body: '既存システムの機能追加、バグ修正、パフォーマンス改善、モダナイゼーションなどをサポートします。',
           serviceCard3Title: '技術コンサルティング',
-          serviceCard3Body: '技術選定、アーキテクチャ設計、コードレビューに加え、既存システムの改修方針整理、COM / ActiveX の保守・移行、32bit / 64bit の相互運用、不具合調査などの技術相談に対応します。',
+          serviceCard3Body: '技術選定、アーキテクチャ設計、コードレビューに加え、既存システムの改修方針整理、COM / ActiveX の保守・移行、32bit / 64bit の相互運用、不具合調査、長期稼働時障害の切り分け、ログ設計、異常系テスト基盤の整備などの技術相談に対応します。',
           consultationExamplesTitle: 'こんな技術相談に対応できます',
           consultationExample1: 'COM / ActiveX / OCX の保守・移行',
           consultationExample2: 'C# / .NET / WPF / WinForms の設計レビュー',
           consultationExample3: '32bit / 64bit の相互運用や C++/CLI の整理',
-          consultationExample4: 'ハング、デッドロック、性能問題の切り分け',
-          consultationExample5: '既存 Windows アプリの改修方針の整理',
-          consultationExample6: '受託開発に入る前の技術的な壁打ち',
+          consultationExample4: 'まれに発生する通信遅延・停止の原因調査',
+          consultationExample5: '長期稼働後に発生するクラッシュや不安定化の調査',
+          consultationExample6: 'メモリリーク / ハンドルリークを見据えたログ設計・異常系テスト基盤の整備',
           techStackTitle: '主な対応技術',
+          caseStudiesHeading: '技術事例',
+          caseStudiesDescription: '再現しにくい障害の調査、長期稼働時の不具合解析、再発防止のためのログ設計・異常系テスト基盤の整備に対応しています。',
+          caseStudiesNote: '※ 顧客名・製品名は非公開です。内容は特定されない形に要約しています。',
+          caseStudy1Title: 'まれに数秒止まる通信遅延の原因を特定',
+          caseStudy1Body: '産業用カメラ制御アプリとホストの通信で、まれに数秒間通信が止まる事象を調査。パケットロスにより発生した再送待ちの遅延が原因と見抜き、RFC1323 のタイムスタンプ機能を有効にすることで、待機時間を最小限に抑えました。',
+          caseStudy2Title: '長期稼働後のクラッシュをハンドルリークと特定',
+          caseStudy2Body: '産業用カメラ制御アプリが約1か月の連続稼働後に突然落ちる事象を調査。ハンドルリークが原因と判明し、再発時に原因を追いやすくするために、必要なログを整理してログ出力を強化しました。',
+          caseStudy3Title: 'Application Verifier を使った異常系テスト基盤の整備',
+          caseStudy3Body: '産業用カメラ制御アプリで、想定外のプログラムミスによりメモリリークやハンドルリークが発生しても何が起きたか追えるように、Application Verifier を用いた異常系テスト基盤を構築しました。',
+          caseStudiesButton: '原因調査・技術相談はこちら',
           strengthHeading: 'KomuraSoft の強み',
           strength1Title: '小回りの利く対応',
           strength1Body: '小規模だからこそ、お客様との密なコミュニケーションと柔軟な対応が可能です。',
@@ -392,25 +405,18 @@
           profileCareerValue: '2019年〜2023年 SES企業にて準委任契約でエンジニアとして従事<br>2023年〜2025年 エイチエスティ・ビジョン株式会社にてエンジニアとして勤務（半導体製造装置向け画像処理製品の開発・受託開発）<br>2025年12月〜 フリーランスとして独立（法人設立予定）',
           profileCertificationLabel: '資格',
           profileCertificationValue: '応用情報技術者',
-          portfolioTitle: '対応実績',
-          portfolioDescription: 'これまでの対応実績の一部をご紹介します。',
-          portfolioClient1Title: '宮崎赤帽引越しのドーズキャリーサービス 様',
-          portfolioClient1Body: 'SEOの技術的対策（構造化データ、メタタグ最適化、URL正規化）およびGoogle広告の運用管理を担当しました。',
-          portfolioClient1Link: 'サイトを見る',
-          portfolioClient2Title: 'KomuraSoft コーポレートサイト',
-          portfolioClient2Body: '本サイト。HTML/CSS/JavaScriptによるレスポンシブ対応のシングルページサイト。SEO対策、多言語対応、GitHub Pages でのホスティング。',
-          portfolioClient2Link: 'このサイト',
           contactTitle: 'お問い合わせ',
           contactDescription: '開発のご依頼だけでなく、技術相談も受け付けています。',
-          contactExample1: '「改修するべきか作り直すべきか迷っている」',
+          contactExample1: '「まれにしか起きない通信停止の原因を調べたい」',
           contactExample2: '「原因切り分けだけお願いしたい」',
-          contactExample3: '「設計レビューをしてほしい」',
+          contactExample3: '「長期稼働後に落ちる障害を切り分けたい」',
+          contactExample4: '「リークや異常終了に備えたログやテスト基盤を整えたい」',
+          contactProblemNote: '再現しにくい障害や、長時間運転でしか表面化しない問題の調査もご相談ください。',
           contactGuidance: '内容確認後、対応可否と進め方をご案内します。具体的な調査・レビュー・原因分析が必要な場合は、有償対応としてご案内します。',
           contactTechButton: '技術相談はこちら',
           contactDevButton: '開発依頼はこちら',
           contactNote: '※ お問い合わせ内容を確認後、通常2〜3営業日以内にご返信いたします。',
           footerService: 'サービス',
-          footerPortfolio: '対応実績',
           footerCompany: '会社情報',
           footerProfile: '代表略歴',
           footerBlog: 'ブログ',
@@ -425,7 +431,6 @@
           documentTitle: 'KomuraSoft | Windows Contract Development & Technical Consultation',
           metaDescription: 'We provide Windows contract development and technical consultation for COM / ActiveX, C# / .NET, WPF / WinForms, and C++/CLI. We also support modernization, design reviews, bug investigation, and migration planning.',
           navService: 'Services',
-          navPortfolio: 'Portfolio',
           navCompany: 'Company',
           navProfile: 'Profile',
           navBlog: 'Blog',
@@ -442,15 +447,25 @@
           serviceCard2Title: 'System Maintenance & Upgrades',
           serviceCard2Body: 'We support feature additions, bug fixes, performance improvements, and modernization of existing systems.',
           serviceCard3Title: 'Technical Consulting',
-          serviceCard3Body: 'We support technology selection, architecture design, code reviews, modernization planning for existing systems, COM / ActiveX maintenance and migration, 32-bit / 64-bit interoperability, and bug investigation.',
+          serviceCard3Body: 'We support technology selection, architecture design, code reviews, modernization planning for existing systems, COM / ActiveX maintenance and migration, 32-bit / 64-bit interoperability, bug investigation, isolation of long-running failures, logging design, and failure-path test infrastructure.',
           consultationExamplesTitle: 'Examples of Technical Consultation',
           consultationExample1: 'Maintaining or migrating COM / ActiveX / OCX systems',
           consultationExample2: 'Design reviews for C# / .NET / WPF / WinForms',
           consultationExample3: 'Reviewing 32-bit / 64-bit interoperability and C++/CLI boundaries',
-          consultationExample4: 'Investigating hangs, deadlocks, and performance problems',
-          consultationExample5: 'Planning how to modify an existing Windows application',
-          consultationExample6: 'Technical sounding-board discussions before contract development starts',
+          consultationExample4: 'Investigating rare communication delays and stoppages',
+          consultationExample5: 'Investigating crashes and instability after long-running operation',
+          consultationExample6: 'Designing logs and failure-path test infrastructure for memory and handle leak scenarios',
           techStackTitle: 'Core Technologies',
+          caseStudiesHeading: 'Technical Case Studies',
+          caseStudiesDescription: 'We handle investigations of hard-to-reproduce failures, analysis of defects that appear after long uptime, and logging and failure-path test infrastructure for recurrence prevention.',
+          caseStudiesNote: '* Customer and product names are withheld. The content is summarized to avoid identification.',
+          caseStudy1Title: 'Pinpointed the cause of rare multi-second communication stalls',
+          caseStudy1Body: 'We investigated a control application for industrial cameras that occasionally stopped communicating with the host for several seconds. We identified retransmission wait time caused by packet loss and reduced the wait by enabling the RFC1323 timestamp option.',
+          caseStudy2Title: 'Identified a month-later crash as a handle leak',
+          caseStudy2Body: 'We investigated an industrial camera control application that suddenly crashed after about one month of continuous operation. We identified a handle leak and strengthened the logging so the cause would be easier to trace if the issue recurred.',
+          caseStudy3Title: 'Built a failure-path test foundation with Application Verifier',
+          caseStudy3Body: 'For an industrial camera control application, we built a failure-path test foundation using Application Verifier so that memory leaks and handle leaks caused by unexpected programming mistakes could still be traced clearly.',
+          caseStudiesButton: 'Ask About Root Cause Analysis',
           strengthHeading: 'Why KomuraSoft',
           strength1Title: 'Agile Response',
           strength1Body: 'Being small allows us to maintain close communication and flexible responses to your needs.',
@@ -480,25 +495,18 @@
           profileCareerValue: '2019–2023: Worked as an engineer under quasi-delegation contracts at an SES company<br>2023–2025: Engineer at HST Vision Co., Ltd. (development of image processing products for semiconductor manufacturing equipment)<br>Dec 2025–: Independent freelancer (planning to establish a corporation)',
           profileCertificationLabel: 'Certification',
           profileCertificationValue: 'Applied Information Technology Engineer (Japanese national qualification)',
-          portfolioTitle: 'Case Studies',
-          portfolioDescription: 'Here are some examples of our work.',
-          portfolioClient1Title: 'Miyazaki Akabou Moving Service',
-          portfolioClient1Body: 'Provided technical SEO improvements (structured data, meta tag optimization, URL canonicalization) and Google Ads management.',
-          portfolioClient1Link: 'Visit Site',
-          portfolioClient2Title: 'KomuraSoft Corporate Website',
-          portfolioClient2Body: 'This website. A responsive single-page site built with HTML/CSS/JavaScript. Features SEO optimization, multi-language support, and GitHub Pages hosting.',
-          portfolioClient2Link: 'This Site',
           contactTitle: 'Contact',
           contactDescription: 'We accept not only development requests but also technical consultation.',
-          contactExample1: '"We are not sure whether we should modify the system or rebuild it."',
+          contactExample1: '"We want to investigate the cause of a communication stop that only happens rarely."',
           contactExample2: '"We only want help with root-cause investigation."',
-          contactExample3: '"We would like a design review before making changes."',
+          contactExample3: '"We want to isolate a failure that appears only after long-running operation."',
+          contactExample4: '"We want to improve logs and test infrastructure for leaks and abnormal termination."',
+          contactProblemNote: 'Please feel free to contact us about failures that are hard to reproduce or issues that only surface after long periods of operation.',
           contactGuidance: 'After reviewing your message, we will let you know whether we can help and how we would proceed. If the work requires detailed investigation, review, or analysis, we will guide you as a paid engagement.',
           contactTechButton: 'Technical Consultation',
           contactDevButton: 'Development Request',
           contactNote: '* We will respond within 2-3 business days after reviewing your inquiry.',
           footerService: 'Services',
-          footerPortfolio: 'Portfolio',
           footerCompany: 'Company',
           footerProfile: 'Profile',
           footerBlog: 'Blog',
