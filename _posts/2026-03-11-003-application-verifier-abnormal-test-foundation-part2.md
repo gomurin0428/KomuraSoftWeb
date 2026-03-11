@@ -1,5 +1,5 @@
 ---
-title: "産業用カメラ制御アプリが1か月後に突然落ちるとき - Application Verifierで異常系テスト基盤を作る【後編】"
+title: "産業用カメラ制御アプリが1か月後に突然落ちるとき（後編） - Application Verifierで異常系テスト基盤を作る"
 date: "2026-03-11T10:30:00+09:00"
 author: "Go Komura"
 tags:
@@ -12,7 +12,7 @@ tags:
 description: "Application Verifier とは何かを実務寄りに整理し、Handles / Heaps / Low Resource Simulation を使って、メモリ不足やハンドル異常を前倒しで表面化させる異常系テスト基盤の考え方をまとめます。"
 ---
 
-前編の [産業用カメラ制御アプリが1か月後に突然落ちるとき - ハンドルリークの見つけ方と長期稼働向けログ設計【前編】](https://comcomponent.com/blog/2026/03/11/002-handle-leak-industrial-camera-long-run-crash-part1/) では、長時間運転後に落ちる制御アプリを調べた結果、原因がハンドルリークだった事例を整理しました。
+前編の [産業用カメラ制御アプリが1か月後に突然落ちるとき（前編） - ハンドルリークの見つけ方と長期稼働向けログ設計](https://comcomponent.com/blog/2026/03/11/002-handle-leak-industrial-camera-long-run-crash-part1/) では、長時間運転後に落ちる制御アプリを調べた結果、原因がハンドルリークだった事例を整理しました。
 
 ただ、ログを強化しただけではまだ半分です。  
 本当にほしいのは、**今後もし想定外のプログラムミスでメモリリークやハンドルリーク、途中失敗、解放漏れが起きても、「何が起きたか分かる」状態になっているか** を、先に試せることです。
@@ -543,11 +543,11 @@ Application Verifier は、
 壊れたときに **何が起きたかを説明できること** が、同じくらい大事です。  
 その意味で、かなり実務向きの道具だと思います。
 
-前編: [産業用カメラ制御アプリが1か月後に突然落ちるとき - ハンドルリークの見つけ方と長期稼働向けログ設計【前編】](https://comcomponent.com/blog/2026/03/11/002-handle-leak-industrial-camera-long-run-crash-part1/)
+前編: [産業用カメラ制御アプリが1か月後に突然落ちるとき（前編） - ハンドルリークの見つけ方と長期稼働向けログ設計](https://comcomponent.com/blog/2026/03/11/002-handle-leak-industrial-camera-long-run-crash-part1/)
 
 ## 10. 参考資料
 
-- [前編: 産業用カメラ制御アプリが1か月後に突然落ちるとき - ハンドルリークの見つけ方と長期稼働向けログ設計](https://comcomponent.com/blog/2026/03/11/002-handle-leak-industrial-camera-long-run-crash-part1/)
+- [前編: 産業用カメラ制御アプリが1か月後に突然落ちるとき（前編） - ハンドルリークの見つけ方と長期稼働向けログ設計](https://comcomponent.com/blog/2026/03/11/002-handle-leak-industrial-camera-long-run-crash-part1/)
 - [Application Verifier - Overview](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/application-verifier)
 - [Application Verifier - Testing Applications](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/application-verifier-testing-applications)
 - [Application Verifier - Tests within Application Verifier](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/application-verifier-tests-within-application-verifier)
