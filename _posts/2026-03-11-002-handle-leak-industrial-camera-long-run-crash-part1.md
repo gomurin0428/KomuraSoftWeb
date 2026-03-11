@@ -17,7 +17,7 @@ Windows の制御アプリで厄介なのは、起動直後や数時間の試験
 今回紹介するのは、産業用カメラを制御している Windows アプリが、約 1 か月の連続稼働後に突然落ちる事象を調査した事例です。切り分けを進めた結果、原因は **カメラ再接続まわりの失敗経路で起きていたハンドルリーク** でした。
 
 前編では、ハンドルリークとは何か、この事象をどう切り分けたか、再発防止のためにどんなログを残すべきかを整理します。  
-後編では、[Application Verifier とは何か - メモリ不足やハンドル異常を前倒しで表面化させる異常系テストの実践【後編】](https://comcomponent.com/blog/2026/03/11/003-application-verifier-abnormal-test-foundation-part2/) として、異常系テスト基盤の話をします。
+後編では、[産業用カメラ制御アプリが1か月後に突然落ちるとき - Application Verifierで異常系テスト基盤を作る【後編】](https://comcomponent.com/blog/2026/03/11/003-application-verifier-abnormal-test-foundation-part2/) として、異常系テスト基盤の話をします。
 
 固有名詞や一部のログ項目は伏せていますが、考え方そのものは Windows の装置制御アプリ全般でかなり共通です。
 
@@ -464,13 +464,13 @@ Windows のハンドル値は後で再利用されることがあるので、ロ
 ハンドルリークは、まさにその差が効くタイプの不具合です。  
 起きた瞬間にだけ見るのではなく、増え方、境界、責務の対で見るようにすると、かなり追いやすくなります。
 
-後編: [Application Verifier とは何か - メモリ不足やハンドル異常を前倒しで表面化させる異常系テストの実践【後編】](https://comcomponent.com/blog/2026/03/11/003-application-verifier-abnormal-test-foundation-part2/)
+後編: [産業用カメラ制御アプリが1か月後に突然落ちるとき - Application Verifierで異常系テスト基盤を作る【後編】](https://comcomponent.com/blog/2026/03/11/003-application-verifier-abnormal-test-foundation-part2/)
 
 ## 8. 参考資料
 
 - [GetProcessHandleCount 関数 (processthreadsapi.h)](https://learn.microsoft.com/ja-jp/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesshandlecount)
 - [Process.HandleCount プロパティ (System.Diagnostics)](https://learn.microsoft.com/ja-jp/dotnet/api/system.diagnostics.process.handlecount?view=net-8.0)
-- [後編: Application Verifier とは何か - メモリ不足やハンドル異常を前倒しで表面化させる異常系テストの実践](https://comcomponent.com/blog/2026/03/11/003-application-verifier-abnormal-test-foundation-part2/)
+- [後編: 産業用カメラ制御アプリが1か月後に突然落ちるとき - Application Verifierで異常系テスト基盤を作る](https://comcomponent.com/blog/2026/03/11/003-application-verifier-abnormal-test-foundation-part2/)
 
 ## Author GitHub
 

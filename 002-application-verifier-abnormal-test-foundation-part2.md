@@ -1,5 +1,5 @@
 ---
-title: "Application Verifier とは何か - メモリ不足やハンドル異常を前倒しで表面化させる異常系テストの実践【後編】"
+title: "産業用カメラ制御アプリが1か月後に突然落ちるとき - Application Verifierで異常系テスト基盤を作る【後編】"
 date: "2026-03-11T10:30:00+09:00"
 author: "Go Komura"
 tags:
