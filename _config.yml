@@ -16,6 +16,7 @@ exclude:
   - README.md
   - CNAME
   - docs
+  - 2026-03-11-tcp-retransmission-rfc1323-industrial-camera.md
 
 # Permalink for posts
 permalink: /blog/:year/:month/:day/:title/
