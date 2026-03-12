@@ -1,6 +1,6 @@
 ---
 title: "WPF / WinForms async/await and the UI Thread in One Sheet - Where Continuations Return, Dispatcher, ConfigureAwait, and Why .Result / .Wait() Get Stuck"
-description: "A practical guide to the relationship between async/await and the UI thread in WPF and WinForms, covering continuation destinations, Dispatcher / Invoke, ConfigureAwait(false), and why .Result / .Wait() freeze the UI."
+description: "A practical guide to the relationship between async/await and the UI thread in WPF and WinForms, covering continuation destinations after await, Dispatcher / Invoke, ConfigureAwait(false), and why .Result / .Wait() freeze the UI."
 date: 2026-03-12T10:00:00+09:00
 lang: en
 translation_key: wpf-winforms-ui-thread-async-await-one-sheet
@@ -15,29 +15,24 @@ tags:
   - Threading
 ---
 
-The hardest thing when using `async` / `await` in WPF / WinForms is usually **which thread execution returns to after `await`**, and **when it is safe to touch the UI**.
-When `Dispatcher`, `BeginInvoke`, `ConfigureAwait(false)`, and `.Result` / `.Wait()` all get mixed together, the cause of UI freezes and cross-thread exceptions becomes hard to see.
+The easiest place to get lost when using `async` / `await` in WPF / WinForms is **which thread execution returns to after `await`**, and **when it is safe to touch the UI**.
+Once `Dispatcher`, `BeginInvoke`, `ConfigureAwait(false)`, and `.Result` / `.Wait()` get mixed together, the cause of freezes and cross-thread exceptions becomes hard to see.
 
 This article focuses specifically on the relationship between the UI thread and `async` / `await` in WPF / WinForms.  
-For the broader decision-making around `async` / `await`, it connects naturally to [C# async/await Best Practices - A decision table for Task.Run and ConfigureAwait](https://comcomponent.com/blog/2026/03/09/001-csharp-async-await-best-practices/).
+For the broader decision-making around `async` / `await`, it connects naturally to [C# async/await Best Practices - A decision table for Task.Run and ConfigureAwait](/en/blog/2026/03/09/001-csharp-async-await-best-practices/).
 
-The places where things start to smell like real production trouble are usually these:
+The places that start to smell like real production trouble are usually these:
 
-* not knowing where execution continues after `await`
-* not knowing whether the UI is safe to touch after `Task.Run`
+* not knowing where execution resumes after `await`
+* not knowing whether it is safe to touch the UI after `Task.Run`
 * hesitating about where `ConfigureAwait(false)` belongs
 * freezing the screen with `.Result` / `.Wait()` / `.GetAwaiter().GetResult()`
-* mentally mixing WPF's `Dispatcher` with WinForms `Invoke` / `BeginInvoke` / `InvokeAsync`
+* mentally mixing WPF `Dispatcher` with WinForms `Invoke` / `BeginInvoke` / `InvokeAsync`
 
 WPF and WinForms are both **UI-thread-centered models**.  
-So the most useful way to understand `async` / `await` here is not to start from abstract philosophy, but to ask **what this code is doing to the UI thread and its message loop**.
+So the most useful way to understand `async` / `await` here is not abstract philosophy about asynchrony. It is being explicit about **what your code is doing to the UI thread and its message loop**.
 
-This article assumes mostly **WPF / WinForms applications on .NET 6 and later** and organizes:
-
-- where continuation returns after `await`
-- what `Dispatcher` is doing
-- what `ConfigureAwait(false)` really means
-- why `.Result` / `.Wait()` can get stuck
+This article assumes mostly **WPF / WinForms applications on .NET 6 and later** and organizes the practical reasoning around continuation destinations after `await`, `Dispatcher`, `ConfigureAwait(false)`, and why `.Result` / `.Wait()` get stuck.
 
 One version-specific note first: WinForms `Control.InvokeAsync` exists only on **.NET 9 and later**.  
 Before that, the standard choices are still `BeginInvoke` and `Invoke`.
@@ -47,14 +42,14 @@ Before that, the standard choices are still `BeginInvoke` and `Invoke`.
 1. [Short version](#1-short-version)
 2. [First, see the whole picture in one page](#2-first-see-the-whole-picture-in-one-page)
    * 2.1. [Overall picture](#21-overall-picture)
-   * 2.2. [The first decision table](#22-the-first-decision-table)
+   * 2.2. [Quick decision table](#22-quick-decision-table)
 3. [Terms used in this article](#3-terms-used-in-this-article)
    * 3.1. [The UI thread and the message loop](#31-the-ui-thread-and-the-message-loop)
    * 3.2. [`SynchronizationContext` / `Dispatcher` / `Invoke`](#32-synchronizationcontext--dispatcher--invoke)
 4. [Typical patterns](#4-typical-patterns)
    * 4.1. [Plain `await` inside a UI event handler](#41-plain-await-inside-a-ui-event-handler)
    * 4.2. [Use `Task.Run` only for heavy CPU work](#42-use-taskrun-only-for-heavy-cpu-work)
-   * 4.3. [`ConfigureAwait(false)` does not mean "guaranteed not to return"](#43-configureawaitfalse-does-not-mean-guaranteed-not-to-return)
+   * 4.3. [`ConfigureAwait(false)` means "do not force a return," not "guaranteed not to return"](#43-configureawaitfalse-means-do-not-force-a-return-not-guaranteed-not-to-return)
    * 4.4. [Why `.Result` / `.Wait()` / `.GetAwaiter().GetResult()` get stuck](#44-why-result--wait--getawaitergetresult-get-stuck)
 5. [When to use `Dispatcher` / `Invoke`](#5-when-to-use-dispatcher--invoke)
 6. [Common anti-patterns](#6-common-anti-patterns)
@@ -67,16 +62,16 @@ Before that, the standard choices are still `BeginInvoke` and `Invoke`.
 
 ## 1. Short version
 
-* If you use plain `await` inside a **UI event handler** in WPF / WinForms, the continuation after `await` will **usually return to the UI thread**
+* If you use plain `await` inside a **UI event handler** in WPF / WinForms, the continuation after `await` will **normally return to the UI thread**
 * `Task.Run` is for **moving CPU-heavy work off the UI thread**, not for wrapping I/O waits
-* Even if you `await Task.Run(...)` inside a UI handler, if that `await` is plain `await`, the continuation will usually return to the UI thread
-* `ConfigureAwait(false)` means **do not force the continuation back to the captured UI context**. Touching the UI directly after that becomes dangerous
-* `.Result` / `.Wait()` / `.GetAwaiter().GetResult()` **block the UI thread**. If the awaited continuation needs to return to the UI, this gets stuck very easily
-* In WPF, if you explicitly need to get back onto the UI thread, the representative tool is `Dispatcher.InvokeAsync`
-* In WinForms, the traditional choices are `BeginInvoke` / `Invoke`, and on .NET 9+ `InvokeAsync` fits async flow especially well
-* A very practical starting rule is: **plain `await` at the outer UI layer, consider `ConfigureAwait(false)` in general-purpose libraries, and return to the UI explicitly only where needed**
+* Even if you `await Task.Run(...)` inside a UI handler, if that `await` is plain `await`, the continuation will usually resume on the UI thread
+* `ConfigureAwait(false)` means **do not force the continuation back to the captured UI context**. Touching the UI directly after that is dangerous
+* `.Result` / `.Wait()` / `.GetAwaiter().GetResult()` **block the UI thread**. If the awaited continuation needs to return to the UI, they get stuck very easily
+* In WPF, the representative way to return explicitly to the UI is `Dispatcher.InvokeAsync`
+* In WinForms, the traditional choice is `BeginInvoke`, and on .NET 9+ `InvokeAsync` fits async flow especially well
+* A practical first rule is: **plain `await` at the outer UI layer, consider `ConfigureAwait(false)` in general-purpose libraries, and return to the UI explicitly only where needed**
 
-Put differently, in WPF / WinForms, things become much easier to reason about once you separate:
+In other words, WPF / WinForms becomes much easier to reason about once you separate:
 
 1. which thread the code is on now
 2. where the continuation will resume after `await`
@@ -86,7 +81,7 @@ Put differently, in WPF / WinForms, things become much easier to reason about on
 
 ### 2.1. Overall picture
 
-This diagram is the fastest way to get the whole shape into your head:
+This diagram is the fastest way to get the overall shape into your head.
 
 ```mermaid
 flowchart LR
@@ -118,70 +113,74 @@ In real applications, most problems cluster around four patterns:
 3. removing the return to the UI with `ConfigureAwait(false)`
 4. blocking the UI thread with `.Result` / `.Wait()`
 
-### 2.2. The first decision table
+### 2.2. Quick decision table
 
-| Situation | What runs while waiting | Continuation after `await` | Is direct UI access safe? | Default choice |
+| Situation | What runs while waiting | Continuation after `await` | Is direct UI access safe? | First choice |
 |---|---|---|---|---|
-| `await SomeIoAsync()` inside a UI handler | the I/O completes asynchronously while the UI thread can go back to the message loop | usually the UI thread | yes | plain `await` |
-| `await Task.Run(...)` inside a UI handler | the heavy CPU work runs on the ThreadPool | usually the UI thread | yes | `Task.Run` only for CPU work |
-| `await x.ConfigureAwait(false)` inside a UI handler | the continuation is not fixed to the UI | any thread | no | generally avoid this in UI code |
-| `x.Result` / `x.Wait()` on the UI thread | the UI thread is blocked while waiting | the continuation has a hard time resuming | no | do not do this |
-| updating UI from a background thread or after `ConfigureAwait(false)` | the work is already outside the UI thread | the continuation is not on the UI | no | WPF: `Dispatcher.InvokeAsync`; WinForms: `BeginInvoke` / `InvokeAsync` |
+| `await SomeIoAsync()` inside a UI handler | waiting for I/O completion while the UI thread can return to the message loop | normally the UI thread | yes | plain `await` |
+| `await Task.Run(...)` inside a UI handler | heavy CPU work runs on the ThreadPool | normally the UI thread | yes | `Task.Run` only for CPU work |
+| `await x.ConfigureAwait(false)` inside a UI handler | the continuation is not pinned to the UI | any thread | no | usually avoid this in UI code |
+| `x.Result` / `x.Wait()` on the UI thread | the UI thread is blocked by waiting | the continuation has trouble running at all | no | do not use it |
+| update the UI after background-thread work or after `ConfigureAwait(false)` | the code is already running outside the UI thread | it is still not on the UI thread | no | `Dispatcher.InvokeAsync` / `BeginInvoke` / `InvokeAsync` |
 
-The important idea in this table is that **plain `await` is usually your ally in UI code**.  
-The real enemy is not async itself, but **synchronously blocking the UI thread**.
+The important point in this table is that **plain `await` is usually your ally in UI code**.  
+The enemy is not `await` itself. The enemy is **synchronously blocking the UI thread**.
 
 ## 3. Terms used in this article
 
 ### 3.1. The UI thread and the message loop
 
-In WPF / WinForms, the UI is basically organized around **one UI thread that processes input, painting, and events**.
+In WPF / WinForms, the basic shape is that **there is one UI thread, and it is responsible for input, drawing, and event handling**.
 
-That UI thread is responsible for things like:
+That UI thread is generally responsible for:
 
-* handling input and repaint messages
-* being the only safe thread for touching controls and UI objects
-* keeping the app responsive by not being blocked too long
+* processing messages such as button clicks, key input, and repaint requests
+* being the only thread allowed to safely touch controls and UI objects
+* stalling screen updates and user input if you overload it with long-running work
 
-The key point is that **the UI thread's job is to keep turning the message loop**.  
-If you block it for too long, input, repaint, and event handling stop, and the user experiences the app as "frozen."
+The key idea is that **the UI thread's job is to keep turning quickly**.  
+If you block it for a long time, mouse input, keyboard input, and repainting all stall, and from the user's perspective the app "froze."
+
+This diagram is a good mental model to keep:
 
 ```mermaid
 flowchart LR
-    A["User input / repaint requests"] --> B["UI thread message loop"]
-    B --> C["event handler runs"]
-    C --> D["UI updates"]
+    A["User input / repaint requests"] --> B["Message loop on the UI thread"]
+    B --> C["Run event handlers"]
+    C --> D["Update the screen"]
     D --> B
 
-    C --> E["long synchronous work"]
-    E --> F["message loop stops turning"]
-    F --> G["the UI looks frozen"]
+    C --> E["Long synchronous work"]
+    E --> F["The message loop stops turning"]
+    F --> G["The UI looks frozen"]
 ```
 
 ### 3.2. `SynchronizationContext` / `Dispatcher` / `Invoke`
 
-These words come up repeatedly, so it helps to map them simply:
+Here is a practical split of the terms that appear often:
 
-| Term | Meaning here |
+| Term | Meaning in this article |
 |---|---|
-| UI thread | the thread that created the UI objects and generally owns them |
-| message loop | the mechanism by which the UI thread processes messages |
-| `SynchronizationContext` | an abstraction that lets code resume in the same execution environment |
-| `Dispatcher` | WPF's queue for the UI thread |
-| `Invoke` / `BeginInvoke` / `InvokeAsync` | APIs that post work back to the UI thread |
+| UI thread | the thread that created the UI objects. Normally only this thread can safely touch the UI |
+| message loop | the mechanism by which the UI thread processes messages one by one |
+| `SynchronizationContext` | an abstraction for "post the continuation back to this execution context" |
+| `Dispatcher` | WPF's queue for work that must run on the UI thread |
+| `Invoke` / `BeginInvoke` / `InvokeAsync` | APIs for posting work to the UI thread |
 
-More precisely, `await` chooses where to resume by first looking at the current `SynchronizationContext`, and if there is no special one, it can also pay attention to a non-default `TaskScheduler`.
-In everyday WPF / WinForms work, though, it is usually enough to understand it as **"the UI `SynchronizationContext` is in effect."**
+Strictly speaking, when deciding where to continue, `await` first prefers the current `SynchronizationContext`, and if there is none it may also consider a non-default `TaskScheduler`.  
+But in day-to-day WPF / WinForms work, it is usually enough to think of it as **the UI `SynchronizationContext` being the thing that matters**.
 
-Framework-wise, the mapping looks roughly like this:
+This is a good way to picture the framework-specific mapping:
 
-| Framework | UI-side context | Common API for explicitly returning to the UI |
+| Framework | UI-side context | Representative API for explicitly returning to the UI |
 |---|---|---|
 | WPF | `DispatcherSynchronizationContext` | `Dispatcher.InvokeAsync` / `Dispatcher.BeginInvoke` / `Dispatcher.Invoke` |
 | WinForms | `WindowsFormsSynchronizationContext` | `Control.BeginInvoke` / `Control.Invoke` / `.NET 9+ Control.InvokeAsync` |
 
-WPF is centered on the `Dispatcher`.  
-WinForms is centered on control handles and the message loop, which is why `BeginInvoke` / `Invoke` are so prominent there.
+WPF centers on `Dispatcher`.  
+WinForms centers more visibly on a control handle and the message loop, so `BeginInvoke` / `Invoke` tends to show up at the surface.
+
+In practice, it is enough to remember the abstraction-to-implementation relation at about this level:
 
 ```mermaid
 flowchart TD
@@ -190,14 +189,14 @@ flowchart TD
     B --> D["WinForms: WindowsFormsSynchronizationContext"]
 
     C --> E["Dispatcher.InvokeAsync / BeginInvoke / Invoke"]
-    D --> F["Control.BeginInvoke / Invoke / InvokeAsync (.NET 9+)"]
+    D --> F["Control.BeginInvoke / Invoke / InvokeAsync(.NET 9+)"]
 ```
 
 ## 4. Typical patterns
 
 ### 4.1. Plain `await` inside a UI event handler
 
-This is the most natural pattern.
+This is the most straightforward shape.
 
 ```csharp
 private async void LoadButton_Click(object sender, RoutedEventArgs e)
@@ -222,41 +221,47 @@ private async void LoadButton_Click(object sender, RoutedEventArgs e)
 }
 ```
 
-In this code:
+In this code, `LoadButton_Click` **starts on the UI thread**.  
+And because `await File.ReadAllTextAsync(...)` is plain `await`, it normally **captures the current UI context**.
 
-* the event handler starts on the UI thread
-* the I/O wait does not block the UI thread
-* because the `await` is plain, the UI context is usually captured
-* the continuation returns to the UI thread
-* updating `PreviewTextBox.Text` directly is normally safe
+That gives you this behavior:
 
-That means no extra `Dispatcher` is required here.
-If you simply use plain `await` inside a UI handler, you can normally keep writing UI updates directly after the await.
+* the file I/O wait does not occupy the UI thread
+* after the read completes, execution normally resumes on the UI thread
+* `PreviewTextBox.Text = text;` can be written directly
+
+No extra `Dispatcher` is needed here.  
+**If you are inside a UI handler and you just used plain `await`, you can normally keep touching the UI directly.**
+
+The same interpretation applies in WinForms.  
+As long as you use plain `await` inside a `Click` handler, the continuation will normally come back to the UI side.
+
+Visually, the flow looks like this:
 
 ```mermaid
 sequenceDiagram
     participant UI as UI thread
-    participant IO as async I/O
+    participant IO as Async I/O
     participant Ctx as UI SynchronizationContext
 
-    UI->>UI: start click handler
+    UI->>UI: Start click handler
     UI->>IO: await ReadAllTextAsync
-    UI-->>Ctx: continuation scheduled to return to UI
-    Note over UI: while waiting, the message loop keeps turning
+    UI-->>Ctx: reserve continuation back to the UI
+    Note over UI: while waiting, return to the message loop
     IO-->>Ctx: I/O completes
-    Ctx-->>UI: resume on the UI thread
-    UI->>UI: update text box / label
+    Ctx-->>UI: resume continuation on the UI thread
+    UI->>UI: update TextBox / Label
 ```
 
 ### 4.2. Use `Task.Run` only for heavy CPU work
 
-`Task.Run` helps when you want to **move heavy CPU work off the UI thread**.
+`Task.Run` is useful when you want to **move heavy CPU work off the UI thread**.
 
 ```csharp
 private async void HashButton_Click(object sender, RoutedEventArgs e)
 {
     HashButton.IsEnabled = false;
-    ResultText.Text = "Calculating...";
+    ResultText.Text = "Computing...";
 
     try
     {
@@ -282,41 +287,45 @@ private async void HashButton_Click(object sender, RoutedEventArgs e)
 }
 ```
 
-What happens here is:
+What happens here is roughly:
 
 1. the event handler starts on the UI thread
-2. the file I/O is awaited asynchronously
-3. only the heavy hashing work is moved to the ThreadPool with `Task.Run`
-4. because `await Task.Run(...)` is still a plain `await`, the continuation usually returns to the UI thread
+2. `File.ReadAllBytesAsync` handles the I/O wait asynchronously
+3. only the heavy hash computation is moved to the ThreadPool with `Task.Run`
+4. because `await Task.Run(...)` is still plain `await`, the continuation returns to the UI thread
 5. `ResultText.Text = hash;` can still be written directly
 
-So **only the inside of `Task.Run` is on another thread**.
-The code does not permanently move into a "not-UI place" after that.
+In other words, **only the inside of `Task.Run` is on another thread**.  
+Execution does not permanently move to some non-UI place after `await`.
+
+Seen as one picture, it becomes harder to misunderstand:
 
 ```mermaid
 sequenceDiagram
     participant UI as UI thread
-    participant IO as async I/O
+    participant IO as Async I/O
     participant Pool as ThreadPool
 
     UI->>IO: await ReadAllBytesAsync
-    IO-->>UI: resume on UI thread
-    UI->>Pool: send heavy CPU work to Task.Run
-    Pool-->>UI: return computed hash
-    Note over UI: continuation after await Task.Run(...) resumes on the UI thread
-    UI->>UI: reflect result in the screen
+    IO-->>UI: plain await resumes on the UI
+    UI->>Pool: send heavy CPU work via Task.Run
+    Pool-->>UI: return the computed result
+    Note over UI: continuation after await Task.Run(...) resumes on the UI
+    UI->>UI: reflect the result on screen
 ```
 
-Two practical cautions matter here:
+Two cautions matter here:
 
 * do not wrap I/O waits in `Task.Run`
-* think of `Task.Run` as "where the CPU work should run," not as "how to make something asynchronous"
+* think of `Task.Run` not as "making something async," but as "creating a place to run CPU work away from the UI"
 
-### 4.3. `ConfigureAwait(false)` does not mean "guaranteed not to return"
+Code like `Task.Run(async () => await File.ReadAllTextAsync(...))` mostly just bounces I/O onto the ThreadPool for no real benefit.
 
-This is one of the most misunderstood areas.
+### 4.3. `ConfigureAwait(false)` means "do not force a return," not "guaranteed not to return"
 
-First, `ConfigureAwait(false)` is most natural in **general-purpose library code that does not depend on the UI or on a specific application model**.
+This is the part people misunderstand most often.
+
+First, `ConfigureAwait(false)` fits best in **general-purpose library code that does not depend on the UI or on a specific application model**.
 
 ```csharp
 public sealed class DocumentRepository
@@ -329,11 +338,11 @@ public sealed class DocumentRepository
 }
 ```
 
-This method does not touch the UI.
-It can be used from WPF, WinForms, ASP.NET Core, workers, or elsewhere.
-That is exactly the kind of place where `ConfigureAwait(false)` is very natural.
+This method does not touch the UI.  
+It can be used from WPF, WinForms, ASP.NET Core, or a worker.  
+In code like this, `ConfigureAwait(false)` is quite natural.
 
-Then the UI-side caller can still use plain `await`.
+And the UI side can still use plain `await`:
 
 ```csharp
 private readonly DocumentRepository _repository = new();
@@ -363,14 +372,14 @@ private async void OpenButton_Click(object sender, RoutedEventArgs e)
 }
 ```
 
-The important point is that **`ConfigureAwait(false)` inside the library does not force the caller's `await` to become false as well**.
+The important point is that **`ConfigureAwait(false)` inside the library does not force the caller's `await` to become `false` too**.
 
-So the split becomes:
+That gives you a clean separation:
 
-* inside the library: do not return to the UI
-* in the UI handler: use plain `await`, so the caller resumes on the UI thread
+* inside the library, the continuation does not return to the UI
+* when a UI handler awaits that library call with plain `await`, the caller continuation still returns to the UI
 
-By contrast, this is dangerous:
+By contrast, this is dangerous inside the UI handler itself:
 
 ```csharp
 private async void OpenButton_Click(object sender, RoutedEventArgs e)
@@ -383,39 +392,40 @@ private async void OpenButton_Click(object sender, RoutedEventArgs e)
 }
 ```
 
-Here, the continuation of **that UI handler's own await** is no longer forced back to the UI.
-That makes `PreviewTextBox.Text = text;` a potential cross-thread UI access.
+In this case, the continuation of **that `await` inside `OpenButton_Click`** is no longer forced back to the UI.  
+So `PreviewTextBox.Text = text;` can become a **cross-thread access**.
 
-There is another subtle point.
+There is another subtle but important point.  
 `ConfigureAwait(false)` does **not** mean "always move to the ThreadPool."
 
-If the awaited operation is already complete and there is no real wait, the continuation may simply continue on the current thread.
+If the awaited operation completes synchronously and does not actually need to suspend, the continuation may keep flowing on the current thread.  
+So `ConfigureAwait(false)` does not mean:
 
-So `ConfigureAwait(false)` does **not** mean:
+* "it always goes to another thread"
+* "from here on, the code is definitely no longer on the UI thread"
 
-* "you will definitely switch to another thread"
-* "from here on, you are definitely no longer on the UI thread"
+What it means is only:
 
-Its real meaning is only:
+* **do not force this `await` continuation back to the original UI context**
 
-* **do not force the continuation of this await back to the captured UI context**
+That interpretation causes far fewer accidents.
 
-That interpretation leads to fewer mistakes.
+As a picture, it looks like this:
 
 ```mermaid
 flowchart LR
-    A["await in a UI handler"] --> B{"Use ConfigureAwait(false)?"}
-    B -- "No" --> C["continuation usually resumes on the UI thread"]
-    C --> D["direct UI updates stay easy"]
+    A["await inside a UI handler"] --> B{"Add ConfigureAwait(false)?"}
+    B -- no --> C["continuation normally resumes on the UI thread"]
+    C --> D["direct UI update stays easy"]
 
-    B -- "Yes" --> E["continuation is not fixed to the UI"]
-    E --> F["it may resume on another thread"]
-    F --> G["UI updates need Dispatcher / Invoke"]
+    B -- yes --> E["continuation is not pinned to the UI"]
+    E --> F["it may resume on any thread"]
+    F --> G["Dispatcher / Invoke is needed for UI updates"]
 ```
 
 ### 4.4. Why `.Result` / `.Wait()` / `.GetAwaiter().GetResult()` get stuck
 
-This is one of the most common accidents.
+This is the failure mode people run into most often.
 
 ```csharp
 private void LoadButton_Click(object sender, RoutedEventArgs e)
@@ -431,67 +441,70 @@ private async Task<string> LoadTextAsync()
 }
 ```
 
-At first glance, this looks like a simple synchronous wait.
-But on the UI thread, it is extremely dangerous.
+At first glance, it looks like "just get the result synchronously."  
+But on the UI thread, it is quite dangerous.
+
+The flow looks like this:
 
 ```mermaid
 sequenceDiagram
     participant UI as UI thread
-    participant IO as async I/O
+    participant IO as Async I/O
     participant Ctx as UI SynchronizationContext
 
-    UI->>UI: LoadButton_Click starts
+    UI->>UI: Start LoadButton_Click
     UI->>IO: call LoadTextAsync()
     IO-->>UI: return an incomplete Task
     UI->>UI: block with .Result
-    IO-->>Ctx: I/O completes and wants to resume on the UI
+    IO-->>Ctx: I/O completes and wants to post the continuation to the UI
     Ctx-->>UI: tries to run the continuation
-    Note over UI: but the UI is blocked in .Result
-    Note over UI,Ctx: the continuation cannot run, so the Task cannot complete
+    Note over UI: but the UI is blocked by .Result
+    Note over UI, Ctx: the continuation cannot run, so completion never happens
 ```
 
-What is happening in words is:
+In words:
 
 1. the UI thread calls `LoadTextAsync()`
-2. the `await` inside it captures the UI context
+2. the `await` inside `LoadTextAsync()` captures the UI context
 3. the UI thread blocks on `.Result`
 4. the I/O completes
-5. the continuation wants to return to the UI thread
-6. but the UI thread is blocked
-7. so the continuation cannot run
-8. and `.Result` never completes
+5. the continuation of `LoadTextAsync()` wants to resume on the UI thread
+6. but the UI thread is blocked by `.Result`
+7. the continuation cannot run, so `LoadTextAsync()` cannot complete
+8. `.Result` never finishes
 
-In other words, **the UI says "I will wait for you to finish," while the async method says "I can only finish if I get back onto the UI."**
+So the UI is saying, "I will wait until you finish," while the async method is saying, "I can only finish if I get back onto the UI."  
+They end up waiting on each other.
 
-That is the classic stuck state.
+One common misunderstanding is thinking that `GetAwaiter().GetResult()` is safe.  
+But the core problem, **blocking the UI thread**, is the same. The main difference is how exceptions are wrapped.
 
-It is also a mistake to assume that `GetAwaiter().GetResult()` is safe.
-It changes exception wrapping, but **it still blocks the UI thread**.
-
-So on the UI thread, treat these three with the same suspicion:
+So in UI code, it is safer to treat these three with the same smell:
 
 * `.Result`
 * `.Wait()`
 * `.GetAwaiter().GetResult()`
 
-Also note that synchronously waiting on the `Task` returned by `Dispatcher.InvokeAsync(...)` in WPF is dangerous for the same general reason.
+Also note that it is dangerous to call `Task.Wait()` on the `Task` returned by WPF `Dispatcher.InvokeAsync(...)`.  
+The WPF documentation itself notes that waiting that way can deadlock.  
+In short, **the whole direction of "post something to the UI and then wait for it synchronously" tends to clog badly in a UI context**.
 
-Strictly speaking, these patterns do not always produce a formal deadlock.
-If the continuation does not actually need the UI, they may "only" freeze the screen instead.
-But that is still more than bad enough.
+Will it always deadlock? Not necessarily.  
+If the continuation does not need to return to the UI, it may "only" freeze the UI rather than deadlock.  
+But that is still bad enough, so in UI code the practical rule is to avoid it.
 
 ## 5. When to use `Dispatcher` / `Invoke`
 
-If you are in a **plain UI handler with plain `await`**, you usually do not need explicit `Dispatcher` / `Invoke`.
+If you organize the rules above, **a plain-`await` UI handler** usually does not need explicit `Dispatcher` / `Invoke`.
 
-You need them in situations like:
+You need it in cases like these:
 
-* you want to touch the UI after a `ConfigureAwait(false)` continuation
-* you are inside `Task.Run` or another background thread
-* a socket callback, timer callback, or event callback arrives on a non-UI thread
-* you intentionally separated the UI layer and the non-UI layer and now need to marshal the final update back
+* you want to touch the UI after `ConfigureAwait(false)`
+* your code is structured so that it does not return to the UI after `Task.Run` or other background work
+* notifications arrive from a socket receiver, timer, or callback that does not start on the UI thread
+* you intentionally separate UI and non-UI layers and want to make only the final UI update explicit
 
-In WPF, the representative tool is `Dispatcher.InvokeAsync`.
+In WPF, the representative API is `Dispatcher.InvokeAsync`.
 
 ```csharp
 private async Task RefreshPreviewAsync(string path, CancellationToken cancellationToken)
@@ -506,7 +519,7 @@ private async Task RefreshPreviewAsync(string path, CancellationToken cancellati
 }
 ```
 
-In WinForms, `.NET 9+` gives you `InvokeAsync`, which fits async flow very well.
+In WinForms, on .NET 9 and later, `InvokeAsync` is especially nice for async flow.
 
 ```csharp
 private async Task RefreshPreviewAsync(string path, CancellationToken cancellationToken)
@@ -521,115 +534,125 @@ private async Task RefreshPreviewAsync(string path, CancellationToken cancellati
 }
 ```
 
-In older WinForms patterns, `BeginInvoke` is still the usual non-blocking option.
-`Invoke` sends synchronously and blocks the caller.
-In async flows, the non-blocking side is usually the better fit.
+In older WinForms patterns, `BeginInvoke` is the typical choice.  
+`Invoke` sends work synchronously and makes the caller wait. `BeginInvoke` posts and returns immediately.  
+In async flow, the **non-blocking side** usually fits better.
 
-A rough practical guide is enough:
+As a rough distinction:
 
 | What you want to do | WPF | WinForms |
 |---|---|---|
 | enter the UI synchronously | `Dispatcher.Invoke` | `Control.Invoke` |
 | post to the UI asynchronously | `Dispatcher.InvokeAsync` / `Dispatcher.BeginInvoke` | `Control.BeginInvoke` / `.NET 9+ Control.InvokeAsync` |
-| fit naturally into async / await | `Dispatcher.InvokeAsync` | `.NET 9+ Control.InvokeAsync`, or `BeginInvoke` before that |
+| combine naturally with async / await | `Dispatcher.InvokeAsync` | `.NET 9+ Control.InvokeAsync`, or `BeginInvoke` before that |
 
-In day-to-day code, this rule-of-thumb is usually enough:
+In day-to-day work, this rough intuition is usually enough:
 
-* if you are simply using plain `await` inside a UI handler, you do not need them
-* if you need to touch the UI from outside the UI context, you do
-* do not overuse synchronous `Invoke` inside async flows
+* **if you are only doing plain `await` inside a UI handler, you do not need it**
+* **use it when you need to touch the UI from somewhere that is not the UI**
+* **do not overuse synchronous `Invoke` inside async flow**
+
+That alone prevents many accidents.
+
+When in doubt, this decision diagram is enough:
 
 ```mermaid
 flowchart TD
     A["Is this continuation already on the UI thread?"] --> B{"Yes?"}
-    B -- "Yes" --> C["A direct UI update is fine"]
-    B -- "No" --> D{"Do you need to touch the UI?"}
-    D -- "No" --> E["Keep processing normally"]
-    D -- "Yes" --> F["WPF: Dispatcher.InvokeAsync"]
-    D -- "Yes" --> G["WinForms: BeginInvoke / InvokeAsync"]
+    B -- yes --> C["Keep using plain await and update the UI directly"]
+    B -- no --> D{"Do you need to touch the UI?"}
+    D -- no --> E["Keep processing without marshaling"]
+    D -- yes --> F["WPF: Dispatcher.InvokeAsync"]
+    D -- yes --> G["WinForms: BeginInvoke / InvokeAsync"]
 ```
 
 ## 6. Common anti-patterns
 
-| Anti-pattern | Why it hurts | Better first replacement |
+| Anti-pattern | Why it hurts | First replacement |
 |---|---|---|
-| `LoadAsync().Result` in a UI handler | blocks the UI thread, easy to deadlock | `await LoadAsync()` |
-| `LoadAsync().Wait()` in a UI handler | same problem, message loop stops | `await LoadAsync()` |
-| `LoadAsync().GetAwaiter().GetResult()` in a UI handler | same blocking behavior, different exception shape | `await LoadAsync()` |
-| mechanically applying `ConfigureAwait(false)` in UI code | the continuation after await becomes unsafe for direct UI access | keep plain `await` at the outer UI layer |
-| `Task.Run(async () => await IoAsync())` | pushes I/O through the ThreadPool for no real benefit | `await IoAsync()` |
-| letting library code hold `Dispatcher` or `Control` directly | UI dependency leaks deep into non-UI layers | return data from the library and marshal at the UI boundary |
-| overusing `Dispatcher.Invoke` / `Control.Invoke` in async flows | easy to build blocking chains | prefer `Dispatcher.InvokeAsync` / `BeginInvoke` / `InvokeAsync` |
-| forcing async into constructors or sync property getters | common source of startup hangs | move the work into `Loaded`, `Shown`, or `InitializeAsync` |
+| `LoadAsync().Result` inside a UI handler | blocks the UI thread and deadlocks easily | `await LoadAsync()` |
+| `LoadAsync().Wait()` inside a UI handler | same issue, the message loop stops turning | `await LoadAsync()` |
+| `LoadAsync().GetAwaiter().GetResult()` inside a UI handler | same blocking problem with different exception wrapping | `await LoadAsync()` |
+| mechanically adding `ConfigureAwait(false)` to UI code | direct UI updates after `await` become fragile | keep plain `await` at the outer UI layer |
+| `Task.Run(async () => await IoAsync())` | needlessly bounces I/O onto the ThreadPool | `await IoAsync()` |
+| library code holding `Dispatcher` or `Control` directly | UI dependency spreads too deep and hurts reuse | let the library return data and marshal in the UI layer |
+| overusing `Dispatcher.Invoke` / `Control.Invoke` inside async flow | creates new blocking cycles | consider `Dispatcher.InvokeAsync` / `BeginInvoke` / `InvokeAsync` |
+| synchronizing async work inside constructors or property getters | creates startup hangs easily | move it to `Loaded` / `Shown` / `InitializeAsync` |
 
-The three most common ones are:
+The three especially common ones are:
 
 1. `.Result` / `.Wait()` on the UI thread
-2. mechanically adding `ConfigureAwait(false)` to UI code
-3. mixing library responsibilities with UI responsibilities until `Dispatcher` leaks everywhere
+2. mechanically adding `ConfigureAwait(false)` in UI code
+3. mixing library responsibility with UI responsibility so that `Dispatcher` leaks deep into the codebase
 
-Removing just those already calms things down a lot.
+Removing just those three already calms things down a lot.
 
 ## 7. Checklist for review
 
-When reviewing WPF / WinForms async code, this order usually works well:
+When reviewing `async` / `await` in WPF / WinForms, it helps to inspect these in order:
 
-* Are `.Result`, `.Wait()`, or `.GetAwaiter().GetResult()` still present in UI event handlers or UI initialization paths?
-* Is `Task.Run` used only for **CPU-heavy work**, not for I/O?
-* Is `ConfigureAwait(false)` being applied mechanically inside UI code?
-* On the other hand, does general-purpose library code still accidentally depend on a UI context?
-* When UI is touched after `await`, is it really guaranteed that the continuation is on the UI thread?
-* When explicit marshaling back to the UI is required, is the code using `Dispatcher.InvokeAsync`, `BeginInvoke`, or `InvokeAsync` appropriately?
-* Are synchronous marshaling calls like `Dispatcher.Invoke` / `Control.Invoke` increasing unnecessarily?
-* Is async being forced back into synchronous constructors, property getters, or event paths?
-* Is library code directly referencing `Window`, `Control`, or `Dispatcher`?
+* are `.Result` / `.Wait()` / `.GetAwaiter().GetResult()` still present in UI event handlers or UI initialization paths?
+* is `Task.Run` used only for **CPU work**, not for wrapping I/O?
+* has `ConfigureAwait(false)` been added mechanically to UI code?
+* conversely, is general-purpose library code still dragging UI-context assumptions around?
+* when code touches the UI directly after `await`, can you really say that it is still on the UI context?
+* where the code truly must return explicitly to the UI, is it using `Dispatcher.InvokeAsync` / `BeginInvoke` / `InvokeAsync`?
+* are synchronous marshaling calls like `Dispatcher.Invoke` / `Control.Invoke` multiplying without real need?
+* is async work being forced back into sync inside constructors, synchronous properties, or synchronous events?
+* does the library layer directly reference `Window`, `Control`, or `Dispatcher`?
 
-This checklist is also useful for aligning a team around **where the UI boundary really is**.
+This checklist is also useful for aligning a team around where UI responsibility really lives.
 
 ## 8. Rough rule-of-thumb guide
 
-| What you want to do | First thing to choose |
+| What you want to do | First choice |
 |---|---|
 | wait for HTTP / DB / file I/O in a UI handler | plain `await` |
 | run heavy CPU work without freezing the UI | `await Task.Run(...)` |
-| update the UI after `ConfigureAwait(false)` or from a background thread | WPF: `Dispatcher.InvokeAsync`; WinForms: `BeginInvoke` or `.NET 9+ InvokeAsync` |
-| write a reusable library | consider `ConfigureAwait(false)` |
-| synchronize async work back into a UI call | generally do not; make the caller async instead |
-| do startup initialization | `Loaded`, `Shown`, or an explicit `InitializeAsync` |
-| keep direct UI access after `await` | preserve plain `await` at the outer UI layer |
+| update the UI after `ConfigureAwait(false)` or from a background thread | WPF: `Dispatcher.InvokeAsync` / WinForms: `BeginInvoke` or `.NET 9+ InvokeAsync` |
+| write a general-purpose library | consider `ConfigureAwait(false)` |
+| synchronize async code back into sync in the UI | usually do not; extend async upward instead |
+| perform startup initialization | `Loaded` / `Shown` / explicit `InitializeAsync` |
+| keep touching the UI directly after `await` | preserve plain `await` at the outer UI layer |
 
 ## 9. Summary
 
-The most important thing in WPF / WinForms `async` / `await` is not a vague idea that "async is difficult."
+What really matters in WPF / WinForms `async` / `await` is not a vague feeling that "async is hard."  
 What matters is separating:
 
-* **where the code started**
+* **where execution started**
 * **where the continuation returns after `await`**
-* **who owns the responsibility for getting back onto the UI thread**
+* **who owns the responsibility for getting back to the UI**
 
-A very practical starting set of rules is:
+As a starting rule set, these five go a long way:
 
-1. plain `await` at the outer UI layer
+1. plain `await` at the outermost UI layer
 2. `Task.Run` only for heavy CPU work
 3. consider `ConfigureAwait(false)` in general-purpose libraries
-4. use `Dispatcher` / `BeginInvoke` / `InvokeAsync` only when you truly need to re-enter the UI
-5. do not use `.Result` / `.Wait()` / `.GetAwaiter().GetResult()` on the UI thread
+4. use `Dispatcher` / `BeginInvoke` / `InvokeAsync` only when you truly need to get back to the UI
+5. never use `.Result` / `.Wait()` / `.GetAwaiter().GetResult()` on the UI thread
 
-`async` / `await` itself is not especially hostile.
-What becomes hostile is using it **without keeping the UI thread in view**.
+`async` / `await` itself is not an especially nasty mechanism.  
+But **if you use it without keeping the UI thread at the center of the picture, it quickly turns into mud**.
 
-If you separate inside and outside of the UI, think about where continuations resume, and avoid bringing blocking into the UI thread, WPF / WinForms async code becomes much calmer.
-Code that freezes the screen is usually not "what async does"; it is usually **careless debt against the UI thread**.
+Put the other way around:
+
+* separate inside-UI and outside-UI work
+* stay conscious of where continuations return
+* do not bring synchronous blocking into the UI
+
+Those three alone make asynchronous WPF / WinForms code much calmer.  
+When the screen freezes, the problem is usually not that "async is bad." It is that **the code is taking on UI-thread debt in a sloppy way**.
 
 ## 10. References
 
-* [Related: C# async/await Best Practices - A decision table for Task.Run and ConfigureAwait](https://comcomponent.com/blog/2026/03/09/001-csharp-async-await-best-practices/)
+* [Related: C# async/await Best Practices - A decision table for Task.Run and ConfigureAwait](/en/blog/2026/03/09/001-csharp-async-await-best-practices/)
 * [Threading Model - WPF](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model)
-* [DispatcherSynchronizationContext Class](https://learn.microsoft.com/ja-jp/dotnet/api/system.windows.threading.dispatchersynchronizationcontext?view=windowsdesktop-10.0)
+* [DispatcherSynchronizationContext Class](https://learn.microsoft.com/en-us/dotnet/api/system.windows.threading.dispatchersynchronizationcontext?view=windowsdesktop-10.0)
 * [How to handle cross-thread operations with controls - Windows Forms](https://learn.microsoft.com/en-us/dotnet/desktop/winforms/controls/how-to-make-thread-safe-calls)
 * [WindowsFormsSynchronizationContext Class](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.windowsformssynchronizationcontext?view=windowsdesktop-10.0)
 * [Events Overview - Windows Forms](https://learn.microsoft.com/en-us/dotnet/desktop/winforms/forms/events)
-* [TaskScheduler.FromCurrentSynchronizationContext Method](https://learn.microsoft.com/ja-jp/dotnet/api/system.threading.tasks.taskscheduler.fromcurrentsynchronizationcontext?view=net-9.0)
+* [TaskScheduler.FromCurrentSynchronizationContext Method](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskscheduler.fromcurrentsynchronizationcontext?view=net-9.0)
 * [ConfigureAwait FAQ](https://devblogs.microsoft.com/dotnet/configureawait-faq/)
 * [How Async/Await Really Works in C#](https://devblogs.microsoft.com/dotnet/how-async-await-really-works/)
 * [Await, and UI, and deadlocks! Oh my!](https://devblogs.microsoft.com/dotnet/await-and-ui-and-deadlocks-oh-my/)
