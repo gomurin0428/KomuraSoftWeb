@@ -1,22 +1,104 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  {% assign meta_description = page.description | default: page.excerpt | strip_html | normalize_whitespace | truncate: 160 %}
+  {% assign meta_image = page.og_image | default: site.default_og_image | absolute_url %}
+  {% assign article_author = page.author | default: site.founder_name | default: "KomuraSoft" %}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="/logo.png">
   <title>{{ page.title }} | KomuraSoft Blog</title>
-  <meta name="description" content="{{ page.description | default: page.excerpt | strip_html | normalize_whitespace | truncate: 160 }}">
+  <meta name="description" content="{{ meta_description }}">
   <link rel="canonical" href="{{ page.url | absolute_url }}">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <meta name="author" content="{{ article_author }}">
+  <meta name="theme-color" content="#0f172a">
   <!-- Open Graph -->
   <meta property="og:type" content="article">
   <meta property="og:title" content="{{ page.title }}">
-  <meta property="og:description" content="{{ page.description | default: page.excerpt | strip_html | normalize_whitespace | truncate: 160 }}">
+  <meta property="og:description" content="{{ meta_description }}">
   <meta property="og:url" content="{{ page.url | absolute_url }}">
   <meta property="og:site_name" content="KomuraSoft">
+  <meta property="og:locale" content="{{ site.locale | default: 'ja_JP' }}">
+  <meta property="og:image" content="{{ meta_image }}">
+  <meta property="og:image:secure_url" content="{{ meta_image }}">
+  <meta property="og:image:width" content="1024">
+  <meta property="og:image:height" content="1024">
+  <meta property="og:image:alt" content="{{ page.title }}">
+  <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
+  <meta property="article:modified_time" content="{{ page.last_modified_at | default: page.date | date_to_xmlschema }}">
+  <meta property="article:author" content="{{ article_author }}">
+  {% if page.tags %}
+  {% for tag in page.tags %}
+  <meta property="article:tag" content="{{ tag }}">
+  {% endfor %}
+  {% endif %}
   <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ page.title }}">
-  <meta name="twitter:description" content="{{ page.description | default: page.excerpt | strip_html | normalize_whitespace | truncate: 160 }}">
+  <meta name="twitter:description" content="{{ meta_description }}">
+  <meta name="twitter:image" content="{{ meta_image }}">
+  <meta name="twitter:image:alt" content="{{ page.title }}">
+  <meta name="twitter:site" content="{{ site.x_username | default: '@komurasoft' }}">
+  <meta name="twitter:creator" content="{{ site.x_username | default: '@komurasoft' }}">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": {{ page.title | jsonify }},
+    "description": {{ meta_description | jsonify }},
+    "datePublished": "{{ page.date | date_to_xmlschema }}",
+    "dateModified": "{{ page.last_modified_at | default: page.date | date_to_xmlschema }}",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "{{ page.url | absolute_url }}"
+    },
+    "url": "{{ page.url | absolute_url }}",
+    "inLanguage": "ja-JP",
+    "image": [
+      "{{ meta_image }}"
+    ],
+    "author": {
+      "@type": "Person",
+      "name": {{ article_author | jsonify }}
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": {{ site.organization_name | default: 'KomuraSoft' | jsonify }},
+      "logo": {
+        "@type": "ImageObject",
+        "url": "{{ site.logo | absolute_url }}"
+      }
+    }{% if page.tags %},
+    "keywords": {{ page.tags | join: ', ' | jsonify }}{% endif %}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "{{ '/' | absolute_url }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "{{ '/blog/' | absolute_url }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": {{ page.title | jsonify }},
+        "item": "{{ page.url | absolute_url }}"
+      }
+    ]
+  }
+  </script>
   <link rel="stylesheet" href="/komura_soft_single_page.css">
   <style>
     .blog-container {

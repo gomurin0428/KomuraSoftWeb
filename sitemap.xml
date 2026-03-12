@@ -115,6 +115,12 @@
     <priority>0.70</priority>
   </url>
   <url>
+    <loc>https://comcomponent.com/blog/2026/03/12/002-generic-host-backgroundservice-desktop-app/</loc>
+    <lastmod>2026-03-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
     <loc>https://comcomponent.com/blog/2026/03/12/002-periodictimer-system-threading-timer-dispatchertimer-guide/</loc>
     <lastmod>2026-03-12</lastmod>
     <changefreq>monthly</changefreq>

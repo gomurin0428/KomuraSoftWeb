@@ -1,7 +1,16 @@
 title: KomuraSoft
-description: Windowsアプリケーション開発を中心とした受託開発サービス
+description: Windows開発、COM / ActiveX、C# / .NET、WPF / WinForms、C++/CLI などの受託開発と技術相談を承ります。
 url: https://comcomponent.com
 baseurl: ""
+lang: ja
+locale: ja_JP
+logo: /logo.png
+default_og_image: /logo.png
+organization_name: KomuraSoft
+founder_name: 小村 豪
+contact_url: https://docs.google.com/forms/d/e/1FAIpQLSfywSpD36AGXdQ70iNTNUgmZl6aFa7fTUT-PcyS9DY185pejw/viewform?usp=pp_url
+x_username: "@komurasoft"
+github_profile: https://github.com/gomurin0428
 
 # Build settings
 markdown: kramdown
@@ -21,6 +30,7 @@ exclude:
   - 002-application-verifier-abnormal-test-foundation-part2.md
   - wpf-winforms-ui-thread-async-await-one-sheet.md
   - activex-ocx-keep-wrap-replace-decision-table.md
+  - generic-host-backgroundservice-desktop-app.md
 
 # Permalink for posts
 permalink: /blog/:year/:month/:day/:title/
