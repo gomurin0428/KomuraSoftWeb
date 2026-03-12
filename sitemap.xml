@@ -8,7 +8,7 @@
   </url>
   <url>
     <loc>https://comcomponent.com/blog/</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-03-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
@@ -99,6 +99,12 @@
   <url>
     <loc>https://comcomponent.com/blog/2026/03/11/003-application-verifier-abnormal-test-foundation-part2/</loc>
     <lastmod>2026-03-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://comcomponent.com/blog/2026/03/12/000-wpf-winforms-ui-thread-async-await-one-sheet/</loc>
+    <lastmod>2026-03-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.70</priority>
   </url>

@@ -19,6 +19,7 @@ exclude:
   - 2026-03-11-tcp-retransmission-rfc1323-industrial-camera.md
   - 001-handle-leak-industrial-camera-long-run-crash-part1.md
   - 002-application-verifier-abnormal-test-foundation-part2.md
+  - wpf-winforms-ui-thread-async-await-one-sheet.md
 
 # Permalink for posts
 permalink: /blog/:year/:month/:day/:title/
