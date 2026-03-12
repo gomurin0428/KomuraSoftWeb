@@ -32,6 +32,81 @@ layout: null
       padding: 0;
       margin: 2rem 0 0 0;
     }
+    .blog-search {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-elevated);
+      box-shadow: var(--shadow-sm);
+    }
+    .blog-search-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .blog-search-description {
+      margin: 0.5rem 0 0 0;
+      color: var(--color-text-muted);
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+    .blog-search-form {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .blog-search-input {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      padding: 0.8rem 1rem;
+      background: #fff;
+      color: var(--color-text);
+      font: inherit;
+    }
+    .blog-search-input:focus {
+      outline: 2px solid rgba(10, 102, 194, 0.18);
+      border-color: var(--color-accent);
+    }
+    .blog-search-button,
+    .blog-search-clear {
+      border-radius: 999px;
+      padding: 0.8rem 1rem;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .blog-search-button {
+      border: 1px solid var(--color-accent);
+      background: var(--color-accent);
+      color: #fff;
+    }
+    .blog-search-button:hover {
+      opacity: 0.92;
+    }
+    .blog-search-clear {
+      border: 1px solid var(--color-border);
+      background: transparent;
+      color: var(--color-text-muted);
+    }
+    .blog-search-clear:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent-light);
+    }
+    .blog-search-status {
+      min-height: 1.5rem;
+      margin-top: 0.85rem;
+      color: var(--color-text-muted);
+      font-size: 0.9rem;
+    }
+    .blog-search-status.is-error {
+      color: #b42318;
+      font-weight: 600;
+    }
     .blog-cta {
       margin-top: 1.5rem;
       padding: 1.5rem;
@@ -95,6 +170,11 @@ layout: null
       color: var(--color-text-muted);
       padding: 3rem 1rem;
     }
+    @media (max-width: 40rem) {
+      .blog-search-form {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -120,9 +200,25 @@ layout: null
           <p class="blog-cta-text">記事で扱っているテーマに関する技術相談も受け付けています。COM / ActiveX、C# / .NET、WPF / WinForms、Windows アプリの改修や設計レビュー、不具合調査など、お困りごとがあればお問い合わせください。</p>
           <a class="blog-cta-button" href="https://docs.google.com/forms/d/e/1FAIpQLSfywSpD36AGXdQ70iNTNUgmZl6aFa7fTUT-PcyS9DY185pejw/viewform?usp=pp_url&entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87" target="_blank" rel="noopener">技術相談をする</a>
         </div>
+        <section class="blog-search" aria-labelledby="blog-search-title">
+          <h2 id="blog-search-title" class="blog-search-title">Search articles</h2>
+          <p class="blog-search-description">Search titles, descriptions, tags, and article body text.</p>
+          <form id="blog-search-form" class="blog-search-form" novalidate>
+            <input
+              id="blog-search-input"
+              class="blog-search-input"
+              type="search"
+              name="query"
+              placeholder="Search title, tags, or content"
+              autocomplete="off">
+            <button class="blog-search-button" type="submit">Search</button>
+            <button id="blog-search-clear" class="blog-search-clear" type="button">Clear</button>
+          </form>
+          <div id="blog-search-status" class="blog-search-status" aria-live="polite">Search is ready.</div>
+        </section>
         
         {% if site.posts.size > 0 %}
-        <ul class="blog-list">
+        <ul id="blog-list" class="blog-list">
           {% for post in site.posts %}
           <li class="blog-list-item">
             <a href="{{ post.url }}">
@@ -153,5 +249,255 @@ layout: null
       </div>
     </footer>
   </div>
+  <script>
+    (() => {
+      const searchIndexUrl = "{{ '/blog/search-data.json' | relative_url }}";
+      const searchForm = document.getElementById("blog-search-form");
+      const searchInput = document.getElementById("blog-search-input");
+      const clearButton = document.getElementById("blog-search-clear");
+      const statusElement = document.getElementById("blog-search-status");
+      const blogList = document.getElementById("blog-list");
+
+      if (!searchForm || !searchInput || !clearButton || !statusElement || !blogList) {
+        throw new Error("Blog search could not be initialized.");
+      }
+
+      const initialListMarkup = blogList.innerHTML;
+      const searchState = {
+        posts: [],
+        ready: false,
+        loadError: null
+      };
+
+      /**
+       * 入力: 任意の文字列。
+       * 出力: 検索比較用に正規化した小文字文字列。
+       * 処理内容: NFKC 正規化と空白圧縮を行い、部分一致しやすい形へ整えます。
+       */
+      function normalizeSearchText(value) {
+        return (value || "")
+          .normalize("NFKC")
+          .toLowerCase()
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      /**
+       * 入力: 検索結果に表示する投稿データ。
+       * 出力: HTML に安全に埋め込める文字列。
+       * 処理内容: 最低限の文字参照へ置換し、検索結果描画時の崩れを防ぎます。
+       */
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      /**
+       * 入力: 検索対象の生投稿データ配列。
+       * 出力: 正規化済みの検索用投稿データ配列。
+       * 処理内容: タイトル・説明・タグ・本文を結合し、検索時に再計算しない形へ変換します。
+       */
+      function buildSearchPosts(posts) {
+        return posts.map((post) => {
+          const normalizedTitle = normalizeSearchText(post.title);
+          const normalizedDescription = normalizeSearchText(post.description);
+          const normalizedExcerpt = normalizeSearchText(post.excerpt);
+          const normalizedTags = (post.tags || []).map((tag) => normalizeSearchText(tag));
+          const normalizedContent = normalizeSearchText(post.content);
+
+          return {
+            ...post,
+            normalizedTitle,
+            normalizedDescription,
+            normalizedExcerpt,
+            normalizedTags,
+            normalizedContent,
+            normalizedCombined: [
+              normalizedTitle,
+              normalizedDescription,
+              normalizedExcerpt,
+              normalizedTags.join(" "),
+              normalizedContent
+            ].join(" ").trim()
+          };
+        });
+      }
+
+      /**
+       * 入力: 画面へ表示する状態文言と、エラー表示かどうか。
+       * 出力: なし。
+       * 処理内容: 検索状態メッセージを更新し、必要に応じてエラー用スタイルを切り替えます。
+       */
+      function updateStatus(message, isError) {
+        statusElement.textContent = message;
+        statusElement.classList.toggle("is-error", Boolean(isError));
+      }
+
+      /**
+       * 入力: 表示対象の投稿データ配列。
+       * 出力: なし。
+       * 処理内容: 検索結果一覧を HTML として再描画し、0 件時は明示メッセージを出します。
+       */
+      function renderPosts(posts) {
+        if (!posts.length) {
+          blogList.innerHTML = '<li class="empty-message">No matching articles were found.</li>';
+          return;
+        }
+
+        blogList.innerHTML = posts.map((post) => {
+          const excerpt = post.description || post.excerpt || "";
+          const displayDate = post.displayDate || post.date;
+
+          return [
+            '<li class="blog-list-item">',
+            `  <a href="${escapeHtml(post.url)}">`,
+            `    <h2 class="blog-list-title">${escapeHtml(post.title)}</h2>`,
+            `    <div class="blog-list-meta">${escapeHtml(displayDate)}</div>`,
+            `    <p class="blog-list-excerpt">${escapeHtml(excerpt)}</p>`,
+            "  </a>",
+            "</li>"
+          ].join("\n");
+        }).join("\n");
+      }
+
+      /**
+       * 入力: 検索クエリ文字列と、検索用に正規化済みの投稿データ配列。
+       * 出力: スコア順に並べた一致投稿データ配列。
+       * 処理内容: 空白区切りの AND 検索を行い、タイトル・タグ・本文の一致度で重み付けします。
+       */
+      function searchPosts(query, posts) {
+        const normalizedQuery = normalizeSearchText(query);
+
+        if (!normalizedQuery) {
+          return posts.slice();
+        }
+
+        const terms = normalizedQuery.split(" ").filter(Boolean);
+
+        return posts
+          .filter((post) => terms.every((term) => post.normalizedCombined.includes(term)))
+          .map((post) => {
+            let score = 0;
+
+            terms.forEach((term) => {
+              if (post.normalizedTitle.includes(term)) {
+                score += 12;
+              }
+
+              if (post.normalizedDescription.includes(term)) {
+                score += 8;
+              }
+
+              if (post.normalizedExcerpt.includes(term)) {
+                score += 6;
+              }
+
+              if (post.normalizedTags.some((tag) => tag.includes(term))) {
+                score += 10;
+              }
+
+              if (post.normalizedContent.includes(term)) {
+                score += 3;
+              }
+            });
+
+            if (post.normalizedTitle.includes(normalizedQuery)) {
+              score += 20;
+            }
+
+            if (post.normalizedDescription.includes(normalizedQuery)) {
+              score += 12;
+            }
+
+            if (post.normalizedContent.includes(normalizedQuery)) {
+              score += 5;
+            }
+
+            return { post, score };
+          })
+          .sort((left, right) => {
+            if (right.score !== left.score) {
+              return right.score - left.score;
+            }
+
+            return right.post.date.localeCompare(left.post.date);
+          })
+          .map((entry) => entry.post);
+      }
+
+      /**
+       * 入力: 現在の入力欄に入っている検索文字列。
+       * 出力: なし。
+       * 処理内容: 状態に応じて初期一覧または検索結果を描画し、件数メッセージも更新します。
+       */
+      function applySearch() {
+        const query = searchInput.value;
+        const normalizedQuery = normalizeSearchText(query);
+
+        if (!normalizedQuery) {
+          blogList.innerHTML = initialListMarkup;
+          updateStatus(searchState.ready ? "Showing all articles." : "Loading search index...", Boolean(searchState.loadError));
+          return;
+        }
+
+        if (searchState.loadError) {
+          updateStatus("Search index could not be loaded.", true);
+          throw searchState.loadError;
+        }
+
+        if (!searchState.ready) {
+          updateStatus("Loading search index...", false);
+          return;
+        }
+
+        const matchedPosts = searchPosts(query, searchState.posts);
+        renderPosts(matchedPosts);
+        updateStatus(`${matchedPosts.length} article(s) matched "${query.trim()}".`, false);
+      }
+
+      /**
+       * 入力: なし。
+       * 出力: Promise<void>。
+       * 処理内容: 検索用 JSON を取得して前処理し、検索可能な状態へ初期化します。
+       */
+      async function initializeSearch() {
+        updateStatus("Loading search index...", false);
+
+        const response = await fetch(searchIndexUrl, { headers: { Accept: "application/json" } });
+        if (!response.ok) {
+          throw new Error(`Search index request failed with status ${response.status}.`);
+        }
+
+        const posts = await response.json();
+        searchState.posts = buildSearchPosts(posts);
+        searchState.ready = true;
+        updateStatus("Search is ready.", false);
+      }
+
+      searchForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        applySearch();
+      });
+
+      searchInput.addEventListener("input", () => {
+        applySearch();
+      });
+
+      clearButton.addEventListener("click", () => {
+        searchInput.value = "";
+        applySearch();
+        searchInput.focus();
+      });
+
+      initializeSearch().catch((error) => {
+        searchState.loadError = error;
+        updateStatus("Search index could not be loaded.", true);
+      });
+    })();
+  </script>
 </body>
 </html>

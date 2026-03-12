@@ -1,0 +1,18 @@
+---
+layout: null
+permalink: /blog/search-data.json
+---
+[
+{% for post in site.posts %}
+  {
+    "title": {{ post.title | jsonify }},
+    "url": {{ post.url | relative_url | jsonify }},
+    "date": {{ post.date | date: "%Y-%m-%d %H:%M" | jsonify }},
+    "displayDate": {{ post.date | date: "%Y年%m月%d日 %H:%M" | jsonify }},
+    "description": {{ post.description | default: "" | strip_html | normalize_whitespace | jsonify }},
+    "excerpt": {{ post.excerpt | strip_html | normalize_whitespace | jsonify }},
+    "tags": {{ post.tags | jsonify }},
+    "content": {{ post.content | strip_html | normalize_whitespace | jsonify }}
+  }{% unless forloop.last %},{% endunless %}
+{% endfor %}
+]
