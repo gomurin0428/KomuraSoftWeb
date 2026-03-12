@@ -1,5 +1,5 @@
 ---
-title: "FileSystemWatcher で事故らないための基礎知識 - 取りこぼし、重複通知、完了判定の落とし穴"
+title: "FileSystemWatcher の使い方と注意点 - 取りこぼし、重複通知、完了判定の落とし穴"
 date: 2026-03-10T10:00:00+09:00
 author: Go Komura
 tags:
@@ -9,14 +9,14 @@ tags:
   - Windows開発
   - ファイル連携
   - 設計
-description: "FileSystemWatcher を完了通知だと思うと事故りやすい理由と、再スキャン・原子的 claim・idempotency で安定させる設計を整理します。"
+description: "FileSystemWatcher の使い方と注意点を、取りこぼし、重複通知、完了判定の落とし穴、再スキャン、原子的 claim、idempotency の観点から整理します。"
 ---
 
-前回の [ファイル連携の排他制御で事故らないための基礎知識](https://comcomponent.com/blog/2026/03/07/001-file-integration-locking-best-practices-komurasoft-style/) では、
-「いつ読んでよいのか」「誰が処理権を持つのか」「失敗したときにどう回復するのか」を整理しました。
+`FileSystemWatcher` は、Windows 上の .NET でファイル変更を監視するときにまず候補になる API です。
+ただし、`Created` や `Changed` をそのまま完了通知だと思って使うと、取りこぼし、重複通知、途中ファイルの誤読でかなり普通に事故ります。
 
-今回はその続きとして、「どう検知するか」を扱います。対象は `FileSystemWatcher` です。
-主に Windows 上の .NET によるファイル連携を前提にします。
+この記事では、`FileSystemWatcher` の使い方と注意点を、主に Windows 上の .NET によるファイル連携を前提に整理します。
+あわせて、前提となる排他制御の考え方は [ファイル連携の排他制御の基礎知識 - ファイルロックと原子的 claim のベストプラクティス](https://comcomponent.com/blog/2026/03/07/001-file-integration-locking-best-practices-komurasoft-style/) も参照できる形にしています。
 
 `FileSystemWatcher` は便利です。ファイルやディレクトリの作成、変更、削除、名前変更をイベントで受け取れます。
 ただし、ここでイベントを「完了通知」だと思うと、かなり普通に事故ります。
@@ -72,7 +72,7 @@ description: "FileSystemWatcher を完了通知だと思うと事故りやすい
 要するに、`FileSystemWatcher` を「真実の履歴ストリーム」として扱わないことです。
 通知はあくまで、「そろそろ見に行け」の合図に留めた方が壊れにくくなります。
 
-## 2. `FileSystemWatcher` で起きる勘違いパターン（図）
+## 2. `FileSystemWatcher` の使い方で起きやすい勘違いパターン（図）
 
 ### 2.1. `Created` を完了通知だと思う
 
@@ -550,7 +550,7 @@ async Task ScannerLoopAsync(CancellationToken cancellationToken)
 
 ## 8. 参考資料
 
-- [前回の記事: ファイル連携の排他制御で事故らないための基礎知識](https://comcomponent.com/blog/2026/03/07/001-file-integration-locking-best-practices-komurasoft-style/)
+- [関連記事: ファイル連携の排他制御の基礎知識 - ファイルロックと原子的 claim のベストプラクティス](https://comcomponent.com/blog/2026/03/07/001-file-integration-locking-best-practices-komurasoft-style/)
 - [FileSystemWatcher Class (System.IO)](https://learn.microsoft.com/en-us/dotnet/api/system.io.filesystemwatcher?view=net-10.0)
 - [System.IO.FileSystemWatcher class - .NET](https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-io-filesystemwatcher)
 - [FileSystemWatcher.InternalBufferSize Property (System.IO)](https://learn.microsoft.com/en-us/dotnet/api/system.io.filesystemwatcher.internalbuffersize?view=net-10.0)

@@ -1,11 +1,15 @@
 ---
-title: "COMはなぜ美しいのか"
+title: "COM とは何か - Windows COM の設計が今でも美しい理由"
 date: 2026-01-25 10:00
 tags: [COM, ActiveX, Windows開発]
 author: Go Komura
+description: "COM とは何かを、Windows COM のインターフェース設計、IUnknown、GUID、バイナリ互換性の観点から整理し、今でも通用する理由を解説します。"
 ---
 
-# COMはなぜ美しいのか
+# COM とは何か - Windows COM の設計が今でも美しい理由
+
+COM は古い技術だと思われがちですが、Windows 開発では今でも設計の芯として現れます。
+特に検索で多いのは、COM とは何か、なぜ IUnknown や GUID が必要なのか、なぜ今でも話題に出るのか、という疑問です。
 
 ## COMとは？
 

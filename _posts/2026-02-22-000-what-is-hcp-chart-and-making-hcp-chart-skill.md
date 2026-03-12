@@ -1,11 +1,12 @@
 ---
-title: "HCPチャートとは何か？MakingHCPChartSkillでHCP-DSLを決定的SVGにする"
+title: "HCPチャートとは何か - HCP-DSL を決定的 SVG に変換する MakingHCPChartSkill の使い方"
 date: 2026-02-22 10:00
 tags: [HCP, Codex, SVG, Python, 設計]
 author: Go Komura
+description: "HCPチャートとは何かを説明しつつ、MakingHCPChartSkill で HCP-DSL を決定的 SVG に変換する流れ、読み方、使い方をまとめます。"
 ---
 
-# HCPチャートとは何か？MakingHCPChartSkillでHCP-DSLを決定的SVGにする
+# HCPチャートとは何か - HCP-DSL を決定的 SVG に変換する MakingHCPChartSkill の使い方
 
 ## 目次
 

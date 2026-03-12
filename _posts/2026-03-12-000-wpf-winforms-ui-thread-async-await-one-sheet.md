@@ -1,6 +1,6 @@
 ---
-title: "WPF / WinForms の UI スレッドと async/await を一枚で整理 - await 後の戻り先、Dispatcher、ConfigureAwait、.Result / .Wait() の詰まりどころ"
-description: "WPF / WinForms の UI スレッドと async/await の関係を、await 後の戻り先、Dispatcher / Invoke、ConfigureAwait(false)、.Result / .Wait() の落とし穴まで一枚で整理します。"
+title: "WPF / WinForms の async/await と UI スレッドを一枚で整理 - await 後の戻り先、Dispatcher、ConfigureAwait、.Result / .Wait() の詰まりどころ"
+description: "WPF / WinForms の async/await と UI スレッドの関係を、await 後の戻り先、Dispatcher / Invoke、ConfigureAwait(false)、.Result / .Wait() で画面が固まる理由まで一枚で整理します。"
 date: 2026-03-12T10:00:00+09:00
 tags:
   - C#
@@ -12,9 +12,11 @@ tags:
   - スレッド
 ---
 
-前回の [C# における async/await のベストプラクティス - まず見る判断表](https://comcomponent.com/blog/2026/03/09/001-csharp-async-await-best-practices/) では、`async` / `await` を **I/O 待ちなのか、CPU 計算なのか** から整理しました。
+WPF / WinForms で `async` / `await` を使うときに一番迷いやすいのは、**`await` のあとにどのスレッドへ戻るのか**、そして **いつ UI を触ってよいのか** です。
+特に `Dispatcher`、`BeginInvoke`、`ConfigureAwait(false)`、`.Result` / `.Wait()` が混ざると、画面フリーズやクロススレッド例外の原因が見えにくくなります。
 
-今回はその続編として、**WPF / WinForms の UI スレッド** に絞ります。
+この記事では、WPF / WinForms の UI スレッドと `async` / `await` の関係に絞って整理します。  
+`async` / `await` の全体的な判断軸は、[C# async/await のベストプラクティス - Task.Run と ConfigureAwait の判断表](https://comcomponent.com/blog/2026/03/09/001-csharp-async-await-best-practices/) とつながる形です。
 
 実務で本当に血の匂いがするのは、だいたいこのへんです。
 
@@ -653,7 +655,7 @@ WPF / WinForms の `async` / `await` で本当に大事なのは、
 
 ## 10. 参考資料
 
-* [前回: C# における async/await のベストプラクティス - まず見る判断表](https://comcomponent.com/blog/2026/03/09/001-csharp-async-await-best-practices/)
+* [関連記事: C# async/await のベストプラクティス - Task.Run と ConfigureAwait の判断表](https://comcomponent.com/blog/2026/03/09/001-csharp-async-await-best-practices/)
 * [Threading Model - WPF](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model)
 * [DispatcherSynchronizationContext Class](https://learn.microsoft.com/ja-jp/dotnet/api/system.windows.threading.dispatchersynchronizationcontext?view=windowsdesktop-10.0)
 * [How to handle cross-thread operations with controls - Windows Forms](https://learn.microsoft.com/en-us/dotnet/desktop/winforms/controls/how-to-make-thread-safe-calls)

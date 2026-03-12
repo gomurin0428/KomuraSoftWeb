@@ -1,0 +1,677 @@
+I"ˉ<p>この記事で扱うのは、特別なリアルタイム拡張を入れた Windows ではなく、<strong>普通の Windows 10 / 11</strong> です。
+対象は、一般的なデスクトップ PC やノート PC の上で動く <strong>user-mode の通常アプリ</strong> です。</p>
+
+<p>ここで目指すのは、hard real-time の保証ではありません。
+普通の Windows でも、設計、待機方法、優先度、電源設定、計測を揃えると、<strong>soft real-time としてかなり実用的な状態</strong> まで持っていけます。</p>
+
+<p>今回は、項目を網羅的に並べるより、<strong>何を見直せばよいかをすぐ把握できる構成</strong> にしました。
+最初に 4 節のチェックリストを見ると、見直す場所がだいたい分かります。</p>
+
+<h2 id="目次">目次</h2>
+
+<ol>
+  <li>まず結論（ひとことで）</li>
+  <li>この記事でいう「普通のWindows」とは何か
+    <ul>
+      <li>2.1. 対象にする範囲</li>
+      <li>2.2. 対象外にするもの</li>
+    </ul>
+  </li>
+  <li>Windows でのソフトリアルタイムとは何か
+    <ul>
+      <li>3.1. 目標にするもの</li>
+      <li>3.2. この記事で使う言葉</li>
+      <li>3.3. どこから難しくなるか</li>
+    </ul>
+  </li>
+  <li>まず見るチェックリスト
+    <ul>
+      <li>4.1. 全体像</li>
+      <li>4.2. 周期ループは <code class="language-plaintext highlighter-rouge">Sleep</code> 任せにしない</li>
+      <li>4.3. fast path と slow path を分ける</li>
+      <li>4.4. キューは固定長にして、あふれたときの方針を決める</li>
+      <li>4.5. fast path に重い処理を入れない</li>
+      <li>4.6. 優先度は必要なスレッドだけ上げる</li>
+      <li>4.7. タイマ、CPU、電源設定をセットで見る</li>
+      <li>4.8. 遅れを見えるようにする</li>
+    </ul>
+  </li>
+  <li>電源設定・OS 設定のチェックリスト</li>
+  <li>計測と評価
+    <ul>
+      <li>6.1. 何を記録するか</li>
+      <li>6.2. p99 / p99.9 / max とは何か</li>
+      <li>6.3. 何で見るか</li>
+      <li>6.4. テスト条件</li>
+    </ul>
+  </li>
+  <li>ざっくり使い分け</li>
+  <li>まとめ</li>
+  <li>参考資料</li>
+</ol>
+
+<hr />
+
+<h2 id="1-まず結論ひとことで">1. まず結論（ひとことで）</h2>
+
+<ul>
+  <li><strong>普通の Windows で目指すのは、hard real-time の保証ではなく、遅延とジッタを小さくし、deadline miss を減らすこと</strong></li>
+  <li>まず見直すべきなのは、優先度の値より、<strong>周期スレッドの中に何を入れているか</strong></li>
+  <li>毎周期必ず通る時間に厳しい処理を <strong>fast path</strong>、保存・通信・UI のように少し遅れてもよい処理を <strong>slow path</strong> として分ける</li>
+  <li>fast path では、<code class="language-plaintext highlighter-rouge">Sleep</code> 任せの待機、ブロッキング I/O、毎回の確保・解放、無制限キューを避ける</li>
+  <li>音声や映像のような連続ストリームでは、まず <strong>MMCSS</strong> を検討する</li>
+  <li>実運用では、<strong>AC 給電、電源モード、timer resolution、power throttling、バックグラウンド負荷</strong> が効く</li>
+  <li>評価は平均値だけでなく、<strong>p99 / p99.9 / max / miss 回数 / queue 深さ / DPC / ISR / page fault</strong> で見る</li>
+</ul>
+
+<p>実務での順番としては、だいたい次です。</p>
+
+<ol>
+  <li>周期ループを <code class="language-plaintext highlighter-rouge">Sleep</code> 任せから外す</li>
+  <li>fast path と slow path を分ける</li>
+  <li>キューを固定長にして、あふれたときの方針を決める</li>
+  <li>fast path から I/O、割り当て、重いロックを外す</li>
+  <li>必要なスレッドだけ優先度や MMCSS を使う</li>
+  <li>普通の Windows の電源設定と計測を揃える</li>
+</ol>
+
+<p>「普通の Windows で、どこを直せば遅れにくくなるか」を把握したいなら、この順番で見るのが分かりやすいです。</p>
+
+<h2 id="2-この記事でいう普通のwindowsとは何か">2. この記事でいう「普通のWindows」とは何か</h2>
+
+<p>ここでいう「普通の Windows」は、<strong>Windows 10 / 11 の一般的な PC</strong> を指します。
+特別なリアルタイム拡張や専用 OS は使わず、Windows が標準で持っている API と設定の範囲で、どこまで安定化できるかを見る、という立場です。</p>
+
+<pre><code class="language-mermaid">flowchart TB
+    scope["この記事の対象"] --&gt; s1["Windows 10 / 11 の一般的な PC"]
+    scope --&gt; s2["user-mode の通常アプリ"]
+    scope --&gt; s3["標準 API と標準設定を中心に使う"]
+    scope --&gt; s4["普通のデスクトップ PC / ノート PC"]
+
+    out["この記事の対象外"] --&gt; o1["専用 RTOS や RT 拡張"]
+    out --&gt; o2["カーネルドライバ主体の制御"]
+    out --&gt; o3["FPGA やマイコンへ全面移管する構成"]
+</code></pre>
+
+<h3 id="21-対象にする範囲">2.1. 対象にする範囲</h3>
+
+<p>対象にするのは、たとえば次のようなものです。</p>
+
+<ul>
+  <li>Windows 10 / 11 上で動く C++ / C# の user-mode アプリ</li>
+  <li>音声、映像、計測、装置制御、周期処理のように「遅れにくさ」が必要なソフトウェア</li>
+  <li>一般的なデスクトップ PC、ワークステーション、ノート PC</li>
+</ul>
+
+<p>つまり、「普通に配備できる Windows アプリとして、どこまで粘れるか」を扱います。</p>
+
+<h3 id="22-対象外にするもの">2.2. 対象外にするもの</h3>
+
+<p>一方で、この記事の中心からは外すものもあります。</p>
+
+<ul>
+  <li>hard real-time の保証</li>
+  <li>専用 RTOS やリアルタイム拡張製品の導入</li>
+  <li>カーネルドライバや独自ドライバを主役にする設計</li>
+  <li>FPGA、マイコン、専用コントローラに時間に厳しい部分を全面移管する構成</li>
+</ul>
+
+<p>要件が厳しくなれば、こうした選択も必要になります。
+ただ、最初からそこへ行く前に、<strong>普通の Windows で再現しやすい改善</strong> を積み上げる価値はかなりあります。</p>
+
+<h2 id="3-windows-でのソフトリアルタイムとは何か">3. Windows でのソフトリアルタイムとは何か</h2>
+
+<h3 id="31-目標にするもの">3.1. 目標にするもの</h3>
+
+<p>普通の Windows で狙うのは、次のような状態です。</p>
+
+<ul>
+  <li>通常時の遅延を低くする</li>
+  <li>ジッタを小さくする</li>
+  <li>たまの遅延スパイクがあっても壊れにくくする</li>
+  <li>期限に間に合わなかった回数を観測できるようにする</li>
+</ul>
+
+<p>ここでいう soft real-time は、「絶対に遅れない」ではなく、<strong>遅れにくく、遅れても分かり、遅れても壊れにくい</strong> を目指す考え方です。</p>
+
+<h3 id="32-この記事で使う言葉">3.2. この記事で使う言葉</h3>
+
+<p>最初に、この 3 つだけ押さえておくと読みやすくなります。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>言葉</th>
+      <th>意味</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>遅延</td>
+      <td>予定より処理が遅れて始まる、または終わること</td>
+    </tr>
+    <tr>
+      <td>ジッタ</td>
+      <td>周期や処理時間のばらつき。毎回同じ間隔で動かないこと</td>
+    </tr>
+    <tr>
+      <td>deadline miss</td>
+      <td>決めていた期限までに処理が終わらないこと</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>たとえば、1ms ごとに動かしたい処理が 1.8ms 後に始まったなら、その 0.8ms 分が遅延です。
+それが毎回 1.0ms ではなく 0.9ms、1.3ms、2.1ms のように揺れるなら、それがジッタです。</p>
+
+<h3 id="33-どこから難しくなるか">3.3. どこから難しくなるか</h3>
+
+<p>普通の Windows の user-mode アプリだけで厳しくなってくるのは、たとえば次のような要求です。</p>
+
+<ul>
+  <li>期限違反ゼロを保証したい</li>
+  <li>数百マイクロ秒以下を長時間安定して守りたい</li>
+  <li>重い GUI、通信、ストレージと高頻度周期処理を全部同居させたい</li>
+  <li>バッテリー駆動や省電力優先のまま厳しい周期を守りたい</li>
+  <li>ドライバやデバイス由来のスパイクも許されない</li>
+</ul>
+
+<p>このあたりになると、普通の Windows 単独では厳しくなります。
+その場合は、<strong>本当に時間に厳しい部分だけをファームウェア、専用コントローラ、FPGA、別の RTOS へ寄せる</strong> ことも考えたほうがよいです。</p>
+
+<h2 id="4-まず見るチェックリスト">4. まず見るチェックリスト</h2>
+
+<p>この節は、<strong>「何を気を付ければよいか」を先に把握するための節</strong> です。
+まずは次の表だけ見れば、見直す場所のあたりは付きます。</p>
+
+<h3 id="41-全体像">4.1. 全体像</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>確認する項目</th>
+      <th>まずやること</th>
+      <th>典型的な NG</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>待機方法</td>
+      <td>絶対期限で回す。イベント駆動や高精度 waitable timer を使う</td>
+      <td><code class="language-plaintext highlighter-rouge">Sleep(1)</code> ベースの周期ループ</td>
+    </tr>
+    <tr>
+      <td>処理の分離</td>
+      <td>fast path と slow path を分ける</td>
+      <td>fast path に保存、送信、UI を入れる</td>
+    </tr>
+    <tr>
+      <td>キュー</td>
+      <td>固定長にして、あふれたときの方針を決める</td>
+      <td>無制限キューで先送りする</td>
+    </tr>
+    <tr>
+      <td>fast path の中身</td>
+      <td>割り当て、重いログ、ブロッキング I/O、重いロックを外す</td>
+      <td><code class="language-plaintext highlighter-rouge">new</code> / <code class="language-plaintext highlighter-rouge">malloc</code> / 同期 I/O / 毎回の文字列生成</td>
+    </tr>
+    <tr>
+      <td>優先度</td>
+      <td>必要なスレッドだけ上げる。音声・映像は MMCSS を検討する</td>
+      <td>いきなり <code class="language-plaintext highlighter-rouge">REALTIME_PRIORITY_CLASS</code></td>
+    </tr>
+    <tr>
+      <td>OS / 電源</td>
+      <td>AC 給電、電源モード、timer resolution、power throttling を確認する</td>
+      <td>バッテリー駆動や省電力モードのまま評価する</td>
+    </tr>
+    <tr>
+      <td>計測</td>
+      <td>lateness、実行時間、miss 回数、queue 深さを取る</td>
+      <td>平均値だけを見る</td>
+    </tr>
+  </tbody>
+</table>
+
+<pre><code class="language-mermaid">flowchart TB
+    start["周期処理が遅れる"] --&gt; c1["待機方法を確認する"]
+    c1 --&gt; c2["fast path に重い処理が入っていないか確認する"]
+    c2 --&gt; c3["キューの上限と、あふれ時の方針を確認する"]
+    c3 --&gt; c4["優先度と MMCSS の使い方を確認する"]
+    c4 --&gt; c5["電源モードと timer / power throttling を確認する"]
+    c5 --&gt; c6["それでも揺れるなら DPC / ISR / page fault を計測する"]
+</code></pre>
+
+<p>以下、各項目を順番に見ていきます。</p>
+
+<h3 id="42-周期ループは-sleep-任せにしない">4.2. 周期ループは <code class="language-plaintext highlighter-rouge">Sleep</code> 任せにしない</h3>
+
+<p>まず最初に確認したいのはここです。
+<code class="language-plaintext highlighter-rouge">Sleep(1)</code> は「1ms きっかり待つ」ではなく、<strong>少なくとも 1ms 以上待つ</strong> です。
+そこに <code class="language-plaintext highlighter-rouge">Step()</code> の実行時間も足されるので、周期のずれがそのまま積み上がります。</p>
+
+<pre><code class="language-mermaid">flowchart LR
+    a["Sleep(1)"] --&gt; b["想定より長く待つことがある"]
+    b --&gt; c["Step の実行時間が足される"]
+    c --&gt; d["周期のずれが累積する"]
+</code></pre>
+
+<p>周期処理は、<strong>相対時間でなく絶対期限</strong> で回したほうが安定します。
+考え方は次のような形です。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int64_t</span> <span class="n">next</span> <span class="o">=</span> <span class="n">QpcNow</span><span class="p">()</span> <span class="o">+</span> <span class="n">periodTicks</span><span class="p">;</span>
+
+<span class="k">while</span> <span class="p">(</span><span class="n">running</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">WaitUntil</span><span class="p">(</span><span class="n">next</span> <span class="o">-</span> <span class="n">wakeMarginTicks</span><span class="p">);</span>   <span class="c1">// event / waitable timer</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">QpcNow</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">next</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">CpuRelax</span><span class="p">();</span>                      <span class="c1">// 最後だけ短く spin</span>
+    <span class="p">}</span>
+
+    <span class="kt">int64_t</span> <span class="n">started</span> <span class="o">=</span> <span class="n">QpcNow</span><span class="p">();</span>
+    <span class="n">FastStep</span><span class="p">();</span>                          <span class="c1">// no blocking, no alloc, no heavy lock</span>
+    <span class="kt">int64_t</span> <span class="n">finished</span> <span class="o">=</span> <span class="n">QpcNow</span><span class="p">();</span>
+
+    <span class="n">RecordTiming</span><span class="p">(</span><span class="n">next</span><span class="p">,</span> <span class="n">started</span><span class="p">,</span> <span class="n">finished</span><span class="p">);</span>
+
+    <span class="n">next</span> <span class="o">+=</span> <span class="n">periodTicks</span><span class="p">;</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">finished</span> <span class="o">&gt;</span> <span class="n">next</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="o">++</span><span class="n">missedDeadlines</span><span class="p">;</span>
+        <span class="n">next</span> <span class="o">+=</span> <span class="n">periodTicks</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ポイントは 2 つです。</p>
+
+<ul>
+  <li>毎回 <code class="language-plaintext highlighter-rouge">next = now + period</code> にしない</li>
+  <li>遅れたときにどうするかを先に決めておく</li>
+</ul>
+
+<p>普通の Windows で安定させたいなら、ここはかなり効きます。</p>
+
+<h3 id="43-fast-path-と-slow-path-を分ける">4.3. fast path と slow path を分ける</h3>
+
+<p>構成として一番効果が大きいのは、<strong>時間に厳しい処理と、少し遅れてもよい処理を分けること</strong> です。</p>
+
+<ul>
+  <li>fast path
+毎周期必ず通る、短く終わってほしい処理</li>
+  <li>slow path
+保存、通信、整形、集計、UI など、少し遅れても許される処理</li>
+</ul>
+
+<pre><code class="language-mermaid">flowchart LR
+    dev["デバイス / タイマ / イベント"] --&gt; fast["fast path: 取得 / 制御 / 最小限のコピー"]
+    fast --&gt; queue["固定長キュー"]
+    queue --&gt; slow["slow path: 整形 / 保存 / 送信 / UI"]
+    fast --&gt; stat["時刻記録 / miss 記録"]
+    stat --&gt; slow
+</code></pre>
+
+<p>fast path でやるのは、次のようなものだけに絞ります。</p>
+
+<ul>
+  <li>データ取得</li>
+  <li>制御値計算</li>
+  <li>最小限のコピー</li>
+  <li>タイムスタンプ</li>
+  <li>キュー投入</li>
+  <li>miss や overrun の記録</li>
+</ul>
+
+<p>これ以外は slow path に送ったほうが安定します。
+普通の Windows でソフトリアルタイムを狙うなら、<strong>まずこの分離が土台</strong> です。</p>
+
+<h3 id="44-キューは固定長にしてあふれたときの方針を決める">4.4. キューは固定長にして、あふれたときの方針を決める</h3>
+
+<p>「遅れたらキューに積めばよい」と考えると、問題を先送りしやすくなります。
+無制限キューは、一見安全そうですが、実際には <strong>遅延を見えにくくするだけ</strong> になりがちです。</p>
+
+<pre><code class="language-mermaid">flowchart LR
+    input["fast path がデータを生成"] --&gt; q{"固定長キューに空きがあるか"}
+    q --&gt; enq["空きあり: そのまま投入する"]
+    q --&gt; policy["空きなし: 方針を適用する"]
+    policy --&gt; latest["最新値優先: 古いデータを捨てる"]
+    policy --&gt; strict["欠落不可: エラー / 停止 / アラート"]
+    policy --&gt; logonly["ログ用途: ドロップ数を記録する"]
+</code></pre>
+
+<p>先に決めておきたいのは、次の 3 つです。</p>
+
+<ul>
+  <li>キューの上限</li>
+  <li>あふれたときの方針</li>
+  <li>あふれた事実をどう記録するか</li>
+</ul>
+
+<p>たとえば、最新値だけ意味があるなら古いものを捨てるほうが自然です。
+一方で、欠落が許されないなら、静かに遅らせるより、エラーとして扱ったほうが後で困りません。</p>
+
+<h3 id="45-fast-path-に重い処理を入れない">4.5. fast path に重い処理を入れない</h3>
+
+<p>fast path で避けたいものは、かなりはっきりしています。</p>
+
+<ul>
+  <li>ファイル書き込み</li>
+  <li>ネットワーク送信</li>
+  <li>DB 書き込み</li>
+  <li>重いログ出力</li>
+  <li>毎回の <code class="language-plaintext highlighter-rouge">new</code> / <code class="language-plaintext highlighter-rouge">malloc</code> / <code class="language-plaintext highlighter-rouge">List&lt;T&gt;.Add</code></li>
+  <li>毎回の文字列連結や <code class="language-plaintext highlighter-rouge">ToString()</code></li>
+  <li>重いロック</li>
+  <li>初回アクセスでのページフォルトを呼びやすい処理</li>
+</ul>
+
+<p>まとめると、<strong>遅くなるかもしれない処理を fast path に持ち込まない</strong> ということです。</p>
+
+<p>特に注意したいのは次の 3 つです。</p>
+
+<ol>
+  <li>
+    <p><strong>割り当てと解放</strong>
+fast path では、バッファを先に確保して再利用するほうが安定します。</p>
+  </li>
+  <li>
+    <p><strong>ブロッキング I/O</strong>
+開発機ではたまたま速く見えても、本番では揺れやすいです。</p>
+  </li>
+  <li>
+    <p><strong>ページフォルト</strong>
+起動時に必要なメモリへ一度触れておく、というだけでも差が出ます。</p>
+  </li>
+</ol>
+
+<p>必要なら <code class="language-plaintext highlighter-rouge">VirtualLock</code> を使う場面もありますが、これは補助的な手段です。
+まずは、fast path 自体を軽くして、必要なメモリを先に用意するほうが先です。</p>
+
+<h3 id="46-優先度は必要なスレッドだけ上げる">4.6. 優先度は必要なスレッドだけ上げる</h3>
+
+<p>優先度の基本は、<strong>全部を上げない</strong> ことです。
+まずは本当に時間に厳しいスレッドだけを対象にします。</p>
+
+<p>考え方としては、だいたい次です。</p>
+
+<ul>
+  <li>UI や通常ワーカーは普通の優先度</li>
+  <li>fast path のスレッドだけを必要に応じて上げる</li>
+  <li>保存、送信、ログ集約のような後ろ仕事は background mode を検討する</li>
+  <li>プロセス全体より、まずスレッド単位で考える</li>
+</ul>
+
+<p>音声や映像のような連続ストリームでは、まず <strong>MMCSS</strong> を検討するのが自然です。
+MMCSS は、マルチメディア向けに Windows が用意しているスケジューリング機能です。
+単純に高優先度へ寄せるより、Windows の流儀に沿っています。</p>
+
+<p>一方で、<code class="language-plaintext highlighter-rouge">REALTIME_PRIORITY_CLASS</code> は最初に入れる設定ではありません。
+効果が出ることはありますが、副作用も大きいので、<strong>専用機で十分に挙動を確認した上で、本当に必要なときだけ</strong> 検討したほうが安全です。</p>
+
+<h3 id="47-タイマcpu電源設定をセットで見る">4.7. タイマ、CPU、電源設定をセットで見る</h3>
+
+<p>普通の Windows では、コードだけ直しても足りないことがあります。
+待機方法、CPU の置き方、電源設定はセットで見たほうが分かりやすいです。</p>
+
+<p>確認したい点は次です。</p>
+
+<ul>
+  <li>経過時間の計測は <code class="language-plaintext highlighter-rouge">QueryPerformanceCounter</code> / <code class="language-plaintext highlighter-rouge">Stopwatch</code> を使っているか</li>
+  <li>待機はデバイスイベント、または高精度 waitable timer を使えるか</li>
+  <li><code class="language-plaintext highlighter-rouge">timeBeginPeriod</code> を使うなら、必要な間だけにしているか</li>
+  <li>CPU 固定が必要かどうかを、計測してから判断しているか</li>
+  <li>AC 給電、電源モード、process power throttling を確認しているか</li>
+</ul>
+
+<p>CPU については、いきなり hard affinity で固定するより、まず <code class="language-plaintext highlighter-rouge">SetThreadIdealProcessor</code> や CPU Sets のような <strong>緩い指定</strong> から始めるほうが扱いやすいことが多いです。
+固定すると、かえって OS の逃げ道を減らすことがあります。</p>
+
+<h3 id="48-遅れを見えるようにする">4.8. 遅れを見えるようにする</h3>
+
+<p>最後に大事なのは、<strong>遅れたことを隠さない</strong> ことです。
+周期違反は、例外として捨てるより、数えて記録したほうが後で原因を詰めやすくなります。</p>
+
+<p>最低限、次は持っておくと役に立ちます。</p>
+
+<ul>
+  <li>予定開始時刻</li>
+  <li>実開始時刻</li>
+  <li>実終了時刻</li>
+  <li>lateness</li>
+  <li>実行時間</li>
+  <li>missed deadline 回数</li>
+  <li>連続 missed deadline 回数</li>
+  <li>queue 深さ</li>
+  <li>ドロップ数</li>
+</ul>
+
+<p>それでも大きなスパイクが消えないなら、アプリの外側も疑います。
+普通の Windows では、<strong>DPC / ISR、ドライバ、page fault、熱、クロック変動</strong> で揺れることがあります。
+この段階になったら、ETW / WPR / WPA や LatencyMon で切り分けると、原因が見えやすくなります。</p>
+
+<h2 id="5-電源設定os-設定のチェックリスト">5. 電源設定・OS 設定のチェックリスト</h2>
+
+<p>普通の Windows で効きやすい設定は、まず Windows 標準の範囲にあります。
+最初から BIOS / UEFI へ行くより、次の順で見るほうが再現しやすいです。</p>
+
+<pre><code class="language-mermaid">flowchart LR
+    a["AC 給電と電源モードを確認する"] --&gt; b["必要なら専用の電源プランを作る"]
+    b --&gt; c["power throttling と timer 関連を確認する"]
+    c --&gt; d["バックグラウンド負荷を減らす"]
+    d --&gt; e["必要になってから BIOS / UEFI を見る"]
+</code></pre>
+
+<p>チェックリストとしては次のようになります。</p>
+
+<ol>
+  <li>
+    <p><strong>AC 給電で動かす</strong>
+バッテリー駆動のまま詰めても、結果が安定しにくいです。</p>
+  </li>
+  <li>
+    <p><strong>[設定] &gt; [システム] &gt; [電源 &amp; バッテリー] の電源モードを確認する</strong>
+本番や計測では、<strong>[最適なパフォーマンス]</strong> 寄りを使ったほうが素直です。</p>
+  </li>
+  <li>
+    <p><strong>必要なら専用の電源プランを用意する</strong>
+普段使いはバランス、本番や計測だけ専用プラン、という分け方が実務では扱いやすいです。</p>
+  </li>
+  <li>
+    <p><strong>最小のプロセッサの状態 / 最大のプロセッサの状態を確認する</strong>
+専用機や計測時なら、AC 時のみ 100% / 100% を試す価値があります。
+ただし、熱、消費電力、ファン騒音は増えます。</p>
+  </li>
+  <li>
+    <p><strong>process power throttling / EcoQoS を確認する</strong>
+省電力寄りの設定が入っていると、短い待機や実行速度に影響することがあります。</p>
+  </li>
+  <li>
+    <p><strong>不要なバックグラウンド負荷を減らす</strong>
+クラウド同期、自動アップデート、重いブラウザ、常駐監視、インデックス作成などは普通に影響します。</p>
+  </li>
+  <li>
+    <p><strong>最小化時や非表示時も試す</strong>
+Windows 11 では、見えない状態のアプリで timer resolution の挙動が変わることがあります。</p>
+  </li>
+  <li>
+    <p><strong>BIOS / UEFI は最後に見る</strong>
+C-state やベンダー独自の静音 / Eco 設定が効くことはありますが、機種依存が強いです。
+Windows 側で詰めてから触ったほうが分かりやすいです。</p>
+  </li>
+</ol>
+
+<h2 id="6-計測と評価">6. 計測と評価</h2>
+
+<h3 id="61-何を記録するか">6.1. 何を記録するか</h3>
+
+<p>最低限、次は記録しておきたいです。</p>
+
+<ul>
+  <li>周期予定時刻</li>
+  <li>実開始時刻</li>
+  <li>実終了時刻</li>
+  <li>lateness</li>
+  <li>実行時間</li>
+  <li>missed deadline 数</li>
+  <li>連続 missed deadline 数</li>
+  <li>queue 深さ</li>
+  <li>ドロップ数</li>
+  <li>DPC / ISR スパイク</li>
+  <li>page fault</li>
+  <li>温度 / クロック変動</li>
+</ul>
+
+<p>平均値だけでは、本番で困る種類の遅延が見えにくいです。
+普通の Windows で問題になるのは、<strong>平均的には速いが、ときどき大きく遅れる</strong> という形だからです。</p>
+
+<h3 id="62-p99--p999--max-とは何か">6.2. p99 / p99.9 / max とは何か</h3>
+
+<p>このあたりの言葉は、最初に意味を押さえておくと分かりやすいです。</p>
+
+<ul>
+  <li>
+    <p><strong>平均</strong>
+全体の真ん中の傾向を見る指標です。
+ただし、たまに出る大きな遅延は埋もれやすいです。</p>
+  </li>
+  <li>
+    <p><strong>p99</strong>
+全サンプルの <strong>99% がこの値以下</strong> になる境目の値です。
+1000 回測ったなら、<strong>遅いほう 10 回を除いた上限に近い値</strong> と考えると分かりやすいです。</p>
+  </li>
+  <li>
+    <p><strong>p99.9</strong>
+全サンプルの <strong>99.9% がこの値以下</strong> になる境目です。
+1000 回測ったなら、<strong>遅いほう 1 回を除いた上限に近い値</strong> です。</p>
+  </li>
+  <li>
+    <p><strong>max</strong>
+一番悪かった 1 回の値です。</p>
+  </li>
+</ul>
+
+<pre><code class="language-mermaid">flowchart LR
+    sample["1000 回分の遅延を集める"] --&gt; sort["小さい順に並べる"]
+    sort --&gt; p99["p99: 990 番目あたり"]
+    sort --&gt; p999["p99.9: 999 番目あたり"]
+    sort --&gt; max["max: 1000 番目"]
+</code></pre>
+
+<p>実務では、平均だけでなく <strong>p99 / p99.9 / max</strong> を見たほうが、体感に近くなります。
+「普段は大丈夫だが、ときどき引っかかる」を数字として見るには、この見方が便利です。</p>
+
+<p>注意点として、p99.9 を見るならサンプル数も必要です。
+10Hz の処理で 1000 サンプルを集めるだけでも 100 秒かかります。
+サンプルが少ないまま p99.9 を見ると、たまたまの 1 回に強く引っ張られます。</p>
+
+<h3 id="63-何で見るか">6.3. 何で見るか</h3>
+
+<p>道具としては、だいたい次です。</p>
+
+<ul>
+  <li>
+    <p><strong>アプリ内計測</strong>
+まず自前で、period、lateness、execution time、queue depth を取る</p>
+  </li>
+  <li>
+    <p><strong>ETW / WPR / WPA</strong>
+CPU、context switch、DPC / ISR、page fault を見る</p>
+  </li>
+  <li>
+    <p><strong>LatencyMon</strong>
+ドライバ起因の揺れのあたりを付ける</p>
+  </li>
+  <li>
+    <p><strong>温度 / クロック監視</strong>
+熱やサーマルスロットリングの影響を見る</p>
+  </li>
+</ul>
+
+<p>まずはアプリ内計測で、自分の処理が重いのか、外から止められているのかを切り分けます。
+そのうえで ETW / WPR / WPA を使うと、DPC / ISR や page fault の影響を追いやすくなります。</p>
+
+<h3 id="64-テスト条件">6.4. テスト条件</h3>
+
+<p>テストは、静かな開発機だけでは足りません。
+少なくとも次は分けて見たいです。</p>
+
+<ul>
+  <li>起動直後のウォームアップ前</li>
+  <li>ウォームアップ後</li>
+  <li>長時間連続運転</li>
+  <li>UI 前面</li>
+  <li>UI 最小化 / 非表示に近い状態</li>
+  <li>AC 給電</li>
+  <li>バッテリー駆動</li>
+  <li>ネットワークやディスクに負荷がある状態</li>
+</ul>
+
+<p>実運用に近い条件で見ておかないと、後で「開発機では大丈夫だった」が起きやすくなります。</p>
+
+<h2 id="7-ざっくり使い分け">7. ざっくり使い分け</h2>
+
+<p>普通の Windows での現実的な目安としては、だいたい次のように考えると整理しやすいです。</p>
+
+<ul>
+  <li>
+    <p><strong>10〜20ms 級で、たまの揺れは吸収できる</strong>
+fast / slow 分離、固定長キュー、通常優先度〜やや高め、イベント駆動で十分なことが多いです。</p>
+  </li>
+  <li>
+    <p><strong>1〜5ms 級で、継続的に間に合わせたい</strong>
+fast path の無割り当て化、専用スレッド、MMCSS または慎重な優先度調整、高精度 waitable timer、AC 給電、最適なパフォーマンス寄りの電源設定を合わせて見ます。</p>
+  </li>
+  <li>
+    <p><strong>1ms 未満に近づき、しかも長時間・高負荷でも外したくない</strong>
+普通の Windows の user-mode アプリ単独では厳しくなってきます。
+クリティカルな部分を別の場所へ逃がす設計を考えたほうがよいです。</p>
+  </li>
+  <li>
+    <p><strong>GUI、ログ、通信、DB と全部同居させたい</strong>
+1 プロセス 1 ループで抱え込まず、責務を分離したほうが安定します。
+後段の都合が前段の期限を壊しやすくなるためです。</p>
+  </li>
+</ul>
+
+<h2 id="8-まとめ">8. まとめ</h2>
+
+<p>普通の Windows でソフトリアルタイムを狙うとき、まず見るべきなのは次です。</p>
+
+<ol>
+  <li>周期ループが <code class="language-plaintext highlighter-rouge">Sleep</code> 任せになっていないか</li>
+  <li>fast path と slow path が分かれているか</li>
+  <li>キューが固定長で、あふれたときの方針が決まっているか</li>
+  <li>fast path に I/O、割り当て、重いロックが入っていないか</li>
+  <li>優先度や MMCSS を必要なスレッドだけに使っているか</li>
+  <li>普通の Windows の電源設定と計測を揃えているか</li>
+</ol>
+
+<p>普通の Windows では、優先度だけで安定することはあまりありません。
+設計、待機方法、電源設定、計測を揃えてはじめて、遅れにくい形になります。</p>
+
+<p>逆にいうと、この順番で整理すると、普通の Windows でも soft real-time としてかなり実用的なところまで持っていけます。</p>
+
+<h2 id="9-参考資料">9. 参考資料</h2>
+
+<ul>
+  <li><a href="https://learn.microsoft.com/en-us/windows/win32/procthread/multimedia-class-scheduler-service">Multimedia Class Scheduler Service</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/avrt/nf-avrt-avsetmmthreadcharacteristicsw">AvSetMmThreadCharacteristicsW function</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreadpriority">SetThreadPriority function</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setpriorityclass">SetPriorityClass function</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/timeapi/nf-timeapi-timebeginperiod">timeBeginPeriod function</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-createwaitabletimerexw">CreateWaitableTimerExW function</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/acquiring-high-resolution-time-stamps">Acquiring high-resolution time stamps</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimepreciseasfiletime">GetSystemTimePreciseAsFileTime function</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setprocessinformation">SetProcessInformation function</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtuallock">VirtualLock function</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/windows/win32/procthread/cpu-sets">CPU Sets</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreadidealprocessor">SetThreadIdealProcessor function</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setthreadaffinitymask">SetThreadAffinityMask function</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/windows-hardware/customize/power-settings/configure-processor-power-management-options">Processor power management options</a></li>
+  <li><a href="https://support.microsoft.com/ja-jp/windows/windows-pc%E3%81%AE%E9%9B%BB%E6%BA%90%E3%83%A2%E3%83%BC%E3%83%89%E3%82%92%E5%A4%89%E6%9B%B4%E3%81%99%E3%82%8B-c2aff038-22c9-f46d-5ca0-78696fdf2de8">Windows PCの電源モードを変更する</a></li>
+  <li><a href="https://learn.microsoft.com/ja-jp/windows-hardware/test/wpt/cpu-analysis">CPU の分析 (WPA / WPT)</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.stopwatch">Stopwatch Class</a></li>
+</ul>
+:ET

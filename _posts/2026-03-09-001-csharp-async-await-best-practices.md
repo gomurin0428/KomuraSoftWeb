@@ -1,12 +1,13 @@
 ---
-title: "C# における async/await のベストプラクティス - まず見る判断表"
+title: "C# async/await のベストプラクティス - Task.Run と ConfigureAwait の判断表"
 date: 2026-03-09 10:00
 tags: [C#, async/await, .NET, 設計]
 author: Go Komura
+description: "C# async/await のベストプラクティスを、I/O 待ち、CPU 計算、Task.Run、ConfigureAwait(false)、fire-and-forget の判断表つきで整理します。"
 ---
 
-`async` / `await` は、今の C# では日常的に使う書き方です。
-ただ、実務で迷いやすいのは構文そのものより、**どういうときにどのパターンを使うか** です。
+C# の `async` / `await` は日常的に使いますが、実務で迷いやすいのは構文そのものより、**どの場面でどの書き方を選ぶべきか** です。
+特に検索で多いのは、`Task.Run` をいつ使うか、`ConfigureAwait(false)` をどこに付けるか、`fire-and-forget` を許してよいか、といった判断の悩みです。
 
 - I/O 待ちなのに `Task.Run` で包んでしまう
 - 独立した処理なのに 1 件ずつ直列に `await` してしまう

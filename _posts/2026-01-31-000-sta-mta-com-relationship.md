@@ -1,11 +1,15 @@
 ---
-title: "COMのSTA/MTAでハングを避けるための基礎知識"
+title: "COM STA/MTA の基礎知識 - スレッドモデルとハングを避ける考え方"
 date: 2026-01-31 10:00
 tags: [COM, Windows開発, STA, MTA, スレッド]
 author: Go Komura
+description: "COM STA/MTA の基礎知識を、Apartment Model、UI スレッド、メッセージループ、マーシャリング、ハングを避ける考え方まで含めて整理します。"
 ---
 
-# COMのSTA/MTAでハングを避けるための基礎知識
+# COM STA/MTA の基礎知識 - スレッドモデルとハングを避ける考え方
+
+COM の STA/MTA は、Windows 開発や .NET から COM を触るときに避けて通りにくい基礎知識です。
+特に検索で多いのは、UI スレッドがなぜ STA なのか、Apartment をまたぐと何が起きるのか、なぜハングするのか、という疑問です。
 
 ## 目次
 

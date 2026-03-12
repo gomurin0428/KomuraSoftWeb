@@ -1,0 +1,3 @@
+I"J<p>Media Foundation を触り始めると、「Windows の動画や音声 API を使っているはずなのに、急に COM の話が増えた」と感じやすいです。
+特に <code class="language-plaintext highlighter-rouge">CoInitializeEx</code>、<code class="language-plaintext highlighter-rouge">HRESULT</code>、<code class="language-plaintext highlighter-rouge">IMFSourceReader</code>、<code class="language-plaintext highlighter-rouge">IMFTransform</code> あたりがまとまって出てきて、Media Foundation とは何かが見えにくくなりがちです。</p>
+:ET

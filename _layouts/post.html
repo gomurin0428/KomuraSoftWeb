@@ -5,18 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="/logo.png">
   <title>{{ page.title }} | KomuraSoft Blog</title>
-  <meta name="description" content="{{ page.excerpt | strip_html | truncate: 160 }}">
+  <meta name="description" content="{{ page.description | default: page.excerpt | strip_html | normalize_whitespace | truncate: 160 }}">
   <link rel="canonical" href="{{ page.url | absolute_url }}">
   <!-- Open Graph -->
   <meta property="og:type" content="article">
   <meta property="og:title" content="{{ page.title }}">
-  <meta property="og:description" content="{{ page.excerpt | strip_html | truncate: 160 }}">
+  <meta property="og:description" content="{{ page.description | default: page.excerpt | strip_html | normalize_whitespace | truncate: 160 }}">
   <meta property="og:url" content="{{ page.url | absolute_url }}">
   <meta property="og:site_name" content="KomuraSoft">
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="{{ page.title }}">
-  <meta name="twitter:description" content="{{ page.excerpt | strip_html | truncate: 160 }}">
+  <meta name="twitter:description" content="{{ page.description | default: page.excerpt | strip_html | normalize_whitespace | truncate: 160 }}">
   <link rel="stylesheet" href="/komura_soft_single_page.css">
   <style>
     .blog-container {

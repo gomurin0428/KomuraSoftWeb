@@ -1,0 +1,1106 @@
+I"@3<p>C# の <code class="language-plaintext highlighter-rouge">async</code> / <code class="language-plaintext highlighter-rouge">await</code> は日常的に使いますが、実務で迷いやすいのは構文そのものより、<strong>どの場面でどの書き方を選ぶべきか</strong> です。
+特に検索で多いのは、<code class="language-plaintext highlighter-rouge">Task.Run</code> をいつ使うか、<code class="language-plaintext highlighter-rouge">ConfigureAwait(false)</code> をどこに付けるか、<code class="language-plaintext highlighter-rouge">fire-and-forget</code> を許してよいか、といった判断の悩みです。</p>
+
+<ul>
+  <li>I/O 待ちなのに <code class="language-plaintext highlighter-rouge">Task.Run</code> で包んでしまう</li>
+  <li>独立した処理なのに 1 件ずつ直列に <code class="language-plaintext highlighter-rouge">await</code> してしまう</li>
+  <li><code class="language-plaintext highlighter-rouge">fire-and-forget</code> を安易に入れて例外や終了タイミングを見失う</li>
+  <li><code class="language-plaintext highlighter-rouge">ConfigureAwait(false)</code> をどこでも同じように付けてしまう</li>
+  <li><code class="language-plaintext highlighter-rouge">ValueTask</code> を「軽そうだから」という理由だけで選んでしまう</li>
+</ul>
+
+<p>このあたりは、個別に覚えるより、<strong>まず処理の種類を見分ける</strong> ほうが整理しやすいです。</p>
+
+<p>この記事では、主に <strong>.NET 6 以降の一般的な C# / .NET アプリ開発</strong> を前提に、
+<code class="language-plaintext highlighter-rouge">async</code> / <code class="language-plaintext highlighter-rouge">await</code> まわりの書き方を <strong>判断しやすい順番</strong> で整理します。</p>
+
+<p>対象は、たとえば次のようなものです。</p>
+
+<ul>
+  <li>WinForms / WPF などのデスクトップアプリ</li>
+  <li>ASP.NET Core の Web アプリ / API</li>
+  <li>worker / バックグラウンドサービス</li>
+  <li>コンソールアプリ</li>
+  <li>再利用可能なクラスライブラリ</li>
+</ul>
+
+<h2 id="目次">目次</h2>
+
+<ol>
+  <li>まず結論（ひとことで）</li>
+  <li>この記事で使う言葉
+    <ul>
+      <li>2.1. まず区別したい言葉</li>
+      <li>2.2. よく出てくる言葉</li>
+    </ul>
+  </li>
+  <li>まず見る判断表
+    <ul>
+      <li>3.1. 全体像</li>
+      <li>3.2. I/O 待ちなら、async API をそのまま await する</li>
+      <li>3.3. CPU 負荷が重いなら、Task.Run を使う場所を選ぶ</li>
+      <li>3.4. 独立した複数処理なら、Task.WhenAll</li>
+      <li>3.5. 最初に終わったものを使うなら、Task.WhenAny</li>
+      <li>3.6. 件数が多く、並列数を制限したいなら、Parallel.ForEachAsync か SemaphoreSlim</li>
+      <li>3.7. 順番に流したいなら、Channel&lt;T&gt;</li>
+      <li>3.8. 一定間隔で回したいなら、PeriodicTimer</li>
+      <li>3.9. 逐次的に届くデータなら、IAsyncEnumerable&lt;T&gt;</li>
+      <li>3.10. 非同期で破棄したいなら、await using</li>
+      <li>3.11. await をまたぐ排他なら、SemaphoreSlim</li>
+      <li>3.12. UI / アプリコード / ライブラリで await の書き方を分ける</li>
+    </ul>
+  </li>
+  <li>書き方の基本ルール
+    <ul>
+      <li>4.1. 返り値はまず Task / Task&lt;T&gt;</li>
+      <li>4.2. async void はイベントハンドラだけ</li>
+      <li>4.3. CancellationToken を受けて、下流へ渡す</li>
+      <li>4.4. 非同期 API は最後まで非同期でつなぐ</li>
+      <li>4.5. LINQ でタスクを作るときは ToArray / ToList で確定する</li>
+    </ul>
+  </li>
+  <li>よくあるアンチパターン</li>
+  <li>レビュー時のチェックリスト</li>
+  <li>ざっくり使い分け</li>
+  <li>まとめ</li>
+  <li>参考資料</li>
+</ol>
+
+<hr />
+
+<h2 id="1-まず結論ひとことで">1. まず結論（ひとことで）</h2>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">async</code> / <code class="language-plaintext highlighter-rouge">await</code> は <strong>待機中にスレッドを塞がないための書き方</strong> であって、何でも自動で高速化したり、勝手に別スレッド化したりする仕組みではない</li>
+  <li>まずはその処理が <strong>I/O 待ち</strong> なのか <strong>CPU 計算</strong> なのかを分ける</li>
+  <li>I/O 待ちなら、<strong>async API をそのまま await</strong> するのが基本</li>
+  <li>CPU 計算なら、<strong>どこでその計算を動かすべきか</strong> を考える。 UI なら <code class="language-plaintext highlighter-rouge">Task.Run</code> が役立つことがあるが、ASP.NET Core のリクエスト処理では <code class="language-plaintext highlighter-rouge">Task.Run</code> をすぐ await する書き方は基本的に避ける</li>
+  <li>独立した複数処理は、<strong>直列に await するより <code class="language-plaintext highlighter-rouge">Task.WhenAll</code></strong> を先に検討する</li>
+  <li>件数が多いときは、<code class="language-plaintext highlighter-rouge">Task.WhenAll</code> で全部同時に投げるのではなく、<strong>並列数の上限</strong> を決める</li>
+  <li><code class="language-plaintext highlighter-rouge">fire-and-forget</code> は簡単に見えて管理が難しい。<strong>本当に呼び出し元と寿命を切り離すなら、Channel や HostedService などの管理された場所へ出す</strong> ほうが安定する</li>
+  <li>返り値は <strong>まず <code class="language-plaintext highlighter-rouge">Task</code> / <code class="language-plaintext highlighter-rouge">Task&lt;T&gt;</code></strong>。 <code class="language-plaintext highlighter-rouge">ValueTask</code> は計測して必要性が見えてから選ぶ</li>
+  <li><code class="language-plaintext highlighter-rouge">ConfigureAwait(false)</code> は <strong>汎用ライブラリコード</strong> では有力だが、UI やアプリ側コードではまず普通の <code class="language-plaintext highlighter-rouge">await</code> でよい</li>
+  <li><code class="language-plaintext highlighter-rouge">async void</code> は <strong>イベントハンドラ以外では使わない</strong></li>
+</ul>
+
+<p>要するに、<code class="language-plaintext highlighter-rouge">async</code> / <code class="language-plaintext highlighter-rouge">await</code> まわりで一番大事なのは、<br />
+<strong>「とりあえず Task.Run」「とりあえず fire-and-forget」「とりあえず ValueTask」</strong> にしないことです。</p>
+
+<p>まずは、</p>
+
+<ol>
+  <li>その処理は何を待っているのか</li>
+  <li>誰がその処理の寿命を持つのか</li>
+  <li>同時実行数をどこで制御するのか</li>
+</ol>
+
+<p>この 3 つを見ると、かなり整理しやすくなります。</p>
+
+<h2 id="2-この記事で使う言葉">2. この記事で使う言葉</h2>
+
+<h3 id="21-まず区別したい言葉">2.1. まず区別したい言葉</h3>
+
+<p>最初にこの 2 つを分けると、かなり混乱しにくくなります。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>言葉</th>
+      <th>ここでの意味</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>I/O-bound</td>
+      <td>HTTP、DB、ファイル、ソケットなど、<strong>外部の完了待ち</strong> が中心の処理</td>
+    </tr>
+    <tr>
+      <td>CPU-bound</td>
+      <td>圧縮、画像処理、ハッシュ計算、重い変換など、<strong>CPU 計算そのもの</strong> が中心の処理</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">async</code> / <code class="language-plaintext highlighter-rouge">await</code> が特に効くのは、I/O 待ちです。<br />
+待っている間にスレッドを他の仕事へ返せるからです。</p>
+
+<p>一方で、CPU 計算は「待ち」ではなく「実際に計算している時間」です。<br />
+ここでは、<strong>どのスレッドで動かすか</strong> や <strong>並列数をどう決めるか</strong> が主題になります。</p>
+
+<h3 id="22-よく出てくる言葉">2.2. よく出てくる言葉</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>言葉</th>
+      <th>ここでの意味</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ブロッキング</td>
+      <td>完了を待つ間、そのスレッドを占有し続けること</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fire-and-forget</code></td>
+      <td>呼び出し元が完了を待たない起動方法</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">SynchronizationContext</code></td>
+      <td>UI などで「元の実行場所へ戻る」ための仕組み</td>
+    </tr>
+    <tr>
+      <td>backpressure</td>
+      <td>流し込みが速すぎるときに、書き込み側を待たせて増えすぎを防ぐ仕組み</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>特に大事なのは、<strong>非同期と並列は別物</strong> という点です。</p>
+
+<ul>
+  <li>非同期: 待ち方の話</li>
+  <li>並列: 同時に進める話</li>
+</ul>
+
+<p>この 2 つが混ざると、<code class="language-plaintext highlighter-rouge">Task.Run</code> をどこでも使いたくなります。<br />
+ここが最初の分かれ道です。</p>
+
+<h2 id="3-まず見る判断表">3. まず見る判断表</h2>
+
+<h3 id="31-全体像">3.1. 全体像</h3>
+
+<p>まずはこの表から見ると、だいたいの方針が決まります。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>状況</th>
+      <th>まず使うもの</th>
+      <th>見るポイント</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>HTTP / DB / ファイルなどの待ち</td>
+      <td>async API をそのまま <code class="language-plaintext highlighter-rouge">await</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Task.Run</code> で包まない</td>
+    </tr>
+    <tr>
+      <td>UI を止めたくない重い計算</td>
+      <td><code class="language-plaintext highlighter-rouge">Task.Run</code></td>
+      <td>CPU 計算を UI スレッドから外す</td>
+    </tr>
+    <tr>
+      <td>ASP.NET Core のリクエスト処理</td>
+      <td>plain <code class="language-plaintext highlighter-rouge">await</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Task.Run</code> をすぐ await しない</td>
+    </tr>
+    <tr>
+      <td>独立した少数の非同期処理</td>
+      <td><code class="language-plaintext highlighter-rouge">Task.WhenAll</code></td>
+      <td>先に全部開始してからまとめて待つ</td>
+    </tr>
+    <tr>
+      <td>最初に終わったものだけ使う</td>
+      <td><code class="language-plaintext highlighter-rouge">Task.WhenAny</code></td>
+      <td>残りのキャンセルや例外回収を考える</td>
+    </tr>
+    <tr>
+      <td>件数が多く、上限を付けたい</td>
+      <td><code class="language-plaintext highlighter-rouge">Parallel.ForEachAsync</code> / <code class="language-plaintext highlighter-rouge">SemaphoreSlim</code></td>
+      <td>並列数を明示する</td>
+    </tr>
+    <tr>
+      <td>順番に流したいバックグラウンド処理</td>
+      <td><code class="language-plaintext highlighter-rouge">Channel&lt;T&gt;</code></td>
+      <td>境界付きキューと backpressure を考える</td>
+    </tr>
+    <tr>
+      <td>一定間隔の非同期処理</td>
+      <td><code class="language-plaintext highlighter-rouge">PeriodicTimer</code></td>
+      <td>1 タイマー 1 コンシューマを守る</td>
+    </tr>
+    <tr>
+      <td>結果を少しずつ処理したい</td>
+      <td><code class="language-plaintext highlighter-rouge">IAsyncEnumerable&lt;T&gt;</code> / <code class="language-plaintext highlighter-rouge">await foreach</code></td>
+      <td>全件完了を待たずに進める</td>
+    </tr>
+    <tr>
+      <td>非同期破棄が必要</td>
+      <td><code class="language-plaintext highlighter-rouge">await using</code></td>
+      <td><code class="language-plaintext highlighter-rouge">IAsyncDisposable</code> を使う</td>
+    </tr>
+    <tr>
+      <td>await をまたぐ排他</td>
+      <td><code class="language-plaintext highlighter-rouge">SemaphoreSlim.WaitAsync</code></td>
+      <td><code class="language-plaintext highlighter-rouge">try/finally</code> で必ず <code class="language-plaintext highlighter-rouge">Release</code></td>
+    </tr>
+    <tr>
+      <td>汎用ライブラリコード</td>
+      <td><code class="language-plaintext highlighter-rouge">ConfigureAwait(false)</code> を検討</td>
+      <td>UI / アプリ固有コンテキストに依存しない</td>
+    </tr>
+  </tbody>
+</table>
+
+<pre><code class="language-mermaid">flowchart TD
+    start["やりたい処理"] --&gt; q1{"外部 I/O を待つ?"}
+    q1 -- "はい" --&gt; p1["async API をそのまま await する"]
+    q1 -- "いいえ" --&gt; q2{"CPU 計算が重い?"}
+    q2 -- "はい" --&gt; q3{"どこで動かす?"}
+    q3 -- "UI イベント / デスクトップ" --&gt; p2["Task.Run を検討する"]
+    q3 -- "ASP.NET Core のリクエスト" --&gt; p3["Task.Run で包まない&lt;br/&gt;必要なら別ワーカーやキューへ出す"]
+    q3 -- "worker / バックグラウンド" --&gt; p4["その場で実行するか&lt;br/&gt;並列度を明示する"]
+    q2 -- "いいえ" --&gt; q4{"複数の仕事を扱う?"}
+    q4 -- "全部終わるまで待つ" --&gt; p5["Task.WhenAll"]
+    q4 -- "最初に終わったものを使う" --&gt; p6["Task.WhenAny"]
+    q4 -- "件数が多い" --&gt; p7["Parallel.ForEachAsync&lt;br/&gt;または SemaphoreSlim"]
+    q4 -- "順番に流す" --&gt; p8["Channel&amp;lt;T&amp;gt;"]
+    q4 -- "一定間隔" --&gt; p9["PeriodicTimer"]
+    q4 -- "逐次ストリーム" --&gt; p10["IAsyncEnumerable&amp;lt;T&amp;gt;"]
+</code></pre>
+
+<p>以下、各パターンを順番に見ていきます。</p>
+
+<h3 id="32-io-待ちならasync-api-をそのまま-await-する">3.2. I/O 待ちなら、async API をそのまま await する</h3>
+
+<p>一番基本になるパターンです。</p>
+
+<p>たとえば、HTTP、DB、ファイル読み書きなどは、まず <strong>async 版 API があるか</strong> を見ます。<br />
+あるなら、それをそのまま <code class="language-plaintext highlighter-rouge">await</code> するのが基本です。</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="nf">LoadTextAsync</span><span class="p">(</span><span class="kt">string</span> <span class="n">path</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">File</span><span class="p">.</span><span class="nf">ReadAllTextAsync</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>このとき避けたいのは、すでに async な I/O を <code class="language-plaintext highlighter-rouge">Task.Run</code> で包むことです。</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 良くない例</span>
+<span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="nf">LoadTextAsync</span><span class="p">(</span><span class="kt">string</span> <span class="n">path</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">Task</span><span class="p">.</span><span class="nf">Run</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="n">File</span><span class="p">.</span><span class="nf">ReadAllTextAsync</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">),</span> <span class="n">cancellationToken</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>これは、I/O 待ちを別スレッドへ投げ直しているだけで、整理しづらくなるわりに得がありません。</p>
+
+<ul>
+  <li>I/O 待ちなら <code class="language-plaintext highlighter-rouge">Task.Run</code> はいらない</li>
+  <li>まず async API を探す</li>
+  <li>token を受けたら、そのまま下流へ渡す</li>
+</ul>
+
+<p>ここはかなり王道です。</p>
+
+<h3 id="33-cpu-負荷が重いならtaskrun-を使う場所を選ぶ">3.3. CPU 負荷が重いなら、Task.Run を使う場所を選ぶ</h3>
+
+<p><code class="language-plaintext highlighter-rouge">Task.Run</code> が効くのは、<strong>CPU 計算を今のスレッドから外したいとき</strong> です。</p>
+
+<p>たとえば UI イベントハンドラで重い計算をそのまま回すと、画面が止まります。<br />
+こういうときは <code class="language-plaintext highlighter-rouge">Task.Run</code> が素直です。</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="n">Task</span><span class="p">&lt;</span><span class="kt">byte</span><span class="p">[</span><span class="k">]&gt;</span> <span class="nf">HashManyTimesAsync</span><span class="p">(</span><span class="kt">byte</span><span class="p">[]</span> <span class="n">data</span><span class="p">,</span> <span class="kt">int</span> <span class="n">repeat</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">Task</span><span class="p">.</span><span class="nf">Run</span><span class="p">(()</span> <span class="p">=&gt;</span>
+    <span class="p">{</span>
+        <span class="n">cancellationToken</span><span class="p">.</span><span class="nf">ThrowIfCancellationRequested</span><span class="p">();</span>
+
+        <span class="k">using</span> <span class="nn">var</span> <span class="n">sha256</span> <span class="p">=</span> <span class="n">System</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">Cryptography</span><span class="p">.</span><span class="n">SHA256</span><span class="p">.</span><span class="nf">Create</span><span class="p">();</span>
+        <span class="kt">byte</span><span class="p">[]</span> <span class="n">current</span> <span class="p">=</span> <span class="n">data</span><span class="p">;</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">repeat</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span>
+        <span class="p">{</span>
+            <span class="n">cancellationToken</span><span class="p">.</span><span class="nf">ThrowIfCancellationRequested</span><span class="p">();</span>
+            <span class="n">current</span> <span class="p">=</span> <span class="n">sha256</span><span class="p">.</span><span class="nf">ComputeHash</span><span class="p">(</span><span class="n">current</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">current</span><span class="p">;</span>
+    <span class="p">},</span> <span class="n">cancellationToken</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ただし、ここで大事なのは <strong>どこで呼んでいるか</strong> です。</p>
+
+<ul>
+  <li>WinForms / WPF などの UI: <code class="language-plaintext highlighter-rouge">Task.Run</code> が有効な場面がある</li>
+  <li>ASP.NET Core のリクエスト処理: <code class="language-plaintext highlighter-rouge">Task.Run</code> をすぐ <code class="language-plaintext highlighter-rouge">await</code> する書き方は基本的に避ける</li>
+  <li>worker / バックグラウンド処理: その場で処理するか、並列度を設計する</li>
+</ul>
+
+<p>ASP.NET Core のリクエスト処理は、もともと ThreadPool 上で動いています。<br />
+そこに <code class="language-plaintext highlighter-rouge">Task.Run</code> を 1 枚挟んで直後に <code class="language-plaintext highlighter-rouge">await</code> しても、余計なスケジューリングが増えるだけになりやすいです。</p>
+
+<p>なので、ASP.NET Core では次のように考えるほうが整理しやすいです。</p>
+
+<ul>
+  <li>I/O 待ちなら plain <code class="language-plaintext highlighter-rouge">await</code></li>
+  <li>短い CPU 処理なら、その場で実行</li>
+  <li>長い処理やリクエスト寿命から切り離したい処理なら、キューや HostedService に出す</li>
+</ul>
+
+<p>なお、<strong>sync 版しかない API</strong> を UI から呼ぶ場合、UI 応答性のために <code class="language-plaintext highlighter-rouge">Task.Run</code> を使うことはあります。<br />
+ただしこれは「非同期 I/O」ではなく、<strong>スレッド 1 本を占有して回避している</strong> だけです。<br />
+ASP.NET Core のようなサーバー側では、この逃がし方は基本的に伸びにくいです。</p>
+
+<h3 id="34-独立した複数処理ならtaskwhenall">3.4. 独立した複数処理なら、Task.WhenAll</h3>
+
+<p>独立した非同期処理が複数あるのに、こんなふうに 1 件ずつ待つコードはよく出てきます。</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 独立しているのに直列になっている例</span>
+<span class="kt">string</span> <span class="n">a</span> <span class="p">=</span> <span class="k">await</span> <span class="n">_httpClient</span><span class="p">.</span><span class="nf">GetStringAsync</span><span class="p">(</span><span class="n">urlA</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
+<span class="kt">string</span> <span class="n">b</span> <span class="p">=</span> <span class="k">await</span> <span class="n">_httpClient</span><span class="p">.</span><span class="nf">GetStringAsync</span><span class="p">(</span><span class="n">urlB</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
+<span class="kt">string</span> <span class="n">c</span> <span class="p">=</span> <span class="k">await</span> <span class="n">_httpClient</span><span class="p">.</span><span class="nf">GetStringAsync</span><span class="p">(</span><span class="n">urlC</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>これらが互いに依存していないなら、<strong>先に全部開始して、最後にまとめて待つ</strong> ほうが素直です。</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">[</span><span class="k">]&gt;</span> <span class="nf">DownloadAllAsync</span><span class="p">(</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">urls</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Task</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;[]</span> <span class="n">tasks</span> <span class="p">=</span> <span class="n">urls</span>
+        <span class="p">.</span><span class="nf">Select</span><span class="p">(</span><span class="n">url</span> <span class="p">=&gt;</span> <span class="n">_httpClient</span><span class="p">.</span><span class="nf">GetStringAsync</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">))</span>
+        <span class="p">.</span><span class="nf">ToArray</span><span class="p">();</span>
+
+    <span class="k">return</span> <span class="k">await</span> <span class="n">Task</span><span class="p">.</span><span class="nf">WhenAll</span><span class="p">(</span><span class="n">tasks</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ポイントは <code class="language-plaintext highlighter-rouge">ToArray()</code> です。<br />
+LINQ は<strong>遅延実行</strong>なので、<code class="language-plaintext highlighter-rouge">Select</code> しただけでは、まだ列挙されていないことがあります。<br />
+<code class="language-plaintext highlighter-rouge">ToArray()</code> や <code class="language-plaintext highlighter-rouge">ToList()</code> でいったん確定しておくと、全部のタスクがその時点で開始されます。</p>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    participant Caller as 呼び出し元
+    participant T1 as Task 1
+    participant T2 as Task 2
+    participant T3 as Task 3
+
+    Caller-&gt;&gt;T1: 開始
+    Caller-&gt;&gt;T2: 開始
+    Caller-&gt;&gt;T3: 開始
+    Caller-&gt;&gt;Caller: await Task.WhenAll(...)
+    T1--&gt;&gt;Caller: 完了
+    T2--&gt;&gt;Caller: 完了
+    T3--&gt;&gt;Caller: 完了
+</code></pre>
+
+<p>このパターンが向いているのは、</p>
+
+<ul>
+  <li>件数が少ない、または中程度</li>
+  <li>全件をまとめて待ちたい</li>
+  <li>上限なしで同時に走らせても問題ない</li>
+</ul>
+
+<p>という場合です。</p>
+
+<p>件数が多いなら、次の 3.6 のように <strong>並列数の上限</strong> を付けたほうが安全です。</p>
+
+<h3 id="35-最初に終わったものを使うならtaskwhenany">3.5. 最初に終わったものを使うなら、Task.WhenAny</h3>
+
+<p>たとえば、複数のミラー先のうち最初に応答したものを使いたい、という場面では <code class="language-plaintext highlighter-rouge">Task.WhenAny</code> が分かりやすいです。</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="kt">byte</span><span class="p">[</span><span class="k">]&gt;</span> <span class="nf">DownloadFromFirstMirrorAsync</span><span class="p">(</span>
+    <span class="n">IReadOnlyList</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">urls</span><span class="p">,</span>
+    <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">using</span> <span class="nn">var</span> <span class="n">cts</span> <span class="p">=</span> <span class="n">CancellationTokenSource</span><span class="p">.</span><span class="nf">CreateLinkedTokenSource</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+
+    <span class="n">Task</span><span class="p">&lt;</span><span class="kt">byte</span><span class="p">[</span><span class="k">]&gt;</span><span class="p">[]</span> <span class="n">tasks</span> <span class="p">=</span> <span class="n">urls</span>
+        <span class="p">.</span><span class="nf">Select</span><span class="p">(</span><span class="n">url</span> <span class="p">=&gt;</span> <span class="n">_httpClient</span><span class="p">.</span><span class="nf">GetByteArrayAsync</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">cts</span><span class="p">.</span><span class="n">Token</span><span class="p">))</span>
+        <span class="p">.</span><span class="nf">ToArray</span><span class="p">();</span>
+
+    <span class="n">Task</span><span class="p">&lt;</span><span class="kt">byte</span><span class="p">[</span><span class="k">]&gt;</span> <span class="n">winner</span> <span class="p">=</span> <span class="k">await</span> <span class="n">Task</span><span class="p">.</span><span class="nf">WhenAny</span><span class="p">(</span><span class="n">tasks</span><span class="p">);</span>
+    <span class="n">cts</span><span class="p">.</span><span class="nf">Cancel</span><span class="p">();</span>
+
+    <span class="k">try</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">winner</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">finally</span>
+    <span class="p">{</span>
+        <span class="k">try</span>
+        <span class="p">{</span>
+            <span class="k">await</span> <span class="n">Task</span><span class="p">.</span><span class="nf">WhenAll</span><span class="p">(</span><span class="n">tasks</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">catch</span>
+        <span class="p">{</span>
+            <span class="c1">// 勝者以外のキャンセルや失敗を回収する</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ここで気を付けたいのは、<code class="language-plaintext highlighter-rouge">WhenAny</code> は <strong>勝者を 1 つ返すだけ</strong> という点です。<br />
+残りの処理は、何もしなければそのまま動き続けます。</p>
+
+<p>なので、</p>
+
+<ul>
+  <li>残りはキャンセルしたいのか</li>
+  <li>例外は観測しておきたいのか</li>
+</ul>
+
+<p>を先に決めておく必要があります。</p>
+
+<p><code class="language-plaintext highlighter-rouge">Task.WhenAny</code> は便利ですが、<code class="language-plaintext highlighter-rouge">WhenAll</code> より少し設計が増えます。<br />
+「最初の 1 つだけでよい」場合にだけ選ぶと分かりやすいです。</p>
+
+<h3 id="36-件数が多く並列数を制限したいならparallelforeachasync-か-semaphoreslim">3.6. 件数が多く、並列数を制限したいなら、Parallel.ForEachAsync か SemaphoreSlim</h3>
+
+<p><code class="language-plaintext highlighter-rouge">Task.WhenAll</code> は、作ったタスクを全部同時に走らせます。<br />
+なので、対象件数が多いと、HTTP 接続、DB 接続、メモリ使用量、外部サービスへの負荷が一気に増えます。</p>
+
+<p>こういうときは、<strong>同時に何件まで動かすか</strong> を決めたほうが安定します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">Parallel.ForEachAsync</code> は、その意図がかなり読みやすいです。</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span> <span class="nf">DownloadAndSaveAsync</span><span class="p">(</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">urls</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">options</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ParallelOptions</span>
+    <span class="p">{</span>
+        <span class="n">MaxDegreeOfParallelism</span> <span class="p">=</span> <span class="m">8</span><span class="p">,</span>
+        <span class="n">CancellationToken</span> <span class="p">=</span> <span class="n">cancellationToken</span>
+    <span class="p">};</span>
+
+    <span class="k">await</span> <span class="n">Parallel</span><span class="p">.</span><span class="nf">ForEachAsync</span><span class="p">(</span>
+        <span class="n">urls</span><span class="p">.</span><span class="nf">Select</span><span class="p">((</span><span class="n">url</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">index</span><span class="p">)),</span>
+        <span class="n">options</span><span class="p">,</span>
+        <span class="k">async</span> <span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span> <span class="p">=&gt;</span>
+        <span class="p">{</span>
+            <span class="kt">string</span> <span class="n">html</span> <span class="p">=</span> <span class="k">await</span> <span class="n">_httpClient</span><span class="p">.</span><span class="nf">GetStringAsync</span><span class="p">(</span><span class="n">item</span><span class="p">.</span><span class="n">url</span><span class="p">,</span> <span class="n">token</span><span class="p">);</span>
+            <span class="kt">string</span> <span class="n">path</span> <span class="p">=</span> <span class="n">Path</span><span class="p">.</span><span class="nf">Combine</span><span class="p">(</span><span class="s">"cache"</span><span class="p">,</span> <span class="s">$"</span><span class="p">{</span><span class="n">item</span><span class="p">.</span><span class="n">index</span><span class="p">}</span><span class="s">.html"</span><span class="p">);</span>
+            <span class="k">await</span> <span class="n">File</span><span class="p">.</span><span class="nf">WriteAllTextAsync</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">html</span><span class="p">,</span> <span class="n">token</span><span class="p">);</span>
+        <span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>このパターンが向いているのは、</p>
+
+<ul>
+  <li>件数が多い</li>
+  <li>各項目の処理は独立している</li>
+  <li>ただし全件一斉は避けたい</li>
+</ul>
+
+<p>という場合です。</p>
+
+<p>一方で、もっと自由に制御したいなら <code class="language-plaintext highlighter-rouge">SemaphoreSlim</code> を使う方法もあります。<br />
+たとえば「特定の外部 API には同時に 4 件まで」みたいな制御です。</p>
+
+<p>つまり、</p>
+
+<ul>
+  <li><strong>数件なら <code class="language-plaintext highlighter-rouge">Task.WhenAll</code></strong></li>
+  <li><strong>大量件数なら <code class="language-plaintext highlighter-rouge">Parallel.ForEachAsync</code> や <code class="language-plaintext highlighter-rouge">SemaphoreSlim</code></strong></li>
+</ul>
+
+<p>と考えると整理しやすいです。</p>
+
+<h3 id="37-順番に流したいならchannelt">3.7. 順番に流したいなら、Channel&lt;T&gt;</h3>
+
+<p>「今すぐ終わらなくてよいが、確実に処理したい」仕事を、呼び出し元から切り離したくなることがあります。<br />
+メール送信、ログの転送、Webhook の後処理、ファイル変換などです。</p>
+
+<p>こういうときに <code class="language-plaintext highlighter-rouge">Task.Run</code> を投げっぱなしにすると、</p>
+
+<ul>
+  <li>例外をどこで見るのか</li>
+  <li>終了時に待つのか</li>
+  <li>件数が増えたときにどこまで受けるのか</li>
+</ul>
+
+<p>が曖昧になります。</p>
+
+<p>この種の仕事は、<strong>キューに積んで、専用のコンシューマが順番に処理する</strong> ほうが管理しやすいです。</p>
+
+<pre><code class="language-mermaid">flowchart LR
+    p["producer"] --&gt; w["WriteAsync"]
+    w --&gt; q{"キューに空きがある?"}
+    q -- "はい" --&gt; c["Channel に入る"]
+    q -- "いいえ" --&gt; b["空くまで待つ"]
+    c --&gt; d["consumer が ReadAsync"]
+    d --&gt; e["順番に await して処理"]
+</code></pre>
+
+<p><code class="language-plaintext highlighter-rouge">Channel&lt;T&gt;</code> は、producer / consumer の形をかなり素直に書けます。</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">sealed</span> <span class="k">class</span> <span class="nc">BackgroundTaskQueue</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">Channel</span><span class="p">&lt;</span><span class="n">Func</span><span class="p">&lt;</span><span class="n">CancellationToken</span><span class="p">,</span> <span class="n">ValueTask</span><span class="p">&gt;&gt;</span> <span class="n">_queue</span> <span class="p">=</span>
+        <span class="n">Channel</span><span class="p">.</span><span class="n">CreateBounded</span><span class="p">&lt;</span><span class="n">Func</span><span class="p">&lt;</span><span class="n">CancellationToken</span><span class="p">,</span> <span class="n">ValueTask</span><span class="p">&gt;&gt;(</span>
+            <span class="k">new</span> <span class="nf">BoundedChannelOptions</span><span class="p">(</span><span class="m">100</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">FullMode</span> <span class="p">=</span> <span class="n">BoundedChannelFullMode</span><span class="p">.</span><span class="n">Wait</span>
+            <span class="p">});</span>
+
+    <span class="k">public</span> <span class="n">ValueTask</span> <span class="nf">EnqueueAsync</span><span class="p">(</span>
+        <span class="n">Func</span><span class="p">&lt;</span><span class="n">CancellationToken</span><span class="p">,</span> <span class="n">ValueTask</span><span class="p">&gt;</span> <span class="n">workItem</span><span class="p">,</span>
+        <span class="n">CancellationToken</span> <span class="n">cancellationToken</span> <span class="p">=</span> <span class="k">default</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">ArgumentNullException</span><span class="p">.</span><span class="nf">ThrowIfNull</span><span class="p">(</span><span class="n">workItem</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">_queue</span><span class="p">.</span><span class="n">Writer</span><span class="p">.</span><span class="nf">WriteAsync</span><span class="p">(</span><span class="n">workItem</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="n">ValueTask</span><span class="p">&lt;</span><span class="n">Func</span><span class="p">&lt;</span><span class="n">CancellationToken</span><span class="p">,</span> <span class="n">ValueTask</span><span class="p">&gt;&gt;</span> <span class="nf">DequeueAsync</span><span class="p">(</span><span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+        <span class="p">=&gt;</span> <span class="n">_queue</span><span class="p">.</span><span class="n">Reader</span><span class="p">.</span><span class="nf">ReadAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>この例での <code class="language-plaintext highlighter-rouge">BoundedChannelFullMode.Wait</code> は、<strong>キューが満杯なら書き込み側を待たせる</strong> という設定です。<br />
+これが backpressure です。</p>
+
+<p>ASP.NET Core なら、こうしたキューを <code class="language-plaintext highlighter-rouge">BackgroundService</code> と組み合わせて消費する形が分かりやすいです。<br />
+「本当の fire-and-forget」より、こちらのほうが例外、停止、並列数、上限を扱いやすくなります。</p>
+
+<h3 id="38-一定間隔で回したいならperiodictimer">3.8. 一定間隔で回したいなら、PeriodicTimer</h3>
+
+<p>一定間隔の非同期処理なら、<code class="language-plaintext highlighter-rouge">PeriodicTimer</code> はかなり読みやすいです。</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span> <span class="nf">RunPeriodicAsync</span><span class="p">(</span><span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">using</span> <span class="nn">var</span> <span class="n">timer</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">PeriodicTimer</span><span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="nf">FromSeconds</span><span class="p">(</span><span class="m">10</span><span class="p">));</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="k">await</span> <span class="n">timer</span><span class="p">.</span><span class="nf">WaitForNextTickAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="k">await</span> <span class="nf">RefreshCacheAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>この書き方のよいところは、</p>
+
+<ul>
+  <li>コールバック型の Timer より流れが追いやすい</li>
+  <li><code class="language-plaintext highlighter-rouge">await</code> ベースで書ける</li>
+  <li>停止時に <code class="language-plaintext highlighter-rouge">CancellationToken</code> を素直に使える</li>
+</ul>
+
+<p>という点です。</p>
+
+<p>注意点として、<code class="language-plaintext highlighter-rouge">PeriodicTimer</code> は <strong>1 つのタイマーに対して、同時に複数の <code class="language-plaintext highlighter-rouge">WaitForNextTickAsync</code> を飛ばさない</strong> 前提で使います。<br />
+また、処理時間が周期より長ければ、その遅れは設計として扱う必要があります。<br />
+タイマーが勝手に並列化して追いついてくれるわけではありません。</p>
+
+<h3 id="39-逐次的に届くデータならiasyncenumerablet">3.9. 逐次的に届くデータなら、IAsyncEnumerable&lt;T&gt;</h3>
+
+<p>全件を <code class="language-plaintext highlighter-rouge">List&lt;T&gt;</code> にためてから返すより、<strong>届いたものから順に処理したい</strong> 場面があります。</p>
+
+<ul>
+  <li>ページングされた API を順に読む</li>
+  <li>ファイルの行を少しずつ読む</li>
+  <li>ストリーミング結果をそのまま流す</li>
+</ul>
+
+<p>こういうときは <code class="language-plaintext highlighter-rouge">IAsyncEnumerable&lt;T&gt;</code> と <code class="language-plaintext highlighter-rouge">await foreach</code> が自然です。</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span> <span class="nf">ProcessUsersAsync</span><span class="p">(</span><span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">await</span> <span class="k">foreach</span> <span class="p">(</span><span class="n">User</span> <span class="n">user</span> <span class="k">in</span> <span class="n">_userRepository</span><span class="p">.</span><span class="nf">StreamUsersAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="k">await</span> <span class="nf">ProcessUserAsync</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>この形が向いているのは、</p>
+
+<ul>
+  <li>全件そろうまで待ちたくない</li>
+  <li>1 件ずつ処理していきたい</li>
+  <li>メモリに全部ためたくない</li>
+</ul>
+
+<p>という場合です。</p>
+
+<p>戻り値を <code class="language-plaintext highlighter-rouge">Task&lt;List&lt;T&gt;&gt;</code> にするか <code class="language-plaintext highlighter-rouge">IAsyncEnumerable&lt;T&gt;</code> にするかは、<br />
+<strong>結果を全部そろえてから使うのか、届いた順に使うのか</strong> で決めると分かりやすいです。</p>
+
+<h3 id="310-非同期で破棄したいならawait-using">3.10. 非同期で破棄したいなら、await using</h3>
+
+<p>破棄時にフラッシュや通信終了などの非同期処理が必要な型は、<code class="language-plaintext highlighter-rouge">IAsyncDisposable</code> を実装します。<br />
+その場合は <code class="language-plaintext highlighter-rouge">using</code> ではなく <code class="language-plaintext highlighter-rouge">await using</code> を使います。</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span> <span class="nf">WriteFileAsync</span><span class="p">(</span><span class="kt">string</span> <span class="n">path</span><span class="p">,</span> <span class="kt">byte</span><span class="p">[]</span> <span class="n">data</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">await</span> <span class="k">using</span> <span class="nn">var</span> <span class="n">stream</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">FileStream</span><span class="p">(</span>
+        <span class="n">path</span><span class="p">,</span>
+        <span class="n">FileMode</span><span class="p">.</span><span class="n">Create</span><span class="p">,</span>
+        <span class="n">FileAccess</span><span class="p">.</span><span class="n">Write</span><span class="p">,</span>
+        <span class="n">FileShare</span><span class="p">.</span><span class="n">None</span><span class="p">,</span>
+        <span class="n">bufferSize</span><span class="p">:</span> <span class="m">81920</span><span class="p">,</span>
+        <span class="n">useAsync</span><span class="p">:</span> <span class="k">true</span><span class="p">);</span>
+
+    <span class="k">await</span> <span class="n">stream</span><span class="p">.</span><span class="nf">WriteAsync</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ポイントは、</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">IAsyncDisposable</code> なら <code class="language-plaintext highlighter-rouge">await using</code></li>
+  <li>「開く」は同期でも、「閉じる」が非同期ということは普通にある</li>
+</ul>
+
+<p>ということです。</p>
+
+<p>「書き込みは async にしたのに、最後の破棄だけ同期」というずれを避けたいときに効きます。</p>
+
+<h3 id="311-await-をまたぐ排他ならsemaphoreslim">3.11. await をまたぐ排他なら、SemaphoreSlim</h3>
+
+<p><code class="language-plaintext highlighter-rouge">await</code> をまたぐコードでは、<code class="language-plaintext highlighter-rouge">lock</code> の代わりに <code class="language-plaintext highlighter-rouge">SemaphoreSlim</code> を使う場面があります。</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">sealed</span> <span class="k">class</span> <span class="nc">CacheRefresher</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">SemaphoreSlim</span> <span class="n">_gate</span> <span class="p">=</span> <span class="k">new</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">);</span>
+
+    <span class="k">public</span> <span class="k">async</span> <span class="n">Task</span> <span class="nf">RefreshAsync</span><span class="p">(</span><span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">await</span> <span class="n">_gate</span><span class="p">.</span><span class="nf">WaitAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+        <span class="k">try</span>
+        <span class="p">{</span>
+            <span class="k">await</span> <span class="nf">RefreshCoreAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">finally</span>
+        <span class="p">{</span>
+            <span class="n">_gate</span><span class="p">.</span><span class="nf">Release</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">private</span> <span class="k">static</span> <span class="n">Task</span> <span class="nf">RefreshCoreAsync</span><span class="p">(</span><span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+        <span class="p">=&gt;</span> <span class="n">Task</span><span class="p">.</span><span class="nf">Delay</span><span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="nf">FromSeconds</span><span class="p">(</span><span class="m">1</span><span class="p">),</span> <span class="n">cancellationToken</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>大事なのは、</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">WaitAsync</code> で入る</li>
+  <li><code class="language-plaintext highlighter-rouge">Release</code> は <code class="language-plaintext highlighter-rouge">finally</code> で必ず呼ぶ</li>
+</ul>
+
+<p>という 2 点です。</p>
+
+<p>「同時に 1 件だけ入れたい」「外部 API 呼び出しを同時に 3 件までにしたい」<br />
+という場面では、<code class="language-plaintext highlighter-rouge">SemaphoreSlim</code> はかなり実用的です。</p>
+
+<h3 id="312-ui--アプリコード--ライブラリで-await-の書き方を分ける">3.12. UI / アプリコード / ライブラリで await の書き方を分ける</h3>
+
+<p><code class="language-plaintext highlighter-rouge">ConfigureAwait(false)</code> は、いつでも付ければよい、というものではありません。</p>
+
+<p>まずざっくり分けるなら、次のように考えると整理しやすいです。</p>
+
+<pre><code class="language-mermaid">flowchart LR
+    a["UI / アプリコード"] --&gt; b["await someAsync()"]
+    b --&gt; c["元のコンテキストに戻って続行"]
+
+    d["汎用ライブラリ"] --&gt; e["await someAsync().ConfigureAwait(false)"]
+    e --&gt; f["特定コンテキストに戻る前提を持たない"]
+</code></pre>
+
+<ul>
+  <li><strong>UI / アプリコード</strong>
+    <ul>
+      <li>まず普通の <code class="language-plaintext highlighter-rouge">await</code> でよいです</li>
+      <li>await 後に UI 更新やアプリ側コンテキスト依存の処理をするなら、<code class="language-plaintext highlighter-rouge">ConfigureAwait(false)</code> は付けないほうが自然です</li>
+    </ul>
+  </li>
+  <li><strong>ASP.NET Core のアプリコード</strong>
+    <ul>
+      <li>通常は普通の <code class="language-plaintext highlighter-rouge">await</code> で十分です</li>
+      <li><code class="language-plaintext highlighter-rouge">ConfigureAwait(false)</code> を全体の作法として無理に徹底しなくてもよいです</li>
+    </ul>
+  </li>
+  <li><strong>汎用ライブラリコード</strong>
+    <ul>
+      <li>UI やアプリモデルに依存しないなら、<code class="language-plaintext highlighter-rouge">ConfigureAwait(false)</code> は有力です</li>
+    </ul>
+  </li>
+</ul>
+
+<p>つまり、</p>
+
+<ul>
+  <li><strong>アプリ側コードは plain <code class="language-plaintext highlighter-rouge">await</code></strong></li>
+  <li><strong>汎用ライブラリは <code class="language-plaintext highlighter-rouge">ConfigureAwait(false)</code> を検討</strong></li>
+</ul>
+
+<p>と考えると、実務ではかなり整理しやすいです。</p>
+
+<h2 id="4-書き方の基本ルール">4. 書き方の基本ルール</h2>
+
+<h3 id="41-返り値はまず-task--taskt">4.1. 返り値はまず Task / Task&lt;T&gt;</h3>
+
+<p>async メソッドの返り値は、まず次のように考えるとよいです。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>返り値</th>
+      <th>まずの考え方</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Task</code></td>
+      <td>戻り値なしの async メソッドの基本</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Task&lt;T&gt;</code></td>
+      <td>値を返す async メソッドの基本</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ValueTask</code> / <code class="language-plaintext highlighter-rouge">ValueTask&lt;T&gt;</code></td>
+      <td>計測して必要性が見えてから選ぶ</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">ValueTask</code> は便利そうに見えますが、<strong>常に <code class="language-plaintext highlighter-rouge">Task</code> よりよいわけではありません</strong>。<br />
+構造体なのでコピーコストがあり、使い方にも制約があります。</p>
+
+<p>特に大事なのは、<strong><code class="language-plaintext highlighter-rouge">ValueTask</code> は基本的に 1 回だけ await する前提</strong> という点です。<br />
+安易にローカル変数へ保持して何度も待つような書き方には向きません。</p>
+
+<p>なので、日常的なアプリコードでは、まず <code class="language-plaintext highlighter-rouge">Task</code> / <code class="language-plaintext highlighter-rouge">Task&lt;T&gt;</code> で十分です。</p>
+
+<p>また、<strong>メソッド名には <code class="language-plaintext highlighter-rouge">Async</code> サフィックス</strong> を付けるほうが分かりやすいです。</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="n">Task</span> <span class="nf">SaveAsync</span><span class="p">(</span><span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">Task</span><span class="p">.</span><span class="n">CompletedTask</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="n">Task</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="nf">CountAsync</span><span class="p">(</span><span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">Task</span><span class="p">.</span><span class="nf">FromResult</span><span class="p">(</span><span class="n">_count</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>上のように、<code class="language-plaintext highlighter-rouge">await</code> する処理がないなら、無理に <code class="language-plaintext highlighter-rouge">async</code> を付けずに <code class="language-plaintext highlighter-rouge">Task.CompletedTask</code> や <code class="language-plaintext highlighter-rouge">Task.FromResult</code> を返すほうが素直です。</p>
+
+<h3 id="42-async-void-はイベントハンドラだけ">4.2. async void はイベントハンドラだけ</h3>
+
+<p><code class="language-plaintext highlighter-rouge">async void</code> は、イベントハンドラ以外では避けるのが基本です。</p>
+
+<p>理由はシンプルで、</p>
+
+<ul>
+  <li>呼び出し元が await できない</li>
+  <li>完了を待てない</li>
+  <li>例外処理が難しくなる</li>
+  <li>テストしづらい</li>
+</ul>
+
+<p>からです。</p>
+
+<p>イベントハンドラだけは <code class="language-plaintext highlighter-rouge">void</code> が必要なので、そこでだけ使います。</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">private</span> <span class="k">async</span> <span class="k">void</span> <span class="nf">SaveButton_Click</span><span class="p">(</span><span class="kt">object</span><span class="p">?</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">try</span>
+    <span class="p">{</span>
+        <span class="k">await</span> <span class="nf">SaveAsync</span><span class="p">(</span><span class="n">_saveCancellation</span><span class="p">.</span><span class="n">Token</span><span class="p">);</span>
+        <span class="n">_statusLabel</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="s">"保存しました。"</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">catch</span> <span class="p">(</span><span class="n">OperationCanceledException</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_statusLabel</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="s">"キャンセルしました。"</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">MessageBox</span><span class="p">.</span><span class="nf">Show</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">ex</span><span class="p">.</span><span class="n">Message</span><span class="p">,</span> <span class="s">"保存エラー"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>イベントハンドラでは、<strong>中で例外を握って UI 側へ返す</strong> ところまで自分で書く、という意識が大事です。</p>
+
+<h3 id="43-cancellationtoken-を受けて下流へ渡す">4.3. CancellationToken を受けて、下流へ渡す</h3>
+
+<p>キャンセル可能な操作なら、<code class="language-plaintext highlighter-rouge">CancellationToken</code> を受けて、そのまま下流へ渡します。</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="nf">DownloadTextAsync</span><span class="p">(</span><span class="kt">string</span> <span class="n">url</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">using</span> <span class="nn">HttpResponseMessage</span> <span class="n">response</span> <span class="p">=</span> <span class="k">await</span> <span class="n">_httpClient</span><span class="p">.</span><span class="nf">GetAsync</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
+    <span class="n">response</span><span class="p">.</span><span class="nf">EnsureSuccessStatusCode</span><span class="p">();</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">response</span><span class="p">.</span><span class="n">Content</span><span class="p">.</span><span class="nf">ReadAsStringAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ここでよくあるのは、上位では token を受けているのに、下流へ渡していないパターンです。<br />
+これだと「キャンセルできるように見えて、途中で止まらない」コードになりがちです。</p>
+
+<p>また、<strong>タイムアウト</strong> も「待機だけに上限を付けたい」のか、「実処理自体も止めたい」のかで意味が変わります。</p>
+
+<ul>
+  <li>待機だけに上限を付けたい: <code class="language-plaintext highlighter-rouge">WaitAsync</code></li>
+  <li>実処理自体も止めたい: <code class="language-plaintext highlighter-rouge">CancellationTokenSource.CancelAfter</code> と token の伝播</li>
+</ul>
+
+<p>この違いは、後から不具合になりやすいので最初に決めておくと安定します。</p>
+
+<h3 id="44-非同期-api-は最後まで非同期でつなぐ">4.4. 非同期 API は最後まで非同期でつなぐ</h3>
+
+<p><code class="language-plaintext highlighter-rouge">async</code> / <code class="language-plaintext highlighter-rouge">await</code> を使うなら、できるだけ <strong>最後まで非同期でつなぐ</strong> ほうが素直です。</p>
+
+<p>置き換えの目安は次のとおりです。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>したくなる書き方</th>
+      <th>置き換え先</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Task.Result</code> / <code class="language-plaintext highlighter-rouge">Task.Wait()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">await</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Task.WaitAll()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">await Task.WhenAll(...)</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Task.WaitAny()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">await Task.WhenAny(...)</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Thread.Sleep(...)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">await Task.Delay(...)</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>特に UI や ASP.NET Core では、<strong>同期的に待つ書き方</strong> が混ざると、詰まり方が読みにくくなります。</p>
+
+<p>今の C# では <code class="language-plaintext highlighter-rouge">async Task Main()</code> も使えるので、コンソールアプリでも無理に同期化する理由はかなり減っています。</p>
+
+<h3 id="45-linq-でタスクを作るときは-toarray--tolist-で確定する">4.5. LINQ でタスクを作るときは ToArray / ToList で確定する</h3>
+
+<p><code class="language-plaintext highlighter-rouge">Task.WhenAll</code> や <code class="language-plaintext highlighter-rouge">Task.WhenAny</code> と LINQ を組み合わせるときは、<br />
+<code class="language-plaintext highlighter-rouge">ToArray()</code> か <code class="language-plaintext highlighter-rouge">ToList()</code> でいったん確定するほうが安全です。</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Task</span><span class="p">&lt;</span><span class="n">User</span><span class="p">&gt;[]</span> <span class="n">tasks</span> <span class="p">=</span> <span class="n">userIds</span>
+    <span class="p">.</span><span class="nf">Select</span><span class="p">(</span><span class="n">id</span> <span class="p">=&gt;</span> <span class="n">_userRepository</span><span class="p">.</span><span class="nf">GetAsync</span><span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">))</span>
+    <span class="p">.</span><span class="nf">ToArray</span><span class="p">();</span>
+
+<span class="n">User</span><span class="p">[]</span> <span class="n">users</span> <span class="p">=</span> <span class="k">await</span> <span class="n">Task</span><span class="p">.</span><span class="nf">WhenAll</span><span class="p">(</span><span class="n">tasks</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>理由は、LINQ が遅延実行だからです。<br />
+「もう全部始まっているつもり」で読んでいたら、実はまだ列挙されていない、というのは地味に危険です。</p>
+
+<ul>
+  <li>全件まとめて待つなら <code class="language-plaintext highlighter-rouge">ToArray()</code></li>
+  <li>途中で削除・入れ替えしたいなら <code class="language-plaintext highlighter-rouge">ToList()</code></li>
+</ul>
+
+<p>と覚えておくと使い分けやすいです。</p>
+
+<h2 id="5-よくあるアンチパターン">5. よくあるアンチパターン</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>アンチパターン</th>
+      <th>何がつらいか</th>
+      <th>まずの置き換え</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Task.Run(async () =&gt; await IoAsync())</code></td>
+      <td>I/O 待ちを無駄に投げ直している</td>
+      <td><code class="language-plaintext highlighter-rouge">await IoAsync()</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Task.Result</code> / <code class="language-plaintext highlighter-rouge">Wait()</code></td>
+      <td>スレッドを塞ぐ。詰まりやすい</td>
+      <td><code class="language-plaintext highlighter-rouge">await</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Thread.Sleep()</code> を async フローに混ぜる</td>
+      <td>待機中もスレッドを占有する</td>
+      <td><code class="language-plaintext highlighter-rouge">Task.Delay()</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">async void</code> を普通のメソッドで使う</td>
+      <td>待てない、例外管理しづらい</td>
+      <td><code class="language-plaintext highlighter-rouge">Task</code> / <code class="language-plaintext highlighter-rouge">Task&lt;T&gt;</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Task.WhenAll</code> すべき場面で直列 await</td>
+      <td>不必要に遅くなる</td>
+      <td>先に全部開始して <code class="language-plaintext highlighter-rouge">WhenAll</code></td>
+    </tr>
+    <tr>
+      <td>大量件数を <code class="language-plaintext highlighter-rouge">WhenAll</code> で一気に投げる</td>
+      <td>負荷が跳ねる</td>
+      <td><code class="language-plaintext highlighter-rouge">Parallel.ForEachAsync</code> / <code class="language-plaintext highlighter-rouge">SemaphoreSlim</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">lock</code> で await をまたごうとする</td>
+      <td>目的に合わない</td>
+      <td><code class="language-plaintext highlighter-rouge">SemaphoreSlim.WaitAsync</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fire-and-forget</code> を素の <code class="language-plaintext highlighter-rouge">Task.Run</code> で済ませる</td>
+      <td>例外・停止・上限の管理が曖昧</td>
+      <td><code class="language-plaintext highlighter-rouge">Channel&lt;T&gt;</code> / <code class="language-plaintext highlighter-rouge">BackgroundService</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ConfigureAwait(false)</code> を UI コードへ機械的に付ける</td>
+      <td>await 後の UI 更新が壊れやすい</td>
+      <td>plain <code class="language-plaintext highlighter-rouge">await</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ValueTask</code> を標準にする</td>
+      <td>複雑さのわりに得が出ないことが多い</td>
+      <td>まず <code class="language-plaintext highlighter-rouge">Task</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>この表の中で、特に実務でよく見かけるのは次の 3 つです。</p>
+
+<ol>
+  <li>I/O なのに <code class="language-plaintext highlighter-rouge">Task.Run</code></li>
+  <li>本当は独立なのに直列 await</li>
+  <li>fire-and-forget の寿命管理がない</li>
+</ol>
+
+<p>この 3 つを直すだけでも、コードの見通しはかなり改善します。</p>
+
+<h2 id="6-レビュー時のチェックリスト">6. レビュー時のチェックリスト</h2>
+
+<p>async / await まわりのコードレビューでは、次を順番に見ると分かりやすいです。</p>
+
+<ul>
+  <li>その処理は <strong>I/O-bound</strong> か <strong>CPU-bound</strong> かを、最初に言葉で説明できるか</li>
+  <li><code class="language-plaintext highlighter-rouge">Task.Result</code> / <code class="language-plaintext highlighter-rouge">Task.Wait()</code> / <code class="language-plaintext highlighter-rouge">Thread.Sleep()</code> が残っていないか</li>
+  <li>I/O 待ちを <code class="language-plaintext highlighter-rouge">Task.Run</code> で包んでいないか</li>
+  <li>独立した処理を、不要に直列 await していないか</li>
+  <li>逆に、大量件数を無制限に <code class="language-plaintext highlighter-rouge">WhenAll</code> していないか</li>
+  <li><code class="language-plaintext highlighter-rouge">CancellationToken</code> を受けているなら、下流へちゃんと渡しているか</li>
+  <li><code class="language-plaintext highlighter-rouge">async void</code> がイベントハンドラ以外にないか</li>
+  <li><code class="language-plaintext highlighter-rouge">fire-and-forget</code> を入れているなら、例外・停止・上限を誰が管理するか決まっているか</li>
+  <li><code class="language-plaintext highlighter-rouge">SemaphoreSlim</code> を使っているなら、<code class="language-plaintext highlighter-rouge">Release</code> が <code class="language-plaintext highlighter-rouge">finally</code> に入っているか</li>
+  <li><code class="language-plaintext highlighter-rouge">ValueTask</code> を使っているなら、計測上の理由があるか、1 回 await 前提になっているか</li>
+  <li><code class="language-plaintext highlighter-rouge">ConfigureAwait(false)</code> の有無が、そのコードの種類と合っているか
+    <ul>
+      <li>UI / アプリコードなら plain <code class="language-plaintext highlighter-rouge">await</code></li>
+      <li>汎用ライブラリなら <code class="language-plaintext highlighter-rouge">ConfigureAwait(false)</code> を検討</li>
+    </ul>
+  </li>
+</ul>
+
+<p>このチェックリストは、チームでレビュー観点をそろえるのにも使いやすいです。</p>
+
+<h2 id="7-ざっくり使い分け">7. ざっくり使い分け</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>やりたいこと</th>
+      <th>まず選ぶもの</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1 件の HTTP / DB / ファイル I/O</td>
+      <td>async API をそのまま <code class="language-plaintext highlighter-rouge">await</code></td>
+    </tr>
+    <tr>
+      <td>UI を止めたくない重い計算</td>
+      <td><code class="language-plaintext highlighter-rouge">Task.Run</code></td>
+    </tr>
+    <tr>
+      <td>独立した少数の非同期処理</td>
+      <td><code class="language-plaintext highlighter-rouge">Task.WhenAll</code></td>
+    </tr>
+    <tr>
+      <td>最初の 1 件だけ欲しい</td>
+      <td><code class="language-plaintext highlighter-rouge">Task.WhenAny</code></td>
+    </tr>
+    <tr>
+      <td>大量件数を上限付きで回したい</td>
+      <td><code class="language-plaintext highlighter-rouge">Parallel.ForEachAsync</code> / <code class="language-plaintext highlighter-rouge">SemaphoreSlim</code></td>
+    </tr>
+    <tr>
+      <td>順番付きのバックグラウンド処理</td>
+      <td><code class="language-plaintext highlighter-rouge">Channel&lt;T&gt;</code></td>
+    </tr>
+    <tr>
+      <td>一定間隔で回したい</td>
+      <td><code class="language-plaintext highlighter-rouge">PeriodicTimer</code></td>
+    </tr>
+    <tr>
+      <td>逐次ストリームを処理したい</td>
+      <td><code class="language-plaintext highlighter-rouge">IAsyncEnumerable&lt;T&gt;</code> / <code class="language-plaintext highlighter-rouge">await foreach</code></td>
+    </tr>
+    <tr>
+      <td>await をまたぐ排他</td>
+      <td><code class="language-plaintext highlighter-rouge">SemaphoreSlim</code></td>
+    </tr>
+    <tr>
+      <td>汎用ライブラリ</td>
+      <td><code class="language-plaintext highlighter-rouge">ConfigureAwait(false)</code> を検討</td>
+    </tr>
+    <tr>
+      <td>返り値の型で迷う</td>
+      <td>まず <code class="language-plaintext highlighter-rouge">Task</code> / <code class="language-plaintext highlighter-rouge">Task&lt;T&gt;</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="8-まとめ">8. まとめ</h2>
+
+<p><code class="language-plaintext highlighter-rouge">async</code> / <code class="language-plaintext highlighter-rouge">await</code> のベストプラクティスは、細かいテクニックを何個も覚えるというより、<br />
+<strong>処理の種類に合わせて型を選ぶ</strong> という整理のほうが実務では効きます。</p>
+
+<p>まず見る順番としては、だいたい次です。</p>
+
+<ol>
+  <li>I/O 待ちか CPU 計算かを分ける</li>
+  <li>I/O なら async API をそのまま <code class="language-plaintext highlighter-rouge">await</code> する</li>
+  <li>CPU 計算なら、どこで動かすべきかを決める</li>
+  <li>複数処理なら <code class="language-plaintext highlighter-rouge">WhenAll</code> / <code class="language-plaintext highlighter-rouge">WhenAny</code> / 並列数制限を選ぶ</li>
+  <li>リクエスト寿命から外すなら、素の fire-and-forget ではなくキュー化する</li>
+  <li>返り値、キャンセル、例外、排他、コンテキストの扱いをそろえる</li>
+</ol>
+
+<p><code class="language-plaintext highlighter-rouge">async</code> / <code class="language-plaintext highlighter-rouge">await</code> は、書き方そのものは簡潔です。<br />
+ただ、雑に使うと方針が見えにくくなります。</p>
+
+<p>逆に、</p>
+
+<ul>
+  <li>I/O は I/O として扱う</li>
+  <li>CPU は CPU として扱う</li>
+  <li>背景処理は背景処理として寿命を管理する</li>
+</ul>
+
+<p>この 3 つを分けるだけで、かなり読みやすくなります。</p>
+
+<h2 id="9-参考資料">9. 参考資料</h2>
+
+<ul>
+  <li><a href="https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/async-scenarios">Asynchronous programming scenarios - C#</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/">Asynchronous programming with async and await</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/dotnet/standard/asynchronous-programming-patterns/task-based-asynchronous-pattern-tap">Task-based Asynchronous Pattern (TAP) in .NET</a></li>
+  <li><a href="https://devblogs.microsoft.com/dotnet/configureawait-faq/">ConfigureAwait FAQ</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.parallel.foreachasync">Parallel.ForEachAsync Method</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.waitasync">Task.WaitAsync Method</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/dotnet/core/extensions/channels">System.Threading.Channels library</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/dotnet/core/extensions/queue-service">Create a Queue Service</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services">Background tasks with hosted services in ASP.NET Core</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/generate-consume-asynchronous-stream">Generate and consume async streams</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-disposeasync">Implement a DisposeAsync method</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask">ValueTask Struct</a></li>
+  <li><a href="https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca2012">CA2012: Use ValueTasks correctly</a></li>
+</ul>
+:ET

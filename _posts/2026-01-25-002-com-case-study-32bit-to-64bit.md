@@ -1,11 +1,15 @@
 ---
-title: "COMが役立つケーススタディ-32bitアプリから64bit DLLを呼び出したいとき"
+title: "32bit アプリから 64bit DLL を呼び出す方法 - COM ブリッジが役立つケーススタディ"
 date: 2026-01-25 11:00
 tags: [COM, Windows開発, 32bit, 64bit]
 author: Go Komura
+description: "32bit アプリから 64bit DLL を直接呼び出せないときに、COM ブリッジで連携する考え方を、Windows の制約、構成、処理の流れとあわせて整理します。"
 ---
 
-# COMが役立つケーススタディ-32bitアプリから64bit DLLを呼び出したいとき
+# 32bit アプリから 64bit DLL を呼び出す方法 - COM ブリッジが役立つケーススタディ
+
+32bit アプリから 64bit DLL を呼び出したい、という要件は Windows ではかなり典型的です。
+特に既存資産を残したまま 64bit 側の機能だけ使いたいとき、COM ブリッジの構成が現実的な解になりやすいです。
 
 ## 目次
 

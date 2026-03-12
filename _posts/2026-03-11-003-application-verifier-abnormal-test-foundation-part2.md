@@ -1,5 +1,5 @@
 ---
-title: "産業用カメラ制御アプリが1か月後に突然落ちるとき（後編） - Application Verifierで異常系テスト基盤を作る"
+title: "産業用カメラ制御アプリが1か月後に突然落ちるとき（後編） - Application Verifier とは何かと異常系テスト基盤の作り方"
 date: "2026-03-11T10:30:00+09:00"
 author: "Go Komura"
 tags:
@@ -9,13 +9,14 @@ tags:
   - Application Verifier
   - 異常系テスト
   - ハンドルリーク
-description: "Application Verifier とは何かを実務寄りに整理し、Handles / Heaps / Low Resource Simulation を使って、メモリ不足やハンドル異常を前倒しで表面化させる異常系テスト基盤の考え方をまとめます。"
+description: "Application Verifier とは何かを、Handles、Heaps、Low Resource Simulation、!htrace を使った Windows の異常系テスト基盤づくりとあわせて整理します。"
 ---
 
-前編の [産業用カメラ制御アプリが1か月後に突然落ちるとき（前編） - ハンドルリークの見つけ方と長期稼働向けログ設計](https://comcomponent.com/blog/2026/03/11/002-handle-leak-industrial-camera-long-run-crash-part1/) では、長時間運転後に落ちる制御アプリを調べた結果、原因がハンドルリークだった事例を整理しました。
+Application Verifier は、Windows のネイティブコードや Win32 境界で起きる異常を前倒しで表面化させたいときに有力なツールです。
+特に、ハンドル異常、ヒープ破壊、低リソース時の failure path をテストしたい場面では、通常系の試験だけでは見えない問題をかなり早く表に出せます。
 
-ただ、ログを強化しただけではまだ半分です。  
-本当にほしいのは、**今後もし想定外のプログラムミスでメモリリークやハンドルリーク、途中失敗、解放漏れが起きても、「何が起きたか分かる」状態になっているか** を、先に試せることです。
+前編の [産業用カメラ制御アプリが1か月後に突然落ちるとき（前編） - ハンドルリークの見つけ方と長期稼働向けログ設計](https://comcomponent.com/blog/2026/03/11/002-handle-leak-industrial-camera-long-run-crash-part1/) では、長時間運転後に落ちる制御アプリを調べた結果、原因がハンドルリークだった事例を整理しました。  
+ただ、ログを強化しただけではまだ半分です。本当にほしいのは、**今後もし想定外のプログラムミスでメモリリークやハンドルリーク、途中失敗、解放漏れが起きても、「何が起きたか分かる」状態になっているか** を、先に試せることです。
 
 そこで使ったのが **Application Verifier** です。  
 Windows のネイティブコードや Win32 境界で動く処理に対して、実行時にチェックや fault injection を入れられる道具です。実務で特に便利なのは、**本当にマシンのメモリを食い尽くさなくても、メモリ不足や資源不足っぽい壊れ方を前倒しで起こせる** ところです。

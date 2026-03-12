@@ -1,11 +1,13 @@
 ---
-title: "Media Foundation はなぜ急に COM の顔をしてくるのか"
+title: "Media Foundation とは何か - COM と Windows メディア API の顔が見えてくる理由"
 date: 2026-03-09 10:00
 tags: [Media Foundation, COM, C++, Windows開発]
 author: Go Komura
+description: "Media Foundation とは何かを、COM、HRESULT、IMFSourceReader、MFT など Windows メディア API の基本用語とあわせて、最初に押さえる順番で整理します。"
 ---
 
-Media Foundation を触り始めると、最初は「動画や音声の API を使っているはずなのに、急に COM の話が増えた」と感じやすいです。
+Media Foundation を触り始めると、「Windows の動画や音声 API を使っているはずなのに、急に COM の話が増えた」と感じやすいです。
+特に `CoInitializeEx`、`HRESULT`、`IMFSourceReader`、`IMFTransform` あたりがまとまって出てきて、Media Foundation とは何かが見えにくくなりがちです。
 
 `CoInitializeEx`、`MFStartup`、`IMFSourceReader`、`IMFMediaType`、`IMFTransform`、`IMFActivate`、`HRESULT`、GUID などが一気に出てきて、空気が急に Win32 / COM っぽくなります。
 

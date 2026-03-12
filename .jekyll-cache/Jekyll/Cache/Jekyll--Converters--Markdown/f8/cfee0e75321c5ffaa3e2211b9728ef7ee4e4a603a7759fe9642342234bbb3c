@@ -1,0 +1,3 @@
+I"p<p>WPF / WinForms で <code class="language-plaintext highlighter-rouge">async</code> / <code class="language-plaintext highlighter-rouge">await</code> を使うときに一番迷いやすいのは、<strong><code class="language-plaintext highlighter-rouge">await</code> のあとにどのスレッドへ戻るのか</strong>、そして <strong>いつ UI を触ってよいのか</strong> です。
+特に <code class="language-plaintext highlighter-rouge">Dispatcher</code>、<code class="language-plaintext highlighter-rouge">BeginInvoke</code>、<code class="language-plaintext highlighter-rouge">ConfigureAwait(false)</code>、<code class="language-plaintext highlighter-rouge">.Result</code> / <code class="language-plaintext highlighter-rouge">.Wait()</code> が混ざると、画面フリーズやクロススレッド例外の原因が見えにくくなります。</p>
+:ET
