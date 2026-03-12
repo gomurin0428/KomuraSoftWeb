@@ -80,7 +80,7 @@ But in return, the object itself **must be designed to be thread-safe**.
 
 <pre class="mermaid">
 flowchart LR
-    subgraph MTA[MTA (one apartment)]
+    subgraph MTA[MTA - one apartment]
         Thread1[Worker thread 1]
         Thread2[Worker thread 2]
         Obj[COM object]
