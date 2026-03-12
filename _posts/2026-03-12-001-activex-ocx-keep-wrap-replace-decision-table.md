@@ -1,6 +1,8 @@
 ---
 title: ActiveX / OCX を今どう扱うか - 残す・包む・置き換える判断表
 date: 2026-03-12 10:00
+lang: ja
+translation_key: activex-ocx-keep-wrap-replace-decision-table
 tags:
   - COM
   - ActiveX

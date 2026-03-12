@@ -1,6 +1,8 @@
 ---
 title: "産業用カメラ制御アプリが1か月後に突然落ちるとき（前編） - ハンドルリークの見つけ方と長期稼働向けログ設計"
 date: "2026-03-11T10:00:00+09:00"
+lang: ja
+translation_key: handle-leak-industrial-camera-long-run-crash-part1
 author: "Go Komura"
 tags:
   - Windows開発

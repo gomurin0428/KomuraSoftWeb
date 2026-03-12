@@ -1,6 +1,8 @@
 ---
 title: "FileSystemWatcher の使い方と注意点 - 取りこぼし、重複通知、完了判定の落とし穴"
 date: 2026-03-10T10:00:00+09:00
+lang: ja
+translation_key: filesystemwatcher-safe-basics
 author: Go Komura
 tags:
   - FileSystemWatcher

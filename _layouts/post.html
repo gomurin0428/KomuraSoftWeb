@@ -1,15 +1,36 @@
 <!DOCTYPE html>
-<html lang="ja">
+{% assign lang = page.lang | default: "ja" %}
+{% assign ui = site.data.blog_ui[lang] %}
+{% assign meta_description = page.description | default: page.excerpt | strip_html | normalize_whitespace | truncate: 160 %}
+{% assign meta_image = page.og_image | default: site.default_og_image | absolute_url %}
+{% assign article_author = page.author | default: site.founder_name | default: "KomuraSoft" %}
+{% assign translation_candidates = site.posts | where: "translation_key", page.translation_key %}
+{% assign contact_url = site.contact_url | append: "&entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87" %}
+{% if lang == "en" %}
+  {% assign blog_url = "/en/blog/" %}
+  {% assign home_url = "/" %}
+  {% assign alternate_post = translation_candidates | where_exp: "post", "post.lang != 'en'" | first %}
+  {% assign ja_url = alternate_post.url %}
+  {% assign en_url = page.url %}
+{% else %}
+  {% assign blog_url = "/blog/" %}
+  {% assign home_url = "/" %}
+  {% assign alternate_post = translation_candidates | where: "lang", "en" | first %}
+  {% assign ja_url = page.url %}
+  {% assign en_url = alternate_post.url %}
+{% endif %}
+<html lang="{{ ui.html_lang }}">
 <head>
-  {% assign meta_description = page.description | default: page.excerpt | strip_html | normalize_whitespace | truncate: 160 %}
-  {% assign meta_image = page.og_image | default: site.default_og_image | absolute_url %}
-  {% assign article_author = page.author | default: site.founder_name | default: "KomuraSoft" %}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="/logo.png">
-  <title>{{ page.title }} | KomuraSoft Blog</title>
+  <title>{{ page.title }} | {{ ui.post.title_suffix }}</title>
   <meta name="description" content="{{ meta_description }}">
   <link rel="canonical" href="{{ page.url | absolute_url }}">
+  {% if alternate_post %}
+  <link rel="alternate" hreflang="ja" href="{{ ja_url | absolute_url }}">
+  <link rel="alternate" hreflang="en" href="{{ en_url | absolute_url }}">
+  {% endif %}
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
   <meta name="author" content="{{ article_author }}">
   <meta name="theme-color" content="#0f172a">
@@ -19,7 +40,7 @@
   <meta property="og:description" content="{{ meta_description }}">
   <meta property="og:url" content="{{ page.url | absolute_url }}">
   <meta property="og:site_name" content="KomuraSoft">
-  <meta property="og:locale" content="{{ site.locale | default: 'ja_JP' }}">
+  <meta property="og:locale" content="{{ ui.locale }}">
   <meta property="og:image" content="{{ meta_image }}">
   <meta property="og:image:secure_url" content="{{ meta_image }}">
   <meta property="og:image:width" content="1024">
@@ -54,7 +75,7 @@
       "@id": "{{ page.url | absolute_url }}"
     },
     "url": "{{ page.url | absolute_url }}",
-    "inLanguage": "ja-JP",
+    "inLanguage": "{{ ui.html_lang }}",
     "image": [
       "{{ meta_image }}"
     ],
@@ -87,8 +108,8 @@
       {
         "@type": "ListItem",
         "position": 2,
-        "name": "Blog",
-        "item": "{{ '/blog/' | absolute_url }}"
+        "name": {{ ui.post.breadcrumb_blog | jsonify }},
+        "item": "{{ blog_url | absolute_url }}"
       },
       {
         "@type": "ListItem",
@@ -116,6 +137,17 @@
       display: flex;
       flex-direction: column;
       gap: 1rem;
+    }
+    .language-button-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+    .language-button.is-disabled {
+      opacity: 0.5;
+      cursor: default;
+      pointer-events: none;
     }
     .mobile-toc-trigger {
       position: fixed;
@@ -463,10 +495,18 @@
           <span class="brand-name">KomuraSoft</span>
         </a>
         <nav class="site-nav">
-          <a class="nav-link" href="/">ホーム</a>
-          <a class="nav-link" href="/blog/">ブログ</a>
+          <a class="nav-link" href="{{ home_url }}">{{ ui.home_label }}</a>
+          <a class="nav-link" href="{{ blog_url }}">{{ ui.blog_label }}</a>
         </nav>
-        <a class="pill-contact" href="https://docs.google.com/forms/d/e/1FAIpQLSfywSpD36AGXdQ70iNTNUgmZl6aFa7fTUT-PcyS9DY185pejw/viewform?usp=pp_url&entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87" target="_blank" rel="noopener">お問い合わせ</a>
+        <div class="language-switch" role="group" aria-label="{{ ui.post.language_toggle_label }}">
+          <a class="language-button language-button-link" href="{{ ja_url }}" aria-current="{% unless lang == 'en' %}page{% endunless %}">{{ ui.post.language_button_ja }}</a>
+          {% if lang == "en" or alternate_post %}
+          <a class="language-button language-button-link" href="{{ en_url }}" aria-current="{% if lang == 'en' %}page{% endif %}">{{ ui.post.language_button_en }}</a>
+          {% else %}
+          <span class="language-button is-disabled">{{ ui.post.language_button_en }}</span>
+          {% endif %}
+        </div>
+        <a class="pill-contact" href="{{ contact_url }}" target="_blank" rel="noopener">{{ ui.contact_label }}</a>
       </div>
     </header>
     <main>
@@ -477,7 +517,7 @@
             <header class="blog-header">
               <h1 class="blog-title">{{ page.title }}</h1>
               <div class="blog-meta">
-                <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y年%m月%d日 %H:%M" }}</time>
+                <time datetime="{{ page.date | date_to_xmlschema }}">{% if lang == "en" %}{{ page.date | date: "%b %-d, %Y %H:%M" }}{% else %}{{ page.date | date: "%Y年%m月%d日 %H:%M" }}{% endif %}</time>
                 {% if page.author %}
                 · <span>{{ page.author }}</span>
                 {% endif %}
@@ -490,29 +530,29 @@
               {{ content }}
             </div>
             <section class="article-github-links" aria-label="GitHub links">
-              <h2 class="article-github-links-title">Author GitHub</h2>
+              <h2 class="article-github-links-title">{{ ui.post.github_title }}</h2>
               <p class="article-github-links-text">
-                この記事の著者 Go Komura の GitHub アカウントは
+                {{ ui.post.github_body_1 }}
                 <a href="https://github.com/gomurin0428" target="_blank" rel="noopener">gomurin0428</a>
-                です。
+                {{ ui.post.github_body_2 }}
               </p>
               <p class="article-github-links-text">
-                GitHub では
+                {{ ui.post.github_body_3 }}
                 <a href="https://github.com/gomurin0428/COM_BLAS" target="_blank" rel="noopener">COM_BLAS</a>
-                と
+                {{ ui.post.github_body_4 }}
                 <a href="https://github.com/LongTail-Software/COM_BigDecimal" target="_blank" rel="noopener">COM_BigDecimal</a>
-                を公開しています。
+                {{ ui.post.github_body_5 }}
               </p>
             </section>
-            <a href="/blog/" class="back-link">← ブログ一覧に戻る</a>
+            <a href="{{ blog_url }}" class="back-link">{{ ui.post.back_to_blog }}</a>
           </div>
-          <aside class="article-sidebar" aria-label="記事ナビゲーション">
+          <aside class="article-sidebar" aria-label="{{ ui.article_nav_label }}">
             <div class="article-sidebar-content">
               <nav id="sidebar-toc-root"></nav>
-              <section class="article-consult-cta article-consult-cta-sidebar" aria-label="相談案内">
+              <section class="article-consult-cta article-consult-cta-sidebar" aria-label="{{ ui.post.sidebar_cta_label }}">
                 <div class="article-consult-cta-actions">
-                  <a id="sidebar-article-consult-link" class="article-consult-cta-button" href="https://docs.google.com/forms/d/e/1FAIpQLSfywSpD36AGXdQ70iNTNUgmZl6aFa7fTUT-PcyS9DY185pejw/viewform?usp=pp_url&entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87" target="_blank" rel="noopener">この記事のテーマで相談する</a>
-                  <a class="article-consult-cta-button article-consult-cta-button-secondary" href="https://docs.google.com/forms/d/e/1FAIpQLSfywSpD36AGXdQ70iNTNUgmZl6aFa7fTUT-PcyS9DY185pejw/viewform?usp=pp_url&entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87" target="_blank" rel="noopener">とにかく相談する</a>
+                  <a id="sidebar-article-consult-link" class="article-consult-cta-button" href="{{ contact_url }}" target="_blank" rel="noopener">{{ ui.article_consult_label }}</a>
+                  <a class="article-consult-cta-button article-consult-cta-button-secondary" href="{{ contact_url }}" target="_blank" rel="noopener">{{ ui.general_consult_label }}</a>
                 </div>
               </section>
             </div>
@@ -522,11 +562,11 @@
     </main>
     <footer class="site-footer">
       <div class="footer-inner">
-        <div>© 2026 KomuraSoft</div>
-        <div class="footer-links">
-          <a class="nav-link" href="/">ホーム</a>
-          <a class="nav-link" href="/blog/">ブログ</a>
-          <a class="nav-link" href="/privacy/">プライバシーポリシー</a>
+      <div>© 2026 KomuraSoft</div>
+      <div class="footer-links">
+          <a class="nav-link" href="{{ home_url }}">{{ ui.home_label }}</a>
+          <a class="nav-link" href="{{ blog_url }}">{{ ui.blog_label }}</a>
+          <a class="nav-link" href="/privacy/">{{ ui.list.footer_privacy }}</a>
         </div>
       </div>
     </footer>
@@ -537,7 +577,7 @@
     type="button"
     aria-controls="mobile-toc-panel"
     aria-expanded="false">
-    目次
+    {{ ui.toc_label }}
   </button>
   <div id="mobile-toc-backdrop" class="mobile-toc-backdrop" hidden></div>
   <section
@@ -547,8 +587,8 @@
     aria-hidden="true"
     hidden>
     <div class="mobile-toc-header">
-      <p id="mobile-toc-title" class="mobile-toc-title">目次</p>
-      <button id="mobile-toc-close" class="mobile-toc-close" type="button">閉じる</button>
+      <p id="mobile-toc-title" class="mobile-toc-title">{{ ui.toc_label }}</p>
+      <button id="mobile-toc-close" class="mobile-toc-close" type="button">{{ ui.toc_close_label }}</button>
     </div>
     <div id="mobile-toc-body" class="mobile-toc-body"></div>
   </section>
@@ -556,9 +596,17 @@
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     mermaid.initialize({ startOnLoad: false, theme: 'default' });
 
-    const technicalConsultationUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfywSpD36AGXdQ70iNTNUgmZl6aFa7fTUT-PcyS9DY185pejw/viewform?usp=pp_url&entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87';
+    const technicalConsultationUrl = {{ contact_url | jsonify }};
     const articleReference = {{ article_reference | jsonify }};
-    const articleConsultationUrl = `https://docs.google.com/forms/d/e/1FAIpQLSfywSpD36AGXdQ70iNTNUgmZl6aFa7fTUT-PcyS9DY185pejw/viewform?usp=pp_url&entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87&entry.1150553057=${encodeURIComponent(articleReference)}`;
+    const tocHeadingText = {{ ui.toc_label | jsonify }};
+    const referencesHeadingText = {{ ui.references_label | jsonify }};
+    const tocLabel = {{ ui.toc_label | jsonify }};
+    const mobileConsultTitle = {{ ui.post.consult_cta_title | jsonify }};
+    const mobileConsultText = {{ ui.post.consult_cta_text | jsonify }};
+    const mobileConsultNote = {{ ui.post.consult_cta_note | jsonify }};
+    const articleConsultLabel = {{ ui.article_consult_label | jsonify }};
+    const generalConsultLabel = {{ ui.general_consult_label | jsonify }};
+    const articleConsultationUrl = `${technicalConsultationUrl}&entry.1150553057=${encodeURIComponent(articleReference)}`;
 
     const normalizeText = (value) => value.replace(/\s+/g, ' ').trim();
 
@@ -572,7 +620,7 @@
     const findTocList = () => {
       const tocHeading = Array.from(
         document.querySelectorAll('.blog-content h2, .blog-content h3')
-      ).find((heading) => normalizeText(heading.textContent) === '目次');
+      ).find((heading) => normalizeText(heading.textContent) === tocHeadingText);
 
       if (!tocHeading) {
         return { tocHeading: null, tocList: null };
@@ -716,7 +764,7 @@
 
       const title = document.createElement('p');
       title.className = 'sidebar-toc-title';
-      title.textContent = '目次';
+      title.textContent = tocLabel;
 
       const list = buildSidebarList(headings);
 
@@ -733,18 +781,18 @@
       const cta = document.createElement('section');
       cta.className = 'article-consult-cta';
       cta.innerHTML = `
-        <h2 class="article-consult-cta-title">この記事のテーマで相談できます</h2>
-        <p class="article-consult-cta-text">この記事で扱ったテーマに近い課題がある場合、技術相談も受け付けています。既存システムの改修方針の整理、設計レビュー、不具合の切り分けなど、まずは状況をお知らせください。</p>
-        <p class="article-consult-cta-note">Windows / COM 関係のトラブル調査や設計相談も対応しています。困っている場合はお問い合わせからご相談ください。</p>
+        <h2 class="article-consult-cta-title">${mobileConsultTitle}</h2>
+        <p class="article-consult-cta-text">${mobileConsultText}</p>
+        <p class="article-consult-cta-note">${mobileConsultNote}</p>
         <div class="article-consult-cta-actions">
-          <a class="article-consult-cta-button" href="${articleConsultationUrl}" target="_blank" rel="noopener">この記事のテーマで相談する</a>
-          <a class="article-consult-cta-button article-consult-cta-button-secondary" href="${technicalConsultationUrl}" target="_blank" rel="noopener">とにかく相談する</a>
+          <a class="article-consult-cta-button" href="${articleConsultationUrl}" target="_blank" rel="noopener">${articleConsultLabel}</a>
+          <a class="article-consult-cta-button article-consult-cta-button-secondary" href="${technicalConsultationUrl}" target="_blank" rel="noopener">${generalConsultLabel}</a>
         </div>
       `;
 
       const referenceHeading = Array.from(
         blogContent.querySelectorAll('h2, h3')
-      ).find((heading) => normalizeText(heading.textContent) === '参考資料');
+      ).find((heading) => normalizeText(heading.textContent) === referencesHeadingText);
 
       if (referenceHeading) {
         blogContent.insertBefore(cta, referenceHeading);

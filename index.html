@@ -165,7 +165,7 @@
           <a class="nav-link" href="#service" data-i18n="navService">サービス</a>
           <a class="nav-link" href="#company" data-i18n="navCompany">会社情報</a>
           <a class="nav-link" href="#profile" data-i18n="navProfile">代表略歴</a>
-          <a class="nav-link" href="/blog/" data-i18n="navBlog">ブログ</a>
+          <a class="nav-link" href="/blog/" data-i18n="navBlog" data-blog-link="true">ブログ</a>
         </nav>
         <div class="language-switch" role="group" aria-label="表示言語の選択" data-i18n-aria-label="languageToggleLabel">
           <button type="button" class="language-button" data-lang-select="ja" data-i18n="langButtonJa" aria-pressed="true">日本語</button>
@@ -386,7 +386,7 @@
           <a class="nav-link" href="#service" data-i18n="footerService">サービス</a>
           <a class="nav-link" href="#company" data-i18n="footerCompany">会社情報</a>
           <a class="nav-link" href="#profile" data-i18n="footerProfile">代表略歴</a>
-          <a class="nav-link" href="/blog/" data-i18n="footerBlog">ブログ</a>
+          <a class="nav-link" href="/blog/" data-i18n="footerBlog" data-blog-link="true">ブログ</a>
           <a class="nav-link" href="#contact" data-i18n="footerContact">お問い合わせ</a>
           <a class="nav-link" href="/privacy/" data-i18n="footerPrivacy">プライバシーポリシー</a>
         </div>
@@ -581,6 +581,7 @@
       };
 
       const languageButtons = Array.from(document.querySelectorAll('[data-lang-select]'));
+      const blogLinks = Array.from(document.querySelectorAll('[data-blog-link="true"]'));
 
       function toAttributeName(datasetKey) {
         const suffix = datasetKey.slice(4);
@@ -661,6 +662,10 @@
 
         languageButtons.forEach(function (button) {
           button.setAttribute('aria-pressed', button.dataset.langSelect === lang ? 'true' : 'false');
+        });
+
+        blogLinks.forEach(function (link) {
+          link.setAttribute('href', lang === 'en' ? '/en/blog/' : '/blog/');
         });
       }
 

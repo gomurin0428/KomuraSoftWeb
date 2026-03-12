@@ -1,6 +1,8 @@
 ---
 title: PeriodicTimer / System.Threading.Timer / DispatcherTimer の使い分け - .NET の定期実行をまず整理
 date: 2026-03-12 11:00
+lang: ja
+translation_key: periodictimer-system-threading-timer-dispatchertimer-guide
 tags:
   - C#
   - .NET

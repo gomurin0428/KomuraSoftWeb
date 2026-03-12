@@ -1,7 +1,7 @@
 ---
 layout: null
-permalink: /blog/search-data.json
-lang: ja
+permalink: /en/blog/search-data.json
+lang: en
 ---
 [
 {% assign lang = page.lang | default: "ja" %}

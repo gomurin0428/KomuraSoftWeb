@@ -1,6 +1,8 @@
 ---
 title: "COM STA/MTA の基礎知識 - スレッドモデルとハングを避ける考え方"
 date: 2026-01-31 10:00
+lang: ja
+translation_key: sta-mta-com-relationship
 tags: [COM, Windows開発, STA, MTA, スレッド]
 author: Go Komura
 description: "COM STA/MTA の基礎知識を、Apartment Model、UI スレッド、メッセージループ、マーシャリング、ハングを避ける考え方まで含めて整理します。"

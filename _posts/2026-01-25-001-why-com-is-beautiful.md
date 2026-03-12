@@ -1,6 +1,8 @@
 ---
 title: "COM とは何か - Windows COM の設計が今でも美しい理由"
 date: 2026-01-25 10:00
+lang: ja
+translation_key: why-com-is-beautiful
 tags: [COM, ActiveX, Windows開発]
 author: Go Komura
 description: "COM とは何かを、Windows COM のインターフェース設計、IUnknown、GUID、バイナリ互換性の観点から整理し、今でも通用する理由を解説します。"

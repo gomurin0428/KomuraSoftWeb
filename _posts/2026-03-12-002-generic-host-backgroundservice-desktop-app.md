@@ -1,6 +1,8 @@
 ---
 title: Generic Host / BackgroundService をデスクトップアプリに持ち込む理由 - 起動・寿命・graceful shutdown の整理がかなり楽になる
 date: 2026-03-12 10:00
+lang: ja
+translation_key: generic-host-backgroundservice-desktop-app
 author: Go Komura
 tags:
   - C#

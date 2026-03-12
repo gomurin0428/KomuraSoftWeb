@@ -1,6 +1,8 @@
 ---
 title: "TCP 再送で産業用カメラ通信が数秒止まるとき - RFC1323 タイムスタンプと再送待ちの切り分け"
 date: 2026-03-11T10:00:00+09:00
+lang: ja
+translation_key: tcp-retransmission-rfc1323-industrial-camera
 tags:
   - TCP
   - ネットワーク

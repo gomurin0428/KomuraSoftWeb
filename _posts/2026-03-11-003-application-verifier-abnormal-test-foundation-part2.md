@@ -1,6 +1,8 @@
 ---
 title: "産業用カメラ制御アプリが1か月後に突然落ちるとき（後編） - Application Verifier とは何かと異常系テスト基盤の作り方"
 date: "2026-03-11T10:30:00+09:00"
+lang: ja
+translation_key: application-verifier-abnormal-test-foundation-part2
 author: "Go Komura"
 tags:
   - Windows開発

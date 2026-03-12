@@ -1,6 +1,8 @@
 ---
 title: "32bit アプリから 64bit DLL を呼び出す方法 - COM ブリッジが役立つケーススタディ"
 date: 2026-01-25 11:00
+lang: ja
+translation_key: com-case-study-32bit-to-64bit
 tags: [COM, Windows開発, 32bit, 64bit]
 author: Go Komura
 description: "32bit アプリから 64bit DLL を直接呼び出せないときに、COM ブリッジで連携する考え方を、Windows の制約、構成、処理の流れとあわせて整理します。"

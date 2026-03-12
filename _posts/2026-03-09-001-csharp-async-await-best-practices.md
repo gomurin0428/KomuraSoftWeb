@@ -1,6 +1,8 @@
 ---
 title: "C# async/await のベストプラクティス - Task.Run と ConfigureAwait の判断表"
 date: 2026-03-09 10:00
+lang: ja
+translation_key: csharp-async-await-best-practices
 tags: [C#, async/await, .NET, 設計]
 author: Go Komura
 description: "C# async/await のベストプラクティスを、I/O 待ち、CPU 計算、Task.Run、ConfigureAwait(false)、fire-and-forget の判断表つきで整理します。"

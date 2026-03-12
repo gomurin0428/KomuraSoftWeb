@@ -1,6 +1,8 @@
 ---
 title: "C# からネイティブ DLL を使うなら C++/CLI ラッパーが有力な理由 - P/Invoke と比較して整理"
 date: 2026-03-07 10:00
+lang: ja
+translation_key: cpp-cli-wrapper-for-native-dlls
 tags: [C++/CLI, C#, Windows開発, ネイティブ連携]
 author: Go Komura
 description: "C# からネイティブ DLL を呼び出すときに、P/Invoke で十分なケースと C++/CLI ラッパーが有力になるケースを、所有権や例外、C++ 型の扱いまで含めて整理します。"

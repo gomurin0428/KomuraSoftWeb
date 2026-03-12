@@ -1,6 +1,8 @@
 ---
 title: "Media Foundation とは何か - COM と Windows メディア API の顔が見えてくる理由"
 date: 2026-03-09 10:00
+lang: ja
+translation_key: media-foundation-why-it-feels-like-com
 tags: [Media Foundation, COM, C++, Windows開発]
 author: Go Komura
 description: "Media Foundation とは何かを、COM、HRESULT、IMFSourceReader、MFT など Windows メディア API の基本用語とあわせて、最初に押さえる順番で整理します。"

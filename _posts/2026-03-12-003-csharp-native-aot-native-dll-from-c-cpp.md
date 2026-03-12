@@ -1,6 +1,8 @@
 ---
 title: "C# を Native AOT でネイティブ DLL にする方法 - UnmanagedCallersOnly で C/C++ から呼び出す"
 date: 2026-03-12T10:00:00+09:00
+lang: ja
+translation_key: csharp-native-aot-native-dll-from-c-cpp
 author: Go Komura
 tags:
   - C#

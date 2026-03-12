@@ -1,6 +1,8 @@
 ---
 title: "Windows ソフトリアルタイムの実践ガイド - 遅延を減らすためのチェックリスト"
 date: 2026-03-09 10:00
+lang: ja
+translation_key: windows-soft-realtime-practical-guide-natural
 tags: [Windows開発, ソフトリアルタイム, 設計, 計測]
 author: Go Komura
 description: "Windows ソフトリアルタイムを実現するために、タイマ、待機方法、優先度、電源設定、計測、キュー設計をどう見直すかをチェックリスト形式で整理します。"
