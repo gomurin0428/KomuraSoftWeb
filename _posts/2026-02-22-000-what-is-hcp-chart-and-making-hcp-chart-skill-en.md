@@ -76,6 +76,11 @@ $r = Get-Content -Raw .\hcp-chart-svg-v2\references\example-gcd-response.json | 
 $r.svg | Set-Content -NoNewline -Encoding utf8 .\hcp-chart-svg-v2\references\example-gcd.svg
 ```
 
+### Notes on input constraints
+
+- If `renderAllModules=true`, `module` must not be specified at the same time
+- If `diagnostics` contains an `error`, `svg` or `svgs` will be empty
+
 ## 5. How to read the sample outputs
 
 ### Euclidean algorithm (GCD)
@@ -85,12 +90,16 @@ $r.svg | Set-Content -NoNewline -Encoding utf8 .\hcp-chart-svg-v2\references\exa
 
 ![GCD sample HCP chart](/assets/images/hcp-chart-skill/example-gcd.svg)
 
+The sample separates "accept input," "repeat," and "return result" into distinct hierarchical layers, which makes the relation between purpose and mechanism easy to follow.
+
 ### Order approval flow
 
 - Input: `example-order-approval-request.json`
 - Output: `example-order-approval-response.json`
 
 ![Order approval sample HCP chart](/assets/images/hcp-chart-skill/example-order-approval.svg)
+
+Even in a business-flow example, `fork` and `true` / `false` branches make the intent of the branching explicit.
 
 ## 6. What the skill does internally
 
@@ -117,3 +126,5 @@ The rendered version of that internal flow is shown below.
 
 The strength of an HCP chart is not only that it is easy to read as a diagram, but also that it can be **managed as an executable specification**.  
 With `MakingHCPChartSkill`, you can validate HCP-DSL and produce SVG in one consistent flow.
+
+If you want to try one more step, the easiest next move is to take a small processing flow from your day-to-day work, describe it once in HCP-DSL, and refine it while reading the diagnostics.

@@ -26,7 +26,7 @@ The key ideas you need in order to understand COM are these:
 - Reference counting and interface discovery through **`IUnknown`**
 - The ability to run not only as a **DLL (in-process)** but also as an **EXE (out-of-process)**
 
-In other words, COM is designed as a **reuse mechanism that does not require callers to know the implementation**. A language-neutral interface is still a wonderful thing.
+In other words, COM is designed as a **reuse mechanism that does not require callers to know the implementation**. A language-neutral interface is still a remarkably elegant idea.
 
 ## Why COM is strong
 
@@ -39,7 +39,7 @@ COM has architectural strengths that still deserve respect even if the technolog
   By hiding the implementation and publishing only the contract, you get a robust and maintainable design.
 
 - **Version coexistence**  
-  The standard way to evolve functionality without breaking compatibility is to add new interfaces. That feels very Microsoft.
+  The standard way to add functionality without breaking compatibility is to add new interfaces. That feels very Microsoft.
 
 - **Reuse across process boundaries**  
   With out-of-process COM, you can safely call functionality that lives in another process.

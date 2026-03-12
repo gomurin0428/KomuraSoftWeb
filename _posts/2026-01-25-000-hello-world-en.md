@@ -14,13 +14,13 @@ In this blog, we will share technical topics and project lessons related to Wind
 
 ## Main topics
 
-- **Windows development**: WPF, Windows Forms, Win32 API, and more
+- **Windows development**: WPF, Windows Forms, Win32 API, and related technologies
 - **C# / .NET**: language features, performance, and design patterns
-- **COM / ActiveX**: working with legacy technologies
+- **COM / ActiveX**: integration with legacy technologies
 - **Development tools**: Visual Studio, Git, and other useful tools
 
 ## Posting frequency
 
-We will publish articles whenever we find something useful or worth sharing.
+The schedule will be irregular, but whenever we come across useful information or lessons worth sharing, we plan to publish them here.
 
-Thank you for reading, and we hope you will follow along.
+Thank you for your continued support.

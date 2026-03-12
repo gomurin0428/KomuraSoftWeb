@@ -43,6 +43,19 @@ The real design work is defining when ownership moves from the sender to the rec
 
 This happens when the sender writes directly to the final filename.
 
+```mermaid
+sequenceDiagram
+    participant Sender
+    participant Share as Shared folder
+    participant Receiver
+
+    Sender->>Share: Create the final file name
+    Sender->>Share: Continue writing
+    Receiver->>Share: Detect the file
+    Receiver->>Share: Read it immediately
+    Note over Receiver: The file is still incomplete
+```
+
 ### Two workers claim the same file
 
 If both workers first check and then open, they can race and process the same input twice.
@@ -81,6 +94,12 @@ Instead of guessing whether a multi-file transfer is complete, make completion e
 
 The receiver should not only *see* a candidate file. It should *reserve* it before processing.
 
+Typical options are:
+
+- moving the file into a `processing` directory with an atomic operation
+- creating a sidecar claim record with create-new semantics
+- using an atomic rename-based claim protocol
+
 ### If you use lock files, make them lease-based
 
 A lock file without owner identity or expiration is a dead end.
@@ -102,6 +121,8 @@ flowchart LR
 ```
 
 This structure works well because it does not treat visibility, ownership, and successful processing as the same event.
+
+That is exactly why it remains stable under retries, restarts, and operational noise.
 
 ## 6. Summary
 
