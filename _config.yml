@@ -20,6 +20,7 @@ exclude:
   - 001-handle-leak-industrial-camera-long-run-crash-part1.md
   - 002-application-verifier-abnormal-test-foundation-part2.md
   - wpf-winforms-ui-thread-async-await-one-sheet.md
+  - activex-ocx-keep-wrap-replace-decision-table.md
 
 # Permalink for posts
 permalink: /blog/:year/:month/:day/:title/
