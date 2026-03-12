@@ -47,22 +47,22 @@ Typical target scenarios include:
 3. [The first decision table](#3-the-first-decision-table)
    - [3.1. Overall picture](#31-overall-picture)
    - [3.2. If it is I/O-bound, await the async API directly](#32-if-it-is-io-bound-await-the-async-api-directly)
-   - [3.3. If CPU load is heavy, decide carefully where Task.Run belongs](#33-if-cpu-load-is-heavy-decide-carefully-where-taskrun-belongs)
-   - [3.4. If multiple operations are independent, use Task.WhenAll](#34-if-multiple-operations-are-independent-use-taskwhenall)
-   - [3.5. If you want the first one that finishes, use Task.WhenAny](#35-if-you-want-the-first-one-that-finishes-use-taskwhenany)
-   - [3.6. If there are many items and you want a concurrency limit, use Parallel.ForEachAsync or SemaphoreSlim](#36-if-there-are-many-items-and-you-want-a-concurrency-limit-use-parallelforeachasync-or-semaphoreslim)
-   - [3.7. If you want an ordered flow, use Channel&lt;T&gt;](#37-if-you-want-an-ordered-flow-use-channelt)
-   - [3.8. If you want fixed-interval processing, use PeriodicTimer](#38-if-you-want-fixed-interval-processing-use-periodictimer)
-   - [3.9. If data arrives progressively, use IAsyncEnumerable&lt;T&gt;](#39-if-data-arrives-progressively-use-iasyncenumerablet)
-   - [3.10. If you want asynchronous disposal, use await using](#310-if-you-want-asynchronous-disposal-use-await-using)
-   - [3.11. If you need mutual exclusion across await points, use SemaphoreSlim](#311-if-you-need-mutual-exclusion-across-await-points-use-semaphoreslim)
-   - [3.12. Write await differently in UI code, app code, and library code](#312-write-await-differently-in-ui-code-app-code-and-library-code)
+   - [3.3. If CPU load is heavy, decide carefully where `Task.Run` belongs](#33-if-cpu-load-is-heavy-decide-carefully-where-taskrun-belongs)
+   - [3.4. If multiple operations are independent, use `Task.WhenAll`](#34-if-multiple-operations-are-independent-use-taskwhenall)
+   - [3.5. If you want the first one that finishes, use `Task.WhenAny`](#35-if-you-want-the-first-one-that-finishes-use-taskwhenany)
+   - [3.6. If there are many items and you want a concurrency limit, use `Parallel.ForEachAsync` or `SemaphoreSlim`](#36-if-there-are-many-items-and-you-want-a-concurrency-limit-use-parallelforeachasync-or-semaphoreslim)
+   - [3.7. If you want an ordered flow, use `Channel<T>`](#37-if-you-want-an-ordered-flow-use-channelt)
+   - [3.8. If you want fixed-interval processing, use `PeriodicTimer`](#38-if-you-want-fixed-interval-processing-use-periodictimer)
+   - [3.9. If data arrives progressively, use `IAsyncEnumerable<T>`](#39-if-data-arrives-progressively-use-iasyncenumerablet)
+   - [3.10. If you want asynchronous disposal, use `await using`](#310-if-you-want-asynchronous-disposal-use-await-using)
+   - [3.11. If you need mutual exclusion across await points, use `SemaphoreSlim`](#311-if-you-need-mutual-exclusion-across-await-points-use-semaphoreslim)
+   - [3.12. Write `await` differently in UI code, app code, and library code](#312-write-await-differently-in-ui-code-app-code-and-library-code)
 4. [Basic rules for writing async code](#4-basic-rules-for-writing-async-code)
-   - [4.1. Default to Task / Task&lt;T&gt; for return types](#41-default-to-task--taskt-for-return-types)
-   - [4.2. Use async void only for event handlers](#42-use-async-void-only-for-event-handlers)
-   - [4.3. Accept CancellationToken and pass it downstream](#43-accept-cancellationtoken-and-pass-it-downstream)
+   - [4.1. Default to `Task` / `Task<T>` for return types](#41-default-to-task--taskt-for-return-types)
+   - [4.2. Use `async void` only for event handlers](#42-use-async-void-only-for-event-handlers)
+   - [4.3. Accept `CancellationToken` and pass it downstream](#43-accept-cancellationtoken-and-pass-it-downstream)
    - [4.4. Keep an async API async all the way through](#44-keep-an-async-api-async-all-the-way-through)
-   - [4.5. Materialize task sequences with ToArray / ToList](#45-materialize-task-sequences-with-toarray--tolist)
+   - [4.5. Materialize task sequences with `ToArray` / `ToList`](#45-materialize-task-sequences-with-toarray--tolist)
 5. [Common anti-patterns](#5-common-anti-patterns)
 6. [Checklist for code review](#6-checklist-for-code-review)
 7. [Rough rule-of-thumb guide](#7-rough-rule-of-thumb-guide)
@@ -73,106 +73,103 @@ Typical target scenarios include:
 
 ## 1. Short version
 
-- `async` / `await` is a way to **avoid blocking a thread while waiting**. It is not a mechanism that automatically makes everything faster or silently moves work to another thread.
-- The first distinction to make is whether the work is **I/O-bound** or **CPU-bound**
-- If it is I/O-bound, the default is to **await the async API directly**
-- If it is CPU-bound, decide **where that computation should run**. `Task.Run` can be useful in UI code, but in ASP.NET Core request handling, wrapping work in `Task.Run` and immediately awaiting it is usually the wrong default
-- If you have multiple independent operations, consider **`Task.WhenAll`** before writing a serial chain of awaits
-- If there are many operations, do not launch them all without limit. Decide an explicit **concurrency cap**
-- Fire-and-forget looks simple, but its lifetime is hard to manage. If the work truly needs to outlive the caller, it is often better to push it into a managed place such as `Channel` or `HostedService`
-- Default to **`Task` / `Task<T>`** for return values. Choose `ValueTask` only after measurement shows a real need
-- `ConfigureAwait(false)` is useful in **general-purpose library code**, but in UI and application-side code, a normal `await` is often the right starting point
-- Do not use `async void` outside **event handlers**
+- `async` / `await` is **a way to avoid blocking a thread while waiting**, not a mechanism that automatically makes everything faster or moves everything to another thread
+- First separate whether the work is **I/O-bound** or **CPU-bound**
+- If it is I/O-bound, the basic choice is to **await the async API directly**
+- If it is CPU-bound, think about **where that computation should run**. In UI code, `Task.Run` can help, but in ASP.NET Core request handling, wrapping work in `Task.Run` and immediately awaiting it is usually not the right move
+- For multiple independent operations, consider **`Task.WhenAll` before serial awaits**
+- If there are many items, do not throw everything into `Task.WhenAll`; define a **concurrency limit**
+- Fire-and-forget looks easy but is hard to manage. If you truly want to separate the work from the caller's lifetime, it is usually more stable to send it to a managed place such as a `Channel` or a hosted service
+- Default to **`Task` / `Task<T>`** for return types. Choose `ValueTask` only after measurement shows a real need
+- `ConfigureAwait(false)` is powerful in **general-purpose library code**, but in UI and application-side code, normal `await` is usually the right default
+- Use **`async void` only for event handlers**
 
-The most important thing is to avoid the reflexes of:
+In other words, the most important thing around `async` / `await` is not to default to:
 
-- "just use `Task.Run`"
-- "just fire and forget"
-- "just use `ValueTask`"
+**"just use `Task.Run`," "just use fire-and-forget," or "just use `ValueTask`."**
 
-Instead, start by asking:
+Things become much easier to reason about once you ask:
 
-1. what is the operation actually waiting for?
-2. who owns the lifetime of that operation?
-3. where is concurrency controlled?
-
-That already removes a lot of confusion.
+1. what is this work actually waiting for?
+2. who owns the lifetime of this work?
+3. where is concurrency limited?
 
 ## 2. Terms used in this article
 
 ### 2.1. The first distinction to make
 
-Start by separating these two:
+Separating these two ideas first removes a lot of confusion:
 
-| Term | Meaning here |
+| Term | Meaning in this article |
 | --- | --- |
-| I/O-bound | work centered on waiting for an external thing to complete, such as HTTP, a database, a file, or a socket |
-| CPU-bound | work centered on the CPU calculation itself, such as compression, image processing, hashing, or heavy conversion |
+| I/O-bound | work that mainly waits for **external completion**, such as HTTP, a database, a file, or a socket |
+| CPU-bound | work that mainly spends time on **the computation itself**, such as compression, image processing, hashing, or heavy transformations |
 
-`async` / `await` is especially effective for I/O waits because the thread can be returned to other work while the external operation is still in progress.
+`async` / `await` is especially effective for I/O waits because the thread can be returned to other work while the operation is pending.
 
-CPU-bound work is different. The CPU is actually doing the work, so the design questions are mainly **which thread should run it** and **how much parallelism is acceptable**.
+CPU-bound work is different. It is not about waiting; it is about where the computation should run and how much concurrency you want.
 
 ### 2.2. Other terms that appear frequently
 
-| Term | Meaning here |
+| Term | Meaning in this article |
 | --- | --- |
-| blocking | continuing to occupy the thread while waiting for completion |
-| fire-and-forget | starting work without waiting for it to complete |
-| `SynchronizationContext` | the mechanism that lets code resume in the original environment, such as a UI context |
-| backpressure | intentionally slowing down the producer so the system does not accept more work than it can handle |
+| blocking | occupying a thread while waiting for completion |
+| fire-and-forget | starting work without waiting for the caller to observe completion |
+| `SynchronizationContext` | a mechanism used by UI models and similar environments to return to the original execution context |
+| backpressure | preventing overload by forcing writers to wait when the consumer side cannot keep up |
 
 One especially important point is that **asynchrony and parallelism are different things**.
 
-- asynchrony is about how you wait
-- parallelism is about how much work proceeds at the same time
+- asynchrony: how you wait
+- parallelism: how many things you run at the same time
 
-If you mix these together mentally, `Task.Run` starts to look useful everywhere, and that is where many mistakes begin.
+If those two ideas get mixed together, people start reaching for `Task.Run` everywhere. That is often the first wrong turn.
 
 ## 3. The first decision table
 
 ### 3.1. Overall picture
 
-Start with this table. It covers most day-to-day situations.
+Starting with this table usually gives you the right direction quickly:
 
-| Situation | First thing to use | What to check |
+| Situation | First tool to consider | What to watch |
 | --- | --- | --- |
-| waiting on HTTP / DB / file work | await the async API directly | do not wrap it in `Task.Run` |
-| heavy CPU work without freezing a UI | `Task.Run` | move the computation off the UI thread |
-| ASP.NET Core request handling | plain `await` | do not immediately wrap in `Task.Run` |
-| a few independent async operations | `Task.WhenAll` | start them first, then await together |
-| you need the first one that completes | `Task.WhenAny` | think about cancellation and exception cleanup for the rest |
-| many operations with a concurrency limit | `Parallel.ForEachAsync` / `SemaphoreSlim` | make the limit explicit |
-| ordered background flow | `Channel<T>` | design for bounded queues and backpressure |
-| periodic async work | `PeriodicTimer` | keep one consumer per timer |
-| progressive async results | `IAsyncEnumerable<T>` / `await foreach` | process before the whole set is complete |
-| asynchronous disposal | `await using` | use `IAsyncDisposable` |
-| mutual exclusion across await points | `SemaphoreSlim.WaitAsync` | always release in `finally` |
-| general library code | consider `ConfigureAwait(false)` | avoid dependence on a UI or app-specific context |
+| HTTP / DB / file waits | await the async API directly | do not wrap it in `Task.Run` |
+| heavy computation that must not freeze the UI | `Task.Run` | move CPU work off the UI thread |
+| ASP.NET Core request handling | plain `await` | do not immediately await `Task.Run` |
+| a few independent async operations | `Task.WhenAll` | start them all first, then wait together |
+| only the first completed result matters | `Task.WhenAny` | think about cancellation and exception observation for the remaining tasks |
+| many items with a limit | `Parallel.ForEachAsync` / `SemaphoreSlim` | make concurrency explicit |
+| ordered background processing | `Channel<T>` | think about bounded queues and backpressure |
+| periodic async processing | `PeriodicTimer` | remember one timer, one consumer |
+| progressively arriving results | `IAsyncEnumerable<T>` / `await foreach` | process without waiting for all results |
+| asynchronous cleanup | `await using` | use `IAsyncDisposable` |
+| mutual exclusion across `await` points | `SemaphoreSlim.WaitAsync` | always release in `try/finally` |
+| general-purpose library code | consider `ConfigureAwait(false)` | avoid depending on UI / app-specific context |
 
 ```mermaid
 flowchart TD
-    start["The operation you want to write"] --> q1{"Does it wait on external I/O?"}
+    start["What kind of work do you want to do?"] --> q1{"Waiting for external I/O?"}
     q1 -- "Yes" --> p1["Await the async API directly"]
-    q1 -- "No" --> q2{"Is the CPU work heavy?"}
-    q2 -- "Yes" --> q3{"Where should it run?"}
+    q1 -- "No" --> q2{"Heavy CPU work?"}
+    q2 -- "Yes" --> q3{"Where does it run?"}
     q3 -- "UI event / desktop app" --> p2["Consider Task.Run"]
-    q3 -- "ASP.NET Core request" --> p3["Do not wrap immediately in Task.Run<br/>Use plain await or another worker boundary"]
-    q3 -- "worker / background process" --> p4["Run there directly or make concurrency explicit"]
-    q2 -- "No" --> q4{"Is there more than one operation?"}
-    q4 -- "Wait for all to finish" --> p5["Task.WhenAll"]
-    q4 -- "Use the first one that finishes" --> p6["Task.WhenAny"]
-    q4 -- "Too many items" --> p7["Parallel.ForEachAsync<br/>or SemaphoreSlim"]
-    q4 -- "Ordered flow" --> p8["Channel<T>"]
-    q4 -- "Fixed interval" --> p9["PeriodicTimer"]
-    q4 -- "Progressive stream" --> p10["IAsyncEnumerable<T>"]
+    q3 -- "ASP.NET Core request" --> p3["Do not wrap it in Task.Run<br/>If needed, move it to a worker or queue"]
+    q3 -- "worker / background process" --> p4["Run it directly or make concurrency explicit"]
+    q2 -- "No" --> q4{"Multiple pieces of work?"}
+    q4 -- "Wait for all" --> p5["Task.WhenAll"]
+    q4 -- "Use the first winner" --> p6["Task.WhenAny"]
+    q4 -- "There are many items" --> p7["Parallel.ForEachAsync<br/>or SemaphoreSlim"]
+    q4 -- "Need ordered flow" --> p8["Channel<T>"]
+    q4 -- "Need fixed interval" --> p9["PeriodicTimer"]
+    q4 -- "Need progressive stream" --> p10["IAsyncEnumerable<T>"]
 ```
 
 ### 3.2. If it is I/O-bound, await the async API directly
 
-This is the basic pattern.
+This is the most basic pattern.
 
-For HTTP, databases, files, and similar work, first look for an async API and then **await it directly**.
+For HTTP, databases, file reads, and similar operations, first check whether there is already an async API.  
+If there is, the default choice is to await it directly.
 
 ```csharp
 public async Task<string> LoadTextAsync(string path, CancellationToken cancellationToken)
@@ -181,29 +178,21 @@ public async Task<string> LoadTextAsync(string path, CancellationToken cancellat
 }
 ```
 
-What you usually want to avoid here is wrapping already-async I/O in `Task.Run`.
+What you usually want to avoid is wrapping already-async I/O inside `Task.Run`.
 
 ```csharp
-// Bad example
+// Usually a poor choice
 public async Task<string> LoadTextAsync(string path, CancellationToken cancellationToken)
 {
     return await Task.Run(() => File.ReadAllTextAsync(path, cancellationToken), cancellationToken);
 }
 ```
 
-That only pushes the wait through another layer and makes the code harder to reason about without giving you a real benefit.
+That mostly just bounces I/O onto another thread and makes the structure harder to reason about without much benefit.
 
-The basic rule is:
+### 3.3. If CPU load is heavy, decide carefully where `Task.Run` belongs
 
-- for I/O-bound work, `Task.Run` is usually unnecessary
-- first look for the async API
-- if you receive a token, pass it downstream
-
-### 3.3. If CPU load is heavy, decide carefully where Task.Run belongs
-
-`Task.Run` is useful when you want to **move CPU-bound computation off the current thread**.
-
-For example, if a UI event handler performs heavy CPU work directly, the UI freezes. In that kind of situation, `Task.Run` is a natural fit.
+`Task.Run` is useful when you want to **move CPU work away from the current thread**.
 
 ```csharp
 public Task<byte[]> HashManyTimesAsync(byte[] data, int repeat, CancellationToken cancellationToken)
@@ -226,15 +215,36 @@ public Task<byte[]> HashManyTimesAsync(byte[] data, int repeat, CancellationToke
 }
 ```
 
-What matters is **where** the CPU work belongs.
+But the important question is **where it is being called**.
 
-- In WinForms / WPF UI code, `Task.Run` can be very useful
-- In ASP.NET Core request handling, immediately wrapping work in `Task.Run` and awaiting it is usually not the right default
-- In worker or background code, it is often more important to design concurrency explicitly than to hide the problem behind `Task.Run`
+- WinForms / WPF UI code: there are real cases where `Task.Run` helps
+- ASP.NET Core request handling: immediately awaiting `Task.Run` is usually a poor default
+- worker / background processing: either run it where it is or explicitly design the concurrency level
 
-### 3.4. If multiple operations are independent, use Task.WhenAll
+ASP.NET Core request handling already runs on the ThreadPool.  
+Adding one more `Task.Run` layer and awaiting it immediately often just adds scheduling overhead.
 
-If independent operations can proceed in parallel, waiting for them serially is often wasteful.
+So in ASP.NET Core, this rule of thumb is easier to work with:
+
+- plain `await` for I/O waits
+- run short CPU work directly
+- if the work is long or should outlive the request, move it to a queue or hosted service
+
+Also note that if only a synchronous API exists and the caller is a UI app, using `Task.Run` for UI responsiveness can still make sense.  
+But that is not asynchronous I/O. It is simply using another thread to avoid freezing the UI. On the server side, that escape hatch usually does not scale well.
+
+### 3.4. If multiple operations are independent, use `Task.WhenAll`
+
+It is very common to see code like this:
+
+```csharp
+// Independent work, but awaited serially
+string a = await _httpClient.GetStringAsync(urlA, cancellationToken);
+string b = await _httpClient.GetStringAsync(urlB, cancellationToken);
+string c = await _httpClient.GetStringAsync(urlC, cancellationToken);
+```
+
+If those operations are truly independent, it is more natural to **start them all first and then wait once**.
 
 ```csharp
 public async Task<string[]> DownloadAllAsync(IEnumerable<string> urls, CancellationToken cancellationToken)
@@ -247,134 +257,429 @@ public async Task<string[]> DownloadAllAsync(IEnumerable<string> urls, Cancellat
 }
 ```
 
-The point is to **start them first**, then await the combined completion.
+The important detail here is `ToArray()`.  
+Because LINQ uses deferred execution, simply calling `Select` does not necessarily mean the tasks have started yet.  
+`ToArray()` or `ToList()` materializes the sequence so they all begin at that point.
 
-### 3.5. If you want the first one that finishes, use Task.WhenAny
+```mermaid
+sequenceDiagram
+    participant Caller as Caller
+    participant T1 as Task 1
+    participant T2 as Task 2
+    participant T3 as Task 3
 
-Use `Task.WhenAny` when you want whichever result arrives first.  
-But remember that the remaining tasks still exist. You need a strategy for:
+    Caller->>T1: Start
+    Caller->>T2: Start
+    Caller->>T3: Start
+    Caller->>Caller: await Task.WhenAll(...)
+    T1-->>Caller: Complete
+    T2-->>Caller: Complete
+    T3-->>Caller: Complete
+```
 
-- cancelling them if appropriate
-- observing their exceptions
-- not leaking unnecessary work
+This pattern fits when:
 
-### 3.6. If there are many items and you want a concurrency limit, use Parallel.ForEachAsync or SemaphoreSlim
+- the item count is small or moderate
+- you want to wait for all results together
+- running all of them at once is acceptable
 
-If the item count is large, launching everything at once with `Task.WhenAll` is often the wrong move.
+If the item count is large, it is usually safer to add a concurrency limit as in the next section.
 
-What matters then is the **concurrency limit**.
+### 3.5. If you want the first one that finishes, use `Task.WhenAny`
 
-- `Parallel.ForEachAsync` is convenient when you want bounded parallel processing
-- `SemaphoreSlim` is useful when you want explicit control over throttling
+If you want to use whichever mirror or endpoint responds first, `Task.WhenAny` is easy to read.
 
-### 3.7. If you want an ordered flow, use Channel<T>
+```csharp
+public async Task<byte[]> DownloadFromFirstMirrorAsync(
+    IReadOnlyList<string> urls,
+    CancellationToken cancellationToken)
+{
+    using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-If the core problem is not "do things in parallel" but "feed work through in order and under control," `Channel<T>` is often a better fit.
+    Task<byte[]>[] tasks = urls
+        .Select(url => _httpClient.GetByteArrayAsync(url, cts.Token))
+        .ToArray();
 
-This is especially useful for:
+    Task<byte[]> winner = await Task.WhenAny(tasks);
+    cts.Cancel();
 
-- managed fire-and-forget alternatives
-- queue-based background processing
-- backpressure
-- clear ownership of lifetime
+    try
+    {
+        return await winner;
+    }
+    finally
+    {
+        try
+        {
+            await Task.WhenAll(tasks);
+        }
+        catch
+        {
+            // Observe cancellation or failure from the non-winning tasks
+        }
+    }
+}
+```
 
-### 3.8. If you want fixed-interval processing, use PeriodicTimer
+The key thing to remember is that `WhenAny` **returns one winner, and nothing more**.  
+The remaining tasks keep running unless you decide what to do with them.
 
-If you want periodic async work, `PeriodicTimer` often gives the clearest code.
+So you need to decide:
 
-The main benefit is not timing precision.  
-The benefit is that the flow reads naturally as:
+- should the remaining work be canceled?
+- should exceptions still be observed?
 
-- wait
-- process
-- wait again
+`Task.WhenAny` is useful, but it adds more design obligations than `WhenAll`.  
+It is best used only when you truly care about the first completed result.
 
-### 3.9. If data arrives progressively, use IAsyncEnumerable<T>
+### 3.6. If there are many items and you want a concurrency limit, use `Parallel.ForEachAsync` or `SemaphoreSlim`
 
-If results arrive one by one over time, `IAsyncEnumerable<T>` lets you consume them progressively instead of waiting for the whole set to complete.
+`Task.WhenAll` starts all created tasks at once.  
+So if there are many items, HTTP connections, DB connections, memory usage, or load on external services can all spike at once.
 
-### 3.10. If you want asynchronous disposal, use await using
+In those situations, it is more stable to decide **how many things may run at the same time**.
 
-If cleanup itself is asynchronous, use `await using` with `IAsyncDisposable`.
+`Parallel.ForEachAsync` makes that intent easy to read.
 
-### 3.11. If you need mutual exclusion across await points, use SemaphoreSlim
+```csharp
+public async Task DownloadAndSaveAsync(IEnumerable<string> urls, CancellationToken cancellationToken)
+{
+    var options = new ParallelOptions
+    {
+        MaxDegreeOfParallelism = 8,
+        CancellationToken = cancellationToken
+    };
 
-Ordinary `lock` cannot cross `await`.
-When the critical region spans await points, `SemaphoreSlim.WaitAsync` is the typical tool.
+    await Parallel.ForEachAsync(
+        urls.Select((url, index) => (url, index)),
+        options,
+        async (item, token) =>
+        {
+            string html = await _httpClient.GetStringAsync(item.url, token);
+            string path = Path.Combine("cache", $"{item.index}.html");
+            await File.WriteAllTextAsync(path, html, token);
+        });
+}
+```
 
-### 3.12. Write await differently in UI code, app code, and library code
+If you need more custom control, `SemaphoreSlim` is also practical.
 
-This is where many teams benefit from making a distinction:
+### 3.7. If you want an ordered flow, use `Channel<T>`
 
-- UI code often starts with plain `await`
-- application code often still starts with plain `await`
-- reusable general-purpose library code is where `ConfigureAwait(false)` becomes particularly attractive
+Sometimes you want to separate work from the caller even though it does not need to finish immediately: email delivery, log shipping, webhook follow-up processing, file conversion, and so on.
+
+If you handle that with raw fire-and-forget `Task.Run`, all of these become vague:
+
+- where are exceptions observed?
+- do we wait during shutdown?
+- what happens when input volume increases?
+
+This type of work is usually easier to manage when you **put it into a queue and let a dedicated consumer process it in order**.
+
+```mermaid
+flowchart LR
+    p["producer"] --> w["WriteAsync"]
+    w --> q{"Space available in queue?"}
+    q -- "Yes" --> c["Enter Channel"]
+    q -- "No" --> b["Wait until there is space"]
+    c --> d["consumer reads with ReadAsync"]
+    d --> e["process items in order with await"]
+```
+
+```csharp
+public sealed class BackgroundTaskQueue
+{
+    private readonly Channel<Func<CancellationToken, ValueTask>> _queue =
+        Channel.CreateBounded<Func<CancellationToken, ValueTask>>(
+            new BoundedChannelOptions(100)
+            {
+                FullMode = BoundedChannelFullMode.Wait
+            });
+
+    public ValueTask EnqueueAsync(
+        Func<CancellationToken, ValueTask> workItem,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(workItem);
+        return _queue.Writer.WriteAsync(workItem, cancellationToken);
+    }
+
+    public ValueTask<Func<CancellationToken, ValueTask>> DequeueAsync(CancellationToken cancellationToken)
+        => _queue.Reader.ReadAsync(cancellationToken);
+}
+```
+
+### 3.8. If you want fixed-interval processing, use `PeriodicTimer`
+
+For fixed-interval asynchronous work, `PeriodicTimer` is very readable.
+
+```csharp
+public async Task RunPeriodicAsync(CancellationToken cancellationToken)
+{
+    using var timer = new PeriodicTimer(TimeSpan.FromSeconds(10));
+
+    while (await timer.WaitForNextTickAsync(cancellationToken))
+    {
+        await RefreshCacheAsync(cancellationToken);
+    }
+}
+```
+
+One important caution is that `PeriodicTimer` assumes **you are not issuing multiple concurrent `WaitForNextTickAsync` calls on the same timer**.
+
+### 3.9. If data arrives progressively, use `IAsyncEnumerable<T>`
+
+Sometimes it is better to process data **as it arrives** than to collect everything into a `List<T>` and return all at once.
+
+```csharp
+public async Task ProcessUsersAsync(CancellationToken cancellationToken)
+{
+    await foreach (User user in _userRepository.StreamUsersAsync(cancellationToken))
+    {
+        await ProcessUserAsync(user, cancellationToken);
+    }
+}
+```
+
+This fits when you want to process items one by one, avoid buffering everything in memory, and avoid waiting for all results before starting.
+
+### 3.10. If you want asynchronous disposal, use `await using`
+
+If a type needs asynchronous work during disposal, use `await using`.
+
+```csharp
+public async Task WriteFileAsync(string path, byte[] data, CancellationToken cancellationToken)
+{
+    await using var stream = new FileStream(
+        path,
+        FileMode.Create,
+        FileAccess.Write,
+        FileShare.None,
+        bufferSize: 81920,
+        useAsync: true);
+
+    await stream.WriteAsync(data, cancellationToken);
+}
+```
+
+### 3.11. If you need mutual exclusion across await points, use `SemaphoreSlim`
+
+```csharp
+public sealed class CacheRefresher
+{
+    private readonly SemaphoreSlim _gate = new(1, 1);
+
+    public async Task RefreshAsync(CancellationToken cancellationToken)
+    {
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            await RefreshCoreAsync(cancellationToken);
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
+    private static Task RefreshCoreAsync(CancellationToken cancellationToken)
+        => Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+}
+```
+
+Enter with `WaitAsync`, and always `Release` in `finally`.
+
+### 3.12. Write `await` differently in UI code, app code, and library code
+
+`ConfigureAwait(false)` is not something to add everywhere by default.
+
+```mermaid
+flowchart LR
+    a["UI / application code"] --> b["await someAsync()"]
+    b --> c["continue on the original context"]
+
+    d["general-purpose library"] --> e["await someAsync().ConfigureAwait(false)"]
+    e --> f["does not assume a specific context"]
+```
+
+- **UI / application code**: normal `await` is usually the right default
+- **ASP.NET Core application code**: normal `await` is usually enough
+- **general-purpose library code**: if it does not depend on a UI or app model, `ConfigureAwait(false)` is often a strong option
 
 ## 4. Basic rules for writing async code
 
-### 4.1. Default to Task / Task<T> for return types
+### 4.1. Default to `Task` / `Task<T>` for return types
 
-Default to `Task` or `Task<T>`.
-Use `ValueTask` only when measurement and call patterns justify the extra complexity.
+| Return type | Practical default meaning |
+| --- | --- |
+| `Task` | the standard choice for async methods with no result |
+| `Task<T>` | the standard choice for async methods that return a value |
+| `ValueTask` / `ValueTask<T>` | choose only after measurement shows a real need |
 
-### 4.2. Use async void only for event handlers
+`ValueTask` is not automatically better than `Task`.  
+It is a struct, so it has copy cost and usage constraints, and it is basically designed to be awaited once.
 
-Outside event handlers, `async void` makes completion and exception handling much harder.
+```csharp
+public Task SaveAsync(CancellationToken cancellationToken)
+{
+    return Task.CompletedTask;
+}
 
-### 4.3. Accept CancellationToken and pass it downstream
+public Task<int> CountAsync(CancellationToken cancellationToken)
+{
+    return Task.FromResult(_count);
+}
+```
 
-If the caller can cancel, accept a token and pass it through rather than swallowing the cancellation boundary.
+If there is no real asynchronous work inside, returning `Task.CompletedTask` or `Task.FromResult(...)` is usually cleaner than adding `async` for no reason.
+
+### 4.2. Use `async void` only for event handlers
+
+As a rule, avoid `async void` outside event handlers.
+
+- the caller cannot await it
+- completion cannot be tracked
+- exception handling becomes harder
+- testing becomes harder
+
+```csharp
+private async void SaveButton_Click(object? sender, EventArgs e)
+{
+    try
+    {
+        await SaveAsync(_saveCancellation.Token);
+        _statusLabel.Text = "Saved.";
+    }
+    catch (OperationCanceledException)
+    {
+        _statusLabel.Text = "Canceled.";
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show(this, ex.Message, "Save Error");
+    }
+}
+```
+
+### 4.3. Accept `CancellationToken` and pass it downstream
+
+```csharp
+public async Task<string> DownloadTextAsync(string url, CancellationToken cancellationToken)
+{
+    using HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+    response.EnsureSuccessStatusCode();
+    return await response.Content.ReadAsStringAsync(cancellationToken);
+}
+```
+
+A common mistake is accepting a token at the top level but not passing it downstream.
+
+- if you only want to limit **how long you wait**, use `WaitAsync`
+- if you want to stop **the underlying operation itself**, use `CancellationTokenSource.CancelAfter` and propagate the token
 
 ### 4.4. Keep an async API async all the way through
 
-Do not build an async chain and then collapse it into `.Result` or `.Wait()` at the edge unless you absolutely have no alternative.
+| Tempting style | Better replacement |
+| --- | --- |
+| `Task.Result` / `Task.Wait()` | `await` |
+| `Task.WaitAll()` | `await Task.WhenAll(...)` |
+| `Task.WaitAny()` | `await Task.WhenAny(...)` |
+| `Thread.Sleep(...)` | `await Task.Delay(...)` |
 
-### 4.5. Materialize task sequences with ToArray / ToList
+Especially in UI code and ASP.NET Core, mixing in synchronous waiting makes the resulting stalls much harder to reason about.
 
-If LINQ builds a task sequence for `Task.WhenAll`, materialize it explicitly.  
-That makes the execution boundary much easier to understand and review.
+### 4.5. Materialize task sequences with `ToArray` / `ToList`
+
+```csharp
+Task<User>[] tasks = userIds
+    .Select(id => _userRepository.GetAsync(id, cancellationToken))
+    .ToArray();
+
+User[] users = await Task.WhenAll(tasks);
+```
+
+Because LINQ uses deferred execution, materializing with `ToArray()` or `ToList()` is usually the safer choice.
 
 ## 5. Common anti-patterns
 
-- wrapping async I/O in `Task.Run`
-- serially awaiting independent operations
-- starting fire-and-forget work with no lifetime owner
-- using `ConfigureAwait(false)` everywhere by reflex
-- choosing `ValueTask` just because it sounds cheap
+| Anti-pattern | Why it hurts | First replacement |
+| --- | --- | --- |
+| `Task.Run(async () => await IoAsync())` | needlessly bounces I/O onto another thread | `await IoAsync()` |
+| `Task.Result` / `Wait()` | blocks threads and causes stalls easily | `await` |
+| mixing `Thread.Sleep()` into async flow | occupies a thread even while waiting | `Task.Delay()` |
+| using `async void` for ordinary methods | cannot be awaited, hard to manage exceptions | `Task` / `Task<T>` |
+| serial awaits where `Task.WhenAll` fits | unnecessary slowness | start all tasks first, then `WhenAll` |
+| throwing huge item counts into `WhenAll` | load spikes | `Parallel.ForEachAsync` / `SemaphoreSlim` |
+| trying to cross `await` with `lock` | wrong tool for the job | `SemaphoreSlim.WaitAsync` |
+| raw fire-and-forget with `Task.Run` | vague exception, shutdown, and limit handling | `Channel<T>` / `BackgroundService` |
+| mechanically adding `ConfigureAwait(false)` to UI code | UI updates after `await` become fragile | plain `await` |
+| defaulting to `ValueTask` everywhere | often more complexity than benefit | start with `Task` |
+
+The three especially common ones are:
+
+1. I/O wrapped in `Task.Run`
+2. serial awaits for work that is really independent
+3. fire-and-forget with no lifetime owner
 
 ## 6. Checklist for code review
 
-When reviewing async code, these questions are usually worth asking:
-
-1. is this operation I/O-bound or CPU-bound?
-2. who owns its lifetime?
-3. is concurrency bounded explicitly?
-4. are cancellation and exceptions visible?
-5. is the current use of `Task.Run`, `WhenAll`, `Channel`, or `ConfigureAwait(false)` actually aligned with the problem?
+- can the author explain in words whether the work is **I/O-bound** or **CPU-bound**?
+- are `Task.Result` / `Task.Wait()` / `Thread.Sleep()` still present?
+- is I/O being wrapped in `Task.Run`?
+- are independent operations being awaited serially for no reason?
+- on the other hand, is a large item count being sent into unbounded `WhenAll`?
+- if the method accepts `CancellationToken`, is it actually passed downstream?
+- is `async void` used anywhere other than event handlers?
+- if fire-and-forget exists, who owns exception handling, shutdown, and limits?
+- if `SemaphoreSlim` is used, is `Release` inside `finally`?
+- if `ValueTask` is used, is there a measured reason?
+- does the use or non-use of `ConfigureAwait(false)` match the kind of code?
 
 ## 7. Rough rule-of-thumb guide
 
-- if it waits on external I/O, await the async API directly
-- if it is heavy CPU work in UI code, consider `Task.Run`
-- if several things are independent, consider `Task.WhenAll`
-- if there are too many items, bound concurrency explicitly
-- if the work needs managed lifetime, use a queue or service boundary
+| What you want to do | First choice |
+| --- | --- |
+| one HTTP / DB / file I/O operation | await the async API directly |
+| heavy computation that must not freeze the UI | `Task.Run` |
+| a few independent async operations | `Task.WhenAll` |
+| only the first result matters | `Task.WhenAny` |
+| many items with bounded concurrency | `Parallel.ForEachAsync` / `SemaphoreSlim` |
+| ordered background processing | `Channel<T>` |
+| fixed-interval processing | `PeriodicTimer` |
+| progressive stream processing | `IAsyncEnumerable<T>` / `await foreach` |
+| mutual exclusion across `await` points | `SemaphoreSlim` |
+| general-purpose library code | consider `ConfigureAwait(false)` |
+| unsure about return type | start with `Task` / `Task<T>` |
 
 ## 8. Summary
 
-The most important part of async / await design is not memorizing a keyword rule.  
-It is understanding:
+Best practices for `async` / `await` are less about memorizing many tiny tricks and more about **choosing shapes that match the kind of work**.
 
-1. what the operation is actually waiting for
-2. who owns the lifetime
-3. where concurrency is controlled
+1. separate I/O waits from CPU work
+2. if it is I/O, await the async API directly
+3. if it is CPU work, decide where it should run
+4. if multiple operations exist, choose between `WhenAll`, `WhenAny`, and bounded concurrency
+5. if the work should outlive the caller, use a managed queue instead of raw fire-and-forget
+6. align return types, cancellation, exceptions, mutual exclusion, and context handling
 
-Once those are clear, `Task.Run`, `Task.WhenAll`, `ConfigureAwait(false)`, and the rest become much easier to choose correctly.
+By contrast, things become much clearer if you separate:
+
+- I/O as I/O
+- CPU as CPU
+- background work as background work with an owned lifetime
 
 ## 9. References
 
-- [Task.Run](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run)
-- [Task.WhenAll](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.whenall)
-- [Task.WhenAny](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.whenany)
-- [Parallel.ForEachAsync](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.parallel.foreachasync)
-- [Channel<T>](https://learn.microsoft.com/en-us/dotnet/core/extensions/channels)
+- [Asynchronous programming scenarios - C#](https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/async-scenarios)
+- [Asynchronous programming with async and await](https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/)
+- [Task-based Asynchronous Pattern (TAP) in .NET](https://learn.microsoft.com/en-us/dotnet/standard/asynchronous-programming-patterns/task-based-asynchronous-pattern-tap)
+- [ConfigureAwait FAQ](https://devblogs.microsoft.com/dotnet/configureawait-faq/)
+- [Parallel.ForEachAsync Method](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.parallel.foreachasync)
+- [Task.WaitAsync Method](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.waitasync)
+- [System.Threading.Channels library](https://learn.microsoft.com/en-us/dotnet/core/extensions/channels)
+- [Create a Queue Service](https://learn.microsoft.com/en-us/dotnet/core/extensions/queue-service)
+- [Background tasks with hosted services in ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services)
+- [Generate and consume async streams](https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/generate-consume-asynchronous-stream)
+- [Implement a DisposeAsync method](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-disposeasync)
+- [ValueTask Struct](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask)
+- [CA2012: Use ValueTasks correctly](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca2012)
