@@ -482,4 +482,4 @@ GitHub では [COM_BLAS](https://github.com/gomurin0428/COM_BLAS) と [COM_BigDe
 
 [← ブログ一覧に戻る](https://comcomponent.com/blog/)
 
-[この記事のテーマで相談する](https://docs.google.com/forms/d/e/1FAIpQLSfywSpD36AGXdQ70iNTNUgmZl6aFa7fTUT-PcyS9DY185pejw/viewform?entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87&usp=pp_url) [とにかく相談する](https://docs.google.com/forms/d/e/1FAIpQLSfywSpD36AGXdQ70iNTNUgmZl6aFa7fTUT-PcyS9DY185pejw/viewform?entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87&usp=pp_url)
+[問い合わせる](https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform?usp=dialog)

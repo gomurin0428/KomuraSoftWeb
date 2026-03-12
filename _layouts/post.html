@@ -5,7 +5,7 @@
 {% assign meta_image = page.og_image | default: site.default_og_image | absolute_url %}
 {% assign article_author = page.author | default: site.founder_name | default: "KomuraSoft" %}
 {% assign translation_candidates = site.posts | where: "translation_key", page.translation_key %}
-{% assign contact_url = site.contact_url | append: "&entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87" %}
+{% assign contact_url = site.contact_url %}
 {% if lang == "en" %}
   {% assign blog_url = "/en/blog/" %}
   {% assign home_url = "/" %}
@@ -510,7 +510,6 @@
       </div>
     </header>
     <main>
-      {% capture article_reference %}{{ page.title }} | {{ page.url | absolute_url }}{% endcapture %}
       <article class="blog-container">
         <div class="article-layout">
           <div class="article-main">
@@ -552,7 +551,6 @@
               <section class="article-consult-cta article-consult-cta-sidebar" aria-label="{{ ui.post.sidebar_cta_label }}">
                 <div class="article-consult-cta-actions">
                   <a id="sidebar-article-consult-link" class="article-consult-cta-button" href="{{ contact_url }}" target="_blank" rel="noopener">{{ ui.article_consult_label }}</a>
-                  <a class="article-consult-cta-button article-consult-cta-button-secondary" href="{{ contact_url }}" target="_blank" rel="noopener">{{ ui.general_consult_label }}</a>
                 </div>
               </section>
             </div>
@@ -597,7 +595,6 @@
     mermaid.initialize({ startOnLoad: false, theme: 'default' });
 
     const technicalConsultationUrl = {{ contact_url | jsonify }};
-    const articleReference = {{ article_reference | jsonify }};
     const tocHeadingText = {{ ui.toc_label | jsonify }};
     const referencesHeadingText = {{ ui.references_label | jsonify }};
     const tocLabel = {{ ui.toc_label | jsonify }};
@@ -605,17 +602,8 @@
     const mobileConsultText = {{ ui.post.consult_cta_text | jsonify }};
     const mobileConsultNote = {{ ui.post.consult_cta_note | jsonify }};
     const articleConsultLabel = {{ ui.article_consult_label | jsonify }};
-    const generalConsultLabel = {{ ui.general_consult_label | jsonify }};
-    const articleConsultationUrl = `${technicalConsultationUrl}&entry.1150553057=${encodeURIComponent(articleReference)}`;
 
     const normalizeText = (value) => value.replace(/\s+/g, ' ').trim();
-
-    const applyConsultationLinks = () => {
-      const articleConsultLink = document.querySelector('#sidebar-article-consult-link');
-      if (articleConsultLink) {
-        articleConsultLink.href = articleConsultationUrl;
-      }
-    };
 
     const findTocList = () => {
       const tocHeading = Array.from(
@@ -785,8 +773,7 @@
         <p class="article-consult-cta-text">${mobileConsultText}</p>
         <p class="article-consult-cta-note">${mobileConsultNote}</p>
         <div class="article-consult-cta-actions">
-          <a class="article-consult-cta-button" href="${articleConsultationUrl}" target="_blank" rel="noopener">${articleConsultLabel}</a>
-          <a class="article-consult-cta-button article-consult-cta-button-secondary" href="${technicalConsultationUrl}" target="_blank" rel="noopener">${generalConsultLabel}</a>
+          <a class="article-consult-cta-button" href="${technicalConsultationUrl}" target="_blank" rel="noopener">${articleConsultLabel}</a>
         </div>
       `;
 
@@ -873,7 +860,6 @@
       setupMobileToc(headings);
     }
 
-    applyConsultationLinks();
     insertArticleConsultCta();
 
     const mermaidCandidates = document.querySelectorAll(

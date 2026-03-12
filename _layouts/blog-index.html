@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 {% assign lang = page.lang | default: "ja" %}
 {% assign ui = site.data.blog_ui[lang] %}
-{% assign contact_url = site.contact_url | append: "&entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87" %}
+{% assign contact_url = site.contact_url %}
 {% if lang == "en" %}
   {% assign is_english = true %}
   {% assign ja_url = "/blog/" | relative_url %}
