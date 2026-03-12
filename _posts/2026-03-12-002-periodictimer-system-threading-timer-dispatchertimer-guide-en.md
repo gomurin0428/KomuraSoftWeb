@@ -13,7 +13,7 @@ tags:
 description: "A practical guide to choosing between PeriodicTimer, System.Threading.Timer, and DispatcherTimer, including async processing, ThreadPool callbacks, and WPF UI updates."
 ---
 
-In the previous article, [A Practical Guide to Soft Real-Time on Windows - A Checklist for Reducing Latency and Jitter](https://comcomponent.com/blog/2026/03/09/000-windows-soft-realtime-practical-guide-natural/), I organized how to avoid `Sleep`-driven periodic loops and when to think in terms of event-driven design or waitable timers.
+In the previous article, [A Practical Guide to Soft Real-Time on Windows - A Checklist for Reducing Latency](/en/blog/2026/03/09/000-windows-soft-realtime-practical-guide-natural/), I organized how to avoid `Sleep`-driven periodic loops and when to think in terms of event-driven design or waitable timers.
 
 But what about ordinary .NET application development?
 The confusing trio there is usually `PeriodicTimer`, `System.Threading.Timer`, and `DispatcherTimer`.

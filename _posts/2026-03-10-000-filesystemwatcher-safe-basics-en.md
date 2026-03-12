@@ -19,7 +19,7 @@ description: "A practical guide to FileSystemWatcher that explains missed events
 But if you use `Created` or `Changed` as if they were a direct completion signal, it is very easy to run into lost events, duplicate notifications, and the classic problem of reading a file while it is still half-written.
 
 This article organizes how to use `FileSystemWatcher` safely, mainly in the context of file-based integration on Windows with .NET.
-It also connects to the thinking in [Safe File Integration Locking - Best Practices for File Locks, Atomic Claims, and Idempotent Processing](https://comcomponent.com/blog/2026/03/07/001-file-integration-locking-best-practices-komurasoft-style/).
+It also connects to the thinking in [Safe File Integration Locking - Best Practices for File Locks, Atomic Claims, and Idempotent Processing](/en/blog/2026/03/07/001-file-integration-locking-best-practices-komurasoft-style/).
 
 `FileSystemWatcher` is useful.
 It can give you events for create, change, delete, and rename.
