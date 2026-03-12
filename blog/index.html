@@ -201,20 +201,20 @@ layout: null
           <a class="blog-cta-button" href="https://docs.google.com/forms/d/e/1FAIpQLSfywSpD36AGXdQ70iNTNUgmZl6aFa7fTUT-PcyS9DY185pejw/viewform?usp=pp_url&entry.592359752=%E6%8A%80%E8%A1%93%E7%9B%B8%E8%AB%87" target="_blank" rel="noopener">技術相談をする</a>
         </div>
         <section class="blog-search" aria-labelledby="blog-search-title">
-          <h2 id="blog-search-title" class="blog-search-title">Search articles</h2>
-          <p class="blog-search-description">Search titles, descriptions, tags, and article body text.</p>
+          <h2 id="blog-search-title" class="blog-search-title">記事を検索</h2>
+          <p class="blog-search-description">タイトル、概要、タグ、本文から記事を検索できます。</p>
           <form id="blog-search-form" class="blog-search-form" novalidate>
             <input
               id="blog-search-input"
               class="blog-search-input"
               type="search"
               name="query"
-              placeholder="Search title, tags, or content"
+              placeholder="タイトル、タグ、本文で検索"
               autocomplete="off">
-            <button class="blog-search-button" type="submit">Search</button>
-            <button id="blog-search-clear" class="blog-search-clear" type="button">Clear</button>
+            <button class="blog-search-button" type="submit">検索</button>
+            <button id="blog-search-clear" class="blog-search-clear" type="button">クリア</button>
           </form>
-          <div id="blog-search-status" class="blog-search-status" aria-live="polite">Search is ready.</div>
+          <div id="blog-search-status" class="blog-search-status" aria-live="polite">検索できます。</div>
         </section>
         
         {% if site.posts.size > 0 %}
@@ -344,7 +344,7 @@ layout: null
        */
       function renderPosts(posts) {
         if (!posts.length) {
-          blogList.innerHTML = '<li class="empty-message">No matching articles were found.</li>';
+          blogList.innerHTML = '<li class="empty-message">一致する記事は見つかりませんでした。</li>';
           return;
         }
 
@@ -440,23 +440,23 @@ layout: null
 
         if (!normalizedQuery) {
           blogList.innerHTML = initialListMarkup;
-          updateStatus(searchState.ready ? "Showing all articles." : "Loading search index...", Boolean(searchState.loadError));
+          updateStatus(searchState.ready ? "すべての記事を表示しています。" : "検索データを読み込んでいます...", Boolean(searchState.loadError));
           return;
         }
 
         if (searchState.loadError) {
-          updateStatus("Search index could not be loaded.", true);
+          updateStatus("検索データを読み込めませんでした。", true);
           throw searchState.loadError;
         }
 
         if (!searchState.ready) {
-          updateStatus("Loading search index...", false);
+          updateStatus("検索データを読み込んでいます...", false);
           return;
         }
 
         const matchedPosts = searchPosts(query, searchState.posts);
         renderPosts(matchedPosts);
-        updateStatus(`${matchedPosts.length} article(s) matched "${query.trim()}".`, false);
+        updateStatus(`「${query.trim()}」に一致する記事が ${matchedPosts.length} 件見つかりました。`, false);
       }
 
       /**
@@ -465,7 +465,7 @@ layout: null
        * 処理内容: 検索用 JSON を取得して前処理し、検索可能な状態へ初期化します。
        */
       async function initializeSearch() {
-        updateStatus("Loading search index...", false);
+        updateStatus("検索データを読み込んでいます...", false);
 
         const response = await fetch(searchIndexUrl, { headers: { Accept: "application/json" } });
         if (!response.ok) {
@@ -475,7 +475,7 @@ layout: null
         const posts = await response.json();
         searchState.posts = buildSearchPosts(posts);
         searchState.ready = true;
-        updateStatus("Search is ready.", false);
+        updateStatus("検索できます。", false);
       }
 
       searchForm.addEventListener("submit", (event) => {
@@ -495,7 +495,7 @@ layout: null
 
       initializeSearch().catch((error) => {
         searchState.loadError = error;
-        updateStatus("Search index could not be loaded.", true);
+        updateStatus("検索データを読み込めませんでした。", true);
       });
     })();
   </script>
