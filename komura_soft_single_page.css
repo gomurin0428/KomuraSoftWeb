@@ -409,6 +409,46 @@ p + p {
   line-height: 1.75;
 }
 
+.section-related-links {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(47, 111, 221, 0.18);
+}
+
+.section-related-links-title,
+.consultation-related-links-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.section-related-links-list {
+  margin-top: 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.section-related-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.2rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--color-accent-light);
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.section-related-link:hover {
+  border-color: var(--color-accent);
+  background: #fff;
+  color: var(--color-accent);
+}
+
 /* 技術スタック */
 .tech-stack-section {
   margin-top: 3rem;
@@ -440,6 +480,12 @@ p + p {
 
 .consultation-list li + li {
   margin-top: 0.35rem;
+}
+
+.consultation-related-links {
+  margin-top: 1.15rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(47, 111, 221, 0.16);
 }
 
 .tech-stack-title {
