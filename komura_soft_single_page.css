@@ -1128,6 +1128,50 @@ p + p {
 
   .contact-flow {
     padding: 1.15rem;
+    border-radius: calc(var(--radius-md) + 0.25rem);
+    background:
+      linear-gradient(180deg, rgba(245, 249, 255, 0.98), rgba(238, 245, 255, 0.94));
+  }
+
+  .contact-flow-title {
+    font-size: 1rem;
+  }
+
+  .contact-flow-list {
+    gap: 0.8rem;
+  }
+
+  .contact-flow-item {
+    display: block;
+    padding: 0.95rem;
+    border: 1px solid rgba(47, 111, 221, 0.12);
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 10px 24px rgba(20, 32, 51, 0.06);
+  }
+
+  .contact-flow-step {
+    width: 2.1rem;
+    height: 2.1rem;
+    margin-bottom: 0.7rem;
+    font-size: 0.9rem;
+  }
+
+  .contact-flow-item-title {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .contact-flow-item-text {
+    margin-top: 0.45rem;
+    font-size: 0.89rem;
+    line-height: 1.7;
+  }
+
+  .contact-flow-note {
+    margin-top: 0.9rem;
+    padding-top: 0.9rem;
+    font-size: 0.86rem;
   }
 
   .case-studies-card {
