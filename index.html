@@ -310,7 +310,15 @@ lang: ja
           <img src="logo.png" alt="KomuraSoft" class="brand-logo" style="width: 2.5rem; height: 2.5rem; max-width: 2.5rem; max-height: 2.5rem;">
           <span class="brand-name">KomuraSoft</span>
         </a>
-        <nav class="site-nav" aria-label="主要ナビゲーション" data-i18n-aria-label="navAriaLabel">
+        <button type="button" class="mobile-menu-toggle" data-mobile-menu-toggle aria-expanded="false" aria-controls="site-nav-ja" aria-label="Menu">
+          <span class="mobile-menu-toggle-bars" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          <span class="mobile-menu-toggle-text">Menu</span>
+        </button>
+        <nav class="site-nav" id="site-nav-ja" aria-label="主要ナビゲーション" data-i18n-aria-label="navAriaLabel">
           <div class="nav-dropdown">
             <button type="button" class="nav-link nav-link--with-menu nav-dropdown-toggle" data-i18n="navService" aria-haspopup="true" aria-expanded="false" aria-controls="service-menu-ja">サービス</button>
             <div class="nav-dropdown-menu" id="service-menu-ja">
@@ -324,12 +332,21 @@ lang: ja
           <a class="nav-link" href="#company" data-i18n="navCompany">会社情報</a>
           <a class="nav-link" href="#profile" data-i18n="navProfile">代表略歴</a>
           <a class="nav-link" href="/blog/" data-i18n="navBlog" data-blog-link="true">ブログ</a>
+          <div class="mobile-nav-actions">
+            <div class="language-switch" role="group" aria-label="表示言語の選択" data-i18n-aria-label="languageToggleLabel">
+              <a class="language-button language-button-link" href="/" data-i18n="langButtonJa" aria-current="page">日本語</a>
+              <a class="language-button language-button-link" href="/en/" data-i18n="langButtonEn">English</a>
+            </div>
+            <a class="pill-contact" href="#contact" data-i18n="consultBadge">お問い合わせ</a>
+          </div>
         </nav>
-        <div class="language-switch" role="group" aria-label="表示言語の選択" data-i18n-aria-label="languageToggleLabel">
-          <a class="language-button language-button-link" href="/" data-i18n="langButtonJa" aria-current="page">日本語</a>
-          <a class="language-button language-button-link" href="/en/" data-i18n="langButtonEn">English</a>
+        <div class="header-actions">
+          <div class="language-switch" role="group" aria-label="表示言語の選択" data-i18n-aria-label="languageToggleLabel">
+            <a class="language-button language-button-link" href="/" data-i18n="langButtonJa" aria-current="page">日本語</a>
+            <a class="language-button language-button-link" href="/en/" data-i18n="langButtonEn">English</a>
+          </div>
+          <a class="pill-contact" href="#contact" data-i18n="consultBadge">お問い合わせ</a>
         </div>
-        <a class="pill-contact" href="#contact" data-i18n="consultBadge">お問い合わせ</a>
       </div>
     </header>
     <main>
@@ -769,6 +786,8 @@ lang: ja
           footerContact: '問い合わせる',
           footerPrivacy: 'プライバシーポリシー',
           navAriaLabel: '主要ナビゲーション',
+          mobileMenuOpen: 'Menu',
+          mobileMenuClose: 'Close',
           languageToggleLabel: '表示言語の選択',
           langButtonJa: '日本語',
           langButtonEn: 'English'
@@ -903,14 +922,21 @@ lang: ja
           footerContact: 'Contact',
           footerPrivacy: 'Privacy Policy',
           navAriaLabel: 'Primary navigation',
+          mobileMenuOpen: 'Menu',
+          mobileMenuClose: 'Close',
           languageToggleLabel: 'Language selection',
           langButtonJa: 'Japanese',
           langButtonEn: 'English'
         }
       };
 
+      const siteHeader = document.querySelector('.site-header');
+      const siteNav = document.querySelector('.site-nav');
+      const mobileMenuToggle = document.querySelector('[data-mobile-menu-toggle]');
+      const mobileMenuToggleText = mobileMenuToggle ? mobileMenuToggle.querySelector('.mobile-menu-toggle-text') : null;
       const languageButtons = Array.from(document.querySelectorAll('[data-lang-select]'));
       const blogLinks = Array.from(document.querySelectorAll('[data-blog-link="true"]'));
+      let currentLanguage = 'ja';
 
       function toAttributeName(datasetKey) {
         const suffix = datasetKey.slice(4);
@@ -924,12 +950,36 @@ lang: ja
           .replace(/^-/, '');
       }
 
+      function isMobileViewport() {
+        return window.matchMedia('(max-width: 639px)').matches;
+      }
+
+      function updateMobileMenuToggle() {
+        if (!mobileMenuToggle) {
+          return;
+        }
+
+        const dictionary = translations[currentLanguage];
+        if (!dictionary) {
+          return;
+        }
+
+        const isOpen = siteHeader && siteHeader.classList.contains('is-mobile-nav-open');
+        const label = isOpen ? dictionary.mobileMenuClose : dictionary.mobileMenuOpen;
+        mobileMenuToggle.setAttribute('aria-label', label);
+        mobileMenuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        if (mobileMenuToggleText) {
+          mobileMenuToggleText.textContent = label;
+        }
+      }
+
       function applyLanguage(lang) {
         const dictionary = translations[lang];
         if (!dictionary) {
           throw new Error('Unsupported language: ' + lang);
         }
 
+        currentLanguage = lang;
         document.documentElement.lang = lang;
         document.title = dictionary.documentTitle;
 
@@ -996,16 +1046,9 @@ lang: ja
         blogLinks.forEach(function (link) {
           link.setAttribute('href', lang === 'en' ? '/en/blog/' : '/blog/');
         });
-      }
 
-      languageButtons.forEach(function (button) {
-        button.addEventListener('click', function () {
-          var targetPath = button.dataset.langSelect === 'en' ? '/en/' : '/';
-          if (window.location.pathname !== targetPath) {
-            window.location.href = targetPath;
-          }
-        });
-      });
+        updateMobileMenuToggle();
+      }
 
       var navDropdowns = Array.from(document.querySelectorAll('.nav-dropdown'));
 
@@ -1017,6 +1060,16 @@ lang: ja
             toggle.setAttribute('aria-expanded', 'false');
           }
         });
+      }
+
+      function closeMobileNav() {
+        if (!siteHeader) {
+          return;
+        }
+
+        siteHeader.classList.remove('is-mobile-nav-open');
+        closeDropdowns();
+        updateMobileMenuToggle();
       }
 
       navDropdowns.forEach(function (dropdown) {
@@ -1036,15 +1089,50 @@ lang: ja
         });
       });
 
+      if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener('click', function () {
+          if (!siteHeader) {
+            return;
+          }
+
+          var willOpen = !siteHeader.classList.contains('is-mobile-nav-open');
+          closeMobileNav();
+          if (willOpen) {
+            siteHeader.classList.add('is-mobile-nav-open');
+          }
+          updateMobileMenuToggle();
+        });
+      }
+
+      if (siteNav) {
+        siteNav.addEventListener('click', function (event) {
+          var clickedLink = event.target.closest('a');
+          if (!clickedLink || !isMobileViewport()) {
+            return;
+          }
+          closeMobileNav();
+        });
+      }
+
       document.addEventListener('click', function (event) {
         if (!event.target.closest('.nav-dropdown')) {
           closeDropdowns();
+        }
+        if (isMobileViewport() && siteHeader && !event.target.closest('.site-header')) {
+          closeMobileNav();
         }
       });
 
       document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
+          closeMobileNav();
           closeDropdowns();
+        }
+      });
+
+      window.addEventListener('resize', function () {
+        if (!isMobileViewport()) {
+          closeMobileNav();
         }
       });
 
