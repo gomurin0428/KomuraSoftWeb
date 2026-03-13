@@ -320,6 +320,16 @@ p + p {
   transform: translateY(-4px);
 }
 
+.service-page-links {
+  margin-top: 1.5rem;
+}
+
+.service-page-links-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
 .services-card-title {
   font-size: 1.0625rem;
   font-weight: 700;

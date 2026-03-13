@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+{% assign lang = page.lang | default: "ja" %}
+{% assign contact_url = site.contact_url %}
+{% assign translation_candidates = site.pages | where: "translation_key", page.translation_key %}
+{% assign service_nav = site.data.service_pages[lang] %}
+{% if lang == "en" %}
+  {% assign home_url = "/en/" %}
+  {% assign services_url = "/en/#service" %}
+  {% assign blog_url = "/en/blog/" %}
+  {% assign home_label = "Home" %}
+  {% assign services_label = "Services" %}
+  {% assign blog_label = "Blog" %}
+  {% assign contact_label = "Contact" %}
+  {% assign related_articles_label = "Related Articles" %}
+  {% assign cta_title = "Get in Touch" %}
+  {% assign cta_body = "If this service area matches the problem you are dealing with, please contact us with the current situation and what kind of support you need." %}
+  {% assign cta_button = "Contact" %}
+  {% assign back_label = "← Back to Home" %}
+  {% assign service_list_label = "Main Service Pages" %}
+  {% assign service_intro_label = "What We Support" %}
+  {% assign alternate_page = translation_candidates | where_exp: "p", "p.lang != 'en'" | first %}
+  {% assign ja_url = alternate_page.url %}
+  {% assign en_url = page.url %}
+{% else %}
+  {% assign home_url = "/" %}
+  {% assign services_url = "/#service" %}
+  {% assign blog_url = "/blog/" %}
+  {% assign home_label = "ホーム" %}
+  {% assign services_label = "サービス" %}
+  {% assign blog_label = "ブログ" %}
+  {% assign contact_label = "問い合わせる" %}
+  {% assign related_articles_label = "関連する技術記事" %}
+  {% assign cta_title = "ご相談はこちら" %}
+  {% assign cta_body = "このサービス内容に近い課題がある場合は、現状や困りごとをそのまま共有してください。調査・改修・方針整理のどこから進めるべきかを一緒に整理します。" %}
+  {% assign cta_button = "問い合わせる" %}
+  {% assign back_label = "← ホームに戻る" %}
+  {% assign service_list_label = "主なサービスページ" %}
+  {% assign service_intro_label = "対応内容" %}
+  {% assign alternate_page = translation_candidates | where: "lang", "en" | first %}
+  {% assign ja_url = page.url %}
+  {% assign en_url = alternate_page.url %}
+{% endif %}
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="/logo.png">
+  <title>{{ page.title }}</title>
+  <meta name="description" content="{{ page.description }}">
+  <link rel="canonical" href="{{ page.url | absolute_url }}">
+  {% if alternate_page %}
+  <link rel="alternate" hreflang="ja" href="{{ ja_url | absolute_url }}">
+  <link rel="alternate" hreflang="en" href="{{ en_url | absolute_url }}">
+  {% endif %}
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <meta name="author" content="KomuraSoft">
+  <meta name="theme-color" content="#0f172a">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ page.title }}">
+  <meta property="og:description" content="{{ page.description }}">
+  <meta property="og:url" content="{{ page.url | absolute_url }}">
+  <meta property="og:site_name" content="KomuraSoft">
+  <meta property="og:locale" content="{% if lang == 'en' %}en_US{% else %}ja_JP{% endif %}">
+  <meta property="og:image" content="{{ site.logo | absolute_url }}">
+  <meta property="og:image:secure_url" content="{{ site.logo | absolute_url }}">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1024">
+  <meta property="og:image:height" content="1024">
+  <meta property="og:image:alt" content="{{ page.title }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page.title }}">
+  <meta name="twitter:description" content="{{ page.description }}">
+  <meta name="twitter:image" content="{{ site.logo | absolute_url }}">
+  <meta name="twitter:image:alt" content="{{ page.title }}">
+  <meta name="twitter:site" content="{{ site.x_username }}">
+  <meta name="twitter:creator" content="{{ site.x_username }}">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": {{ page.service_name | default: page.title | jsonify }},
+    "serviceType": {{ page.service_type | default: page.title | jsonify }},
+    "description": {{ page.description | jsonify }},
+    "url": "{{ page.url | absolute_url }}",
+    "inLanguage": "{{ lang }}",
+    "provider": {
+      "@type": "Organization",
+      "name": "KomuraSoft",
+      "url": "{{ '/' | absolute_url }}"
+    }{% if page.service_keywords %},
+    "keywords": {{ page.service_keywords | join: ", " | jsonify }}{% endif %}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": {{ home_label | jsonify }},
+        "item": "{{ home_url | absolute_url }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ services_label | jsonify }},
+        "item": "{{ services_url | absolute_url }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": {{ page.service_name | default: page.title | jsonify }},
+        "item": "{{ page.url | absolute_url }}"
+      }
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="/komura_soft_single_page.css">
+  <style>
+    .service-page-shell {
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 2rem 1rem 4rem;
+    }
+    .service-page-layout {
+      display: grid;
+      gap: 1.5rem;
+    }
+    .service-page-main {
+      min-width: 0;
+    }
+    .service-page-hero {
+      border-radius: calc(var(--radius-lg) + 0.5rem);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      padding: 2.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .service-page-eyebrow {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-accent-light);
+    }
+    .service-page-title {
+      margin-top: 0.75rem;
+      font-size: clamp(2rem, 3vw + 1rem, 2.9rem);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--color-text);
+    }
+    .service-page-lead {
+      margin-top: 1rem;
+      max-width: 48rem;
+      font-size: 1.02rem;
+      line-height: 1.85;
+      color: var(--color-text-muted);
+    }
+    .service-page-highlight-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-top: 1.25rem;
+    }
+    .service-page-highlight {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      background: rgba(255, 255, 255, 0.96);
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--color-accent-light);
+    }
+    .service-page-content {
+      margin-top: 1.5rem;
+      border-radius: calc(var(--radius-lg) + 0.25rem);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+      line-height: 1.85;
+      color: var(--color-text);
+    }
+    .service-page-content h2 {
+      margin: 2rem 0 0.85rem;
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--color-text);
+    }
+    .service-page-content h2:first-child {
+      margin-top: 0;
+    }
+    .service-page-content h3 {
+      margin: 1.5rem 0 0.7rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .service-page-content p {
+      margin: 0;
+      color: var(--color-text-muted);
+    }
+    .service-page-content p + p {
+      margin-top: 0.85rem;
+    }
+    .service-page-content ul,
+    .service-page-content ol {
+      margin: 0.75rem 0 0;
+      padding-left: 1.25rem;
+      color: var(--color-text-muted);
+    }
+    .service-page-content li + li {
+      margin-top: 0.45rem;
+    }
+    .service-page-content strong {
+      color: var(--color-text);
+    }
+    .service-related-articles,
+    .service-related-services,
+    .service-page-cta {
+      margin-top: 1.5rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface-elevated);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .service-related-articles-title,
+    .service-related-services-title,
+    .service-page-cta-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .service-related-links {
+      margin-top: 0.85rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+    }
+    .service-related-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.2rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--color-accent-light);
+      font-size: 0.85rem;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .service-related-link:hover {
+      border-color: var(--color-accent);
+      background: #fff;
+      color: var(--color-accent);
+    }
+    .service-page-cta-text {
+      margin-top: 0.75rem;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+    }
+    .service-page-cta-actions {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .service-page-back {
+      display: inline-block;
+      margin-top: 2rem;
+      color: var(--color-accent-light);
+      font-weight: 600;
+    }
+    @media (min-width: 1080px) {
+      .service-page-layout {
+        grid-template-columns: minmax(0, 48rem) minmax(18rem, 22rem);
+        align-items: start;
+        justify-content: center;
+      }
+      .service-page-side {
+        position: sticky;
+        top: 5.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="site-header">
+      <div class="header-inner">
+        <a href="{{ home_url }}" class="brand">
+          <img src="/logo.png" alt="KomuraSoft" class="brand-logo" style="width: 2.5rem; height: 2.5rem; max-width: 2.5rem; max-height: 2.5rem;">
+          <span class="brand-name">KomuraSoft</span>
+        </a>
+        <nav class="site-nav">
+          <a class="nav-link" href="{{ home_url }}">{{ home_label }}</a>
+          <a class="nav-link" href="{{ services_url }}">{{ services_label }}</a>
+          <a class="nav-link" href="{{ blog_url }}">{{ blog_label }}</a>
+        </nav>
+        <div class="language-switch" role="group" aria-label="{% if lang == 'en' %}Language selection{% else %}表示言語の選択{% endif %}">
+          <a class="language-button language-button-link" href="{{ ja_url }}" aria-current="{% unless lang == 'en' %}page{% endunless %}">{% if lang == 'en' %}Japanese{% else %}日本語{% endif %}</a>
+          {% if lang == "en" or alternate_page %}
+          <a class="language-button language-button-link" href="{{ en_url }}" aria-current="{% if lang == 'en' %}page{% endif %}">English</a>
+          {% else %}
+          <span class="language-button is-disabled">English</span>
+          {% endif %}
+        </div>
+        <a class="pill-contact" href="{{ contact_url }}" target="_blank" rel="noopener">{{ contact_label }}</a>
+      </div>
+    </header>
+    <main>
+      <article class="service-page-shell">
+        <div class="service-page-layout">
+          <div class="service-page-main">
+            <header class="service-page-hero">
+              <div class="service-page-eyebrow">{{ service_intro_label }}</div>
+              <h1 class="service-page-title">{{ page.service_name | default: page.title }}</h1>
+              <p class="service-page-lead">{{ page.description }}</p>
+              {% if page.service_keywords %}
+              <div class="service-page-highlight-list">
+                {% for keyword in page.service_keywords %}
+                <span class="service-page-highlight">{{ keyword }}</span>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </header>
+
+            <section class="service-page-content">
+              {{ content }}
+            </section>
+
+            {% if page.related_articles %}
+            <section class="service-related-articles">
+              <h2 class="service-related-articles-title">{{ related_articles_label }}</h2>
+              <div class="service-related-links">
+                {% for article in page.related_articles %}
+                <a class="service-related-link" href="{{ article.url }}">{{ article.title }}</a>
+                {% endfor %}
+              </div>
+            </section>
+            {% endif %}
+
+            <section class="service-page-cta">
+              <h2 class="service-page-cta-title">{{ cta_title }}</h2>
+              <p class="service-page-cta-text">{{ cta_body }}</p>
+              <div class="service-page-cta-actions">
+                <a class="button button--primary" href="{{ contact_url }}" target="_blank" rel="noopener">{{ cta_button }}</a>
+              </div>
+            </section>
+
+            <a href="{{ home_url }}" class="service-page-back">{{ back_label }}</a>
+          </div>
+
+          <aside class="service-page-side">
+            <section class="service-related-services">
+              <h2 class="service-related-services-title">{{ service_list_label }}</h2>
+              <div class="service-related-links">
+                {% for item in service_nav %}
+                <a class="service-related-link" href="{{ item.url }}">{{ item.title }}</a>
+                {% endfor %}
+              </div>
+            </section>
+          </aside>
+        </div>
+      </article>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div>© 2026 KomuraSoft</div>
+        <div class="footer-links">
+          <a class="nav-link" href="{{ home_url }}">{{ home_label }}</a>
+          <a class="nav-link" href="{{ blog_url }}">{{ blog_label }}</a>
+          <a class="nav-link" href="/privacy/">{% if lang == "en" %}Privacy Policy{% else %}プライバシーポリシー{% endif %}</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
