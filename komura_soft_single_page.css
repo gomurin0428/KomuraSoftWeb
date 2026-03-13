@@ -813,6 +813,79 @@ p + p {
   line-height: 1.8;
 }
 
+.contact-flow {
+  margin: 1.75rem auto 0 auto;
+  max-width: 46rem;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: rgba(245, 249, 255, 0.92);
+  text-align: left;
+}
+
+.contact-flow-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.contact-flow-list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.contact-flow-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  align-items: flex-start;
+}
+
+.contact-flow-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  box-shadow: 0 10px 24px rgba(47, 111, 221, 0.18);
+}
+
+.contact-flow-content {
+  min-width: 0;
+}
+
+.contact-flow-item-title {
+  margin: 0;
+  font-size: 0.975rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.contact-flow-item-text {
+  margin: 0.35rem 0 0;
+  font-size: 0.92rem;
+  color: var(--color-text-muted);
+  line-height: 1.75;
+}
+
+.contact-flow-note {
+  margin: 1rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
 .contact-email {
   display: inline-block;
   padding: 1rem 2rem;
@@ -1051,6 +1124,10 @@ p + p {
   
   .contact-card {
     padding: 2rem 1.5rem;
+  }
+
+  .contact-flow {
+    padding: 1.15rem;
   }
 
   .case-studies-card {
