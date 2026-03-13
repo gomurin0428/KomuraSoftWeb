@@ -990,6 +990,47 @@ permalink: /en/
         });
       });
 
+      var navDropdowns = Array.from(document.querySelectorAll('.nav-dropdown'));
+
+      function closeDropdowns() {
+        navDropdowns.forEach(function (dropdown) {
+          dropdown.classList.remove('is-open');
+          var toggle = dropdown.querySelector('.nav-dropdown-toggle');
+          if (toggle) {
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      navDropdowns.forEach(function (dropdown) {
+        var toggle = dropdown.querySelector('.nav-dropdown-toggle');
+        if (!toggle) {
+          return;
+        }
+
+        toggle.addEventListener('click', function (event) {
+          event.preventDefault();
+          var willOpen = !dropdown.classList.contains('is-open');
+          closeDropdowns();
+          if (willOpen) {
+            dropdown.classList.add('is-open');
+            toggle.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+
+      document.addEventListener('click', function (event) {
+        if (!event.target.closest('.nav-dropdown')) {
+          closeDropdowns();
+        }
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+          closeDropdowns();
+        }
+      });
+
       applyLanguage('{{ page.lang | default: "ja" }}');
     })();
   </script>
