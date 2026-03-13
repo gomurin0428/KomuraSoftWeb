@@ -303,7 +303,14 @@
         </a>
         <nav class="site-nav">
           <a class="nav-link" href="{{ home_url }}">{{ home_label }}</a>
-          <a class="nav-link" href="{{ services_url }}">{{ services_label }}</a>
+          <div class="nav-dropdown">
+            <a class="nav-link nav-link--with-menu" href="{{ services_url }}">{{ services_label }}</a>
+            <div class="nav-dropdown-menu">
+              {% for item in service_nav %}
+              <a class="nav-dropdown-item" href="{{ item.url }}">{{ item.title }}</a>
+              {% endfor %}
+            </div>
+          </div>
           <a class="nav-link" href="{{ blog_url }}">{{ blog_label }}</a>
         </nav>
         <div class="language-switch" role="group" aria-label="{% if lang == 'en' %}Language selection{% else %}表示言語の選択{% endif %}">
