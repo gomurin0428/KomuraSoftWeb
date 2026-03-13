@@ -308,8 +308,8 @@
         <nav class="site-nav">
           <a class="nav-link" href="{{ home_url }}">{{ home_label }}</a>
           <div class="nav-dropdown">
-            <a class="nav-link nav-link--with-menu" href="{{ services_url }}">{{ services_label }}</a>
-            <div class="nav-dropdown-menu">
+            <button type="button" class="nav-link nav-link--with-menu nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="service-menu-{{ lang }}">{{ services_label }}</button>
+            <div class="nav-dropdown-menu" id="service-menu-{{ lang }}">
               {% for item in service_nav %}
               <a class="nav-dropdown-item" href="{{ item.url }}">{{ item.title }}</a>
               {% endfor %}
@@ -395,5 +395,49 @@
       </div>
     </footer>
   </div>
+  <script>
+    (() => {
+      const navDropdowns = Array.from(document.querySelectorAll('.nav-dropdown'));
+
+      function closeDropdowns() {
+        navDropdowns.forEach((dropdown) => {
+          dropdown.classList.remove('is-open');
+          const toggle = dropdown.querySelector('.nav-dropdown-toggle');
+          if (toggle) {
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      navDropdowns.forEach((dropdown) => {
+        const toggle = dropdown.querySelector('.nav-dropdown-toggle');
+        if (!toggle) {
+          return;
+        }
+
+        toggle.addEventListener('click', (event) => {
+          event.preventDefault();
+          const willOpen = !dropdown.classList.contains('is-open');
+          closeDropdowns();
+          if (willOpen) {
+            dropdown.classList.add('is-open');
+            toggle.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!event.target.closest('.nav-dropdown')) {
+          closeDropdowns();
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeDropdowns();
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

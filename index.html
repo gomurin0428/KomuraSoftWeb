@@ -219,8 +219,8 @@ lang: ja
         </a>
         <nav class="site-nav" aria-label="主要ナビゲーション" data-i18n-aria-label="navAriaLabel">
           <div class="nav-dropdown">
-            <a class="nav-link nav-link--with-menu" href="#service" data-i18n="navService">サービス</a>
-            <div class="nav-dropdown-menu">
+            <button type="button" class="nav-link nav-link--with-menu nav-dropdown-toggle" data-i18n="navService" aria-haspopup="true" aria-expanded="false" aria-controls="service-menu-ja">サービス</button>
+            <div class="nav-dropdown-menu" id="service-menu-ja">
               <a class="nav-dropdown-item" href="/services/windows-app-development/" data-i18n="servicePageLink1">Windowsアプリ開発</a>
               <a class="nav-dropdown-item" href="/services/bug-investigation/" data-i18n="servicePageLink2">不具合調査・原因解析</a>
               <a class="nav-dropdown-item" href="/services/technical-consulting/" data-i18n="servicePageLink3">技術相談・設計レビュー</a>
@@ -912,6 +912,47 @@ lang: ja
             window.location.href = targetPath;
           }
         });
+      });
+
+      var navDropdowns = Array.from(document.querySelectorAll('.nav-dropdown'));
+
+      function closeDropdowns() {
+        navDropdowns.forEach(function (dropdown) {
+          dropdown.classList.remove('is-open');
+          var toggle = dropdown.querySelector('.nav-dropdown-toggle');
+          if (toggle) {
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      navDropdowns.forEach(function (dropdown) {
+        var toggle = dropdown.querySelector('.nav-dropdown-toggle');
+        if (!toggle) {
+          return;
+        }
+
+        toggle.addEventListener('click', function (event) {
+          event.preventDefault();
+          var willOpen = !dropdown.classList.contains('is-open');
+          closeDropdowns();
+          if (willOpen) {
+            dropdown.classList.add('is-open');
+            toggle.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+
+      document.addEventListener('click', function (event) {
+        if (!event.target.closest('.nav-dropdown')) {
+          closeDropdowns();
+        }
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+          closeDropdowns();
+        }
       });
 
       applyLanguage('{{ page.lang | default: "ja" }}');
