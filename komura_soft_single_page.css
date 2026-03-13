@@ -335,16 +335,22 @@ p + p {
 
 .software-examples-section {
   margin-top: 2.5rem;
+  border-radius: calc(var(--radius-lg) + 0.25rem);
+  border: 1px solid var(--color-border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(250, 253, 255, 0.9));
+  padding: 1.75rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .software-examples-title {
-  font-size: 1.35rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: var(--color-text);
 }
 
 .software-examples-description {
   margin-top: 0.75rem;
+  max-width: 46rem;
   font-size: 0.95rem;
   color: var(--color-text-muted);
   line-height: 1.8;
@@ -362,12 +368,32 @@ p + p {
   }
 }
 
+@media (min-width: 960px) {
+  .software-examples-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .software-example-card {
+  display: flex;
+  flex-direction: column;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
-  background: var(--color-surface-elevated);
-  padding: 1.35rem 1.4rem;
-  box-shadow: var(--shadow-sm);
+  background: rgba(255, 255, 255, 0.98);
+  padding: 1.1rem 1.2rem 1.2rem;
+  box-shadow: 0 10px 22px rgba(20, 32, 51, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.software-example-card::before {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 0.24rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--color-accent) 0%, #8b5cf6 100%);
+  margin-bottom: 0.85rem;
 }
 
 .software-example-title {
