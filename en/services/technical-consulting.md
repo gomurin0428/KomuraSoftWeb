@@ -13,6 +13,18 @@ service_keywords:
   - Modernization planning
   - Windows architecture
   - COM / ActiveX
+offer_catalog:
+  - name: "Technical consulting"
+    description: "Clarifying constraints, risks, and practical directions for Windows software projects"
+  - name: "Design review"
+    description: "Review of architecture, responsibility boundaries, lifetime design, and modernization approach"
+  - name: "Migration planning"
+    description: "Planning what to keep, what to wrap, and what to replace in existing systems"
+faq:
+  - q: "Can we ask only for design review before implementation starts?"
+    a: "Yes. This service fits projects that need architectural clarification before coding begins."
+  - q: "Can you advise on old Windows structures such as COM or ActiveX?"
+    a: "Yes. That is one of the areas where this service is especially effective."
 related_articles:
   - title: "How to Handle ActiveX / OCX Today"
     url: "/en/blog/2026/03/12/001-activex-ocx-keep-wrap-replace-decision-table/"

@@ -13,6 +13,18 @@ service_keywords:
   - OCX
   - C++/CLI
   - 32-bit / 64-bit
+offer_catalog:
+  - name: "Boundary cleanup for legacy assets"
+    description: "Organizing COM / ActiveX / OCX, native libraries, and managed / unmanaged boundaries"
+  - name: "Staged migration support"
+    description: "Designing safe migration order and bridge structures without breaking accumulated behavior"
+  - name: "32-bit / 64-bit migration support"
+    description: "Planning wrappers, bridges, or process separation to handle bitness constraints realistically"
+faq:
+  - q: "Can you help when COM / ActiveX assets cannot be replaced immediately?"
+    a: "Yes. This service is specifically meant for situations where legacy assets still have to be reused for a while."
+  - q: "Can 32-bit dependencies still be handled in a migration plan?"
+    a: "Yes. We can help design realistic approaches such as wrappers, bridges, and process separation instead of forcing an unsafe in-proc solution."
 related_articles:
   - title: "How to Handle ActiveX / OCX Today"
     url: "/en/blog/2026/03/12/001-activex-ocx-keep-wrap-replace-decision-table/"

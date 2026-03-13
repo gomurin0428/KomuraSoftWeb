@@ -13,6 +13,18 @@ service_keywords:
   - モダナイゼーション
   - 64bit対応
   - 段階移行
+offer_catalog:
+  - name: "既存Windowsソフトの機能追加・改修"
+    description: "現行運用を踏まえた機能追加、保守、段階的な改修"
+  - name: "64bit対応と構成整理"
+    description: "x86 前提構成の見直しと 32bit / 64bit 相互運用を考慮した改修"
+  - name: "段階的モダナイゼーション"
+    description: "全面リプレイスではなく、運用しながら進める段階的な modernize 支援"
+faq:
+  - q: "古い Windows ソフトでも改修できますか？"
+    a: "はい。VB6、MFC、WinForms などを含む既存 Windows ソフトの改修や延命にも対応します。"
+  - q: "全部作り直す前に、まず延命だけお願いできますか？"
+    a: "可能です。全面作り直しの前段として、保守しやすい形への整理や優先度の高い改修から進められます。"
 related_articles:
   - title: "ActiveX / OCX を今どう扱うか"
     url: "/blog/2026/03/12/001-activex-ocx-keep-wrap-replace-decision-table/"

@@ -18,6 +18,7 @@
   {% assign back_label = "← Back to Home" %}
   {% assign service_list_label = "Main Service Pages" %}
   {% assign service_intro_label = "What We Support" %}
+  {% assign faq_label = "Frequently Asked Questions" %}
   {% assign alternate_page = translation_candidates | where_exp: "p", "p.lang != 'en'" | first %}
   {% assign ja_url = alternate_page.url %}
   {% assign en_url = page.url %}
@@ -36,6 +37,7 @@
   {% assign back_label = "← ホームに戻る" %}
   {% assign service_list_label = "主なサービスページ" %}
   {% assign service_intro_label = "対応内容" %}
+  {% assign faq_label = "よくある相談" %}
   {% assign alternate_page = translation_candidates | where: "lang", "en" | first %}
   {% assign ja_url = page.url %}
   {% assign en_url = alternate_page.url %}
@@ -83,14 +85,64 @@
     "description": {{ page.description | jsonify }},
     "url": "{{ page.url | absolute_url }}",
     "inLanguage": "{{ lang }}",
+    "areaServed": "JP",
+    "audience": {
+      "@type": "Audience",
+      "audienceType": {% if lang == "en" %}"Companies and teams that need Windows software development, modernization, or technical investigation"{% else %}"Windowsソフト開発、改修、調査を必要とする企業・開発チーム"{% endif %}
+    },
     "provider": {
       "@type": "Organization",
       "name": "KomuraSoft",
       "url": "{{ '/' | absolute_url }}"
     }{% if page.service_keywords %},
-    "keywords": {{ page.service_keywords | join: ", " | jsonify }}{% endif %}
+    "keywords": {{ page.service_keywords | join: ", " | jsonify }}{% endif %}{% if page.offer_catalog %},
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": {{ page.service_name | default: page.title | append: " catalog" | jsonify }},
+      "itemListElement": [
+        {% for offer in page.offer_catalog %}
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": {{ offer.name | jsonify }},
+            "description": {{ offer.description | jsonify }}
+          }
+        }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    }{% endif %}{% if page.related_articles %},
+    "subjectOf": [
+      {% for article in page.related_articles %}
+      {
+        "@type": "Article",
+        "name": {{ article.title | jsonify }},
+        "url": "{{ article.url | absolute_url }}"
+      }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]{% endif %}
   }
   </script>
+  {% if page.faq %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {% for item in page.faq %}
+      {
+        "@type": "Question",
+        "name": {{ item.q | jsonify }},
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": {{ item.a | jsonify }}
+        }
+      }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  }
+  </script>
+  {% endif %}
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -237,7 +289,8 @@
     }
     .service-related-articles-title,
     .service-related-services-title,
-    .service-page-cta-title {
+    .service-page-cta-title,
+    .service-faq-title {
       margin: 0;
       font-size: 1rem;
       font-weight: 700;
@@ -277,6 +330,38 @@
       display: flex;
       flex-wrap: wrap;
       gap: 0.75rem;
+    }
+    .service-faq {
+      margin-top: 1.5rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface-elevated);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .service-faq-list {
+      margin-top: 0.9rem;
+      display: grid;
+      gap: 0.9rem;
+    }
+    .service-faq-item {
+      padding-bottom: 0.9rem;
+      border-bottom: 1px solid rgba(47, 111, 221, 0.14);
+    }
+    .service-faq-item:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .service-faq-question {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .service-faq-answer {
+      margin-top: 0.45rem;
+      color: var(--color-text-muted);
+      line-height: 1.8;
     }
     .service-page-back {
       display: inline-block;
@@ -355,6 +440,20 @@
               <div class="service-related-links">
                 {% for article in page.related_articles %}
                 <a class="service-related-link" href="{{ article.url }}">{{ article.title }}</a>
+                {% endfor %}
+              </div>
+            </section>
+            {% endif %}
+
+            {% if page.faq %}
+            <section class="service-faq">
+              <h2 class="service-faq-title">{{ faq_label }}</h2>
+              <div class="service-faq-list">
+                {% for item in page.faq %}
+                <div class="service-faq-item">
+                  <p class="service-faq-question">{{ item.q }}</p>
+                  <p class="service-faq-answer">{{ item.a }}</p>
+                </div>
                 {% endfor %}
               </div>
             </section>

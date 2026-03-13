@@ -13,6 +13,18 @@ service_keywords:
   - OCX
   - C++/CLI
   - 32bit / 64bit
+offer_catalog:
+  - name: "既存資産の境界整理"
+    description: "COM / ActiveX / OCX、C++ 資産、ネイティブ境界の整理とラップ方針の検討"
+  - name: "段階的移行支援"
+    description: "既存仕様を保ちながら進める置き換え順序と橋渡し構成の設計"
+  - name: "32bit / 64bit 移行支援"
+    description: "bitness の壁を越える構成検討、分離、ブリッジ、ラッパー方式の整理"
+faq:
+  - q: "COM / ActiveX をすぐには捨てられない場合でも相談できますか？"
+    a: "はい。すぐに全部を置き換えられない前提で、活かす部分と整理すべき境界を一緒に見直せます。"
+  - q: "32bit コンポーネントが残っていても移行できますか？"
+    a: "可能です。in-proc で無理をせず、別プロセス化やブリッジ、ラッパーなどを含めて現実的な構成を検討します。"
 related_articles:
   - title: "ActiveX / OCX を今どう扱うか"
     url: "/blog/2026/03/12/001-activex-ocx-keep-wrap-replace-decision-table/"

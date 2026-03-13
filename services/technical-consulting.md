@@ -13,6 +13,18 @@ service_keywords:
   - 改修方針
   - Windows設計
   - COM / ActiveX
+offer_catalog:
+  - name: "技術相談"
+    description: "Windows ソフト開発に関する方針整理、制約整理、進め方の相談"
+  - name: "設計レビュー"
+    description: "アーキテクチャ、責務分割、境界設計、改修方針のレビュー"
+  - name: "移行方針整理"
+    description: "既存資産の扱い、残す部分と置き換える部分の整理"
+faq:
+  - q: "実装前の相談だけでも大丈夫ですか？"
+    a: "はい。まだコードを書き始めていない段階でも、設計方針や技術選定の相談から対応できます。"
+  - q: "COM や ActiveX を含む古い構成でも相談できますか？"
+    a: "可能です。Windows の既存資産を前提に、残す・包む・置き換えるの判断を含めて整理します。"
 related_articles:
   - title: "ActiveX / OCX を今どう扱うか"
     url: "/blog/2026/03/12/001-activex-ocx-keep-wrap-replace-decision-table/"

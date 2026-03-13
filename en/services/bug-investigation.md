@@ -13,6 +13,18 @@ service_keywords:
   - Long-running failures
   - Communication stalls
   - Leak investigation
+offer_catalog:
+  - name: "Root cause investigation"
+    description: "Isolation and analysis of rare failures, communication stalls, and crash causes"
+  - name: "Long-running failure analysis"
+    description: "Analysis of leaks, resource exhaustion, and instability that appear only after long uptime"
+  - name: "Recurrence-prevention support"
+    description: "Support for logging design, additional observation points, and abnormal-case test foundations"
+faq:
+  - q: "Can we ask only for investigation without requesting a full code change yet?"
+    a: "Yes. Investigation and isolation can be handled as a separate phase before deciding on implementation changes."
+  - q: "Can you help with defects that are hard to reproduce?"
+    a: "Yes. We can work from low-reproduction failures by improving observation through logs, metrics, packet capture, and resource tracking."
 related_articles:
   - title: "When Industrial Camera TCP Traffic Stops for Several Seconds"
     url: "/en/blog/2026/03/11/001-tcp-retransmission-rfc1323-industrial-camera/"

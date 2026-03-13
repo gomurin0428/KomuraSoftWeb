@@ -13,6 +13,18 @@ service_keywords:
   - 装置連携
   - 通信監視
   - Excel帳票
+offer_catalog:
+  - name: "業務用デスクトップアプリ開発"
+    description: "入力・検索・一覧・帳票出力を含む業務用Windowsアプリの設計・開発"
+  - name: "装置連携・制御アプリ開発"
+    description: "産業用カメラや周辺機器と連携する設定・監視・制御用アプリの開発"
+  - name: "常駐・監視ツール開発"
+    description: "Windows サービス、常駐処理、ログ収集、通信監視ツールの実装"
+faq:
+  - q: "新規開発だけでなく、既存ソフトを活かした形でも依頼できますか？"
+    a: "はい。全面作り直しだけでなく、既存資産を活かしながら新しい画面や通信処理を追加する形にも対応します。"
+  - q: "装置や周辺機器と連携するアプリにも対応できますか？"
+    a: "対応できます。TCP/IP、シリアル、USB などを使う装置連携を含む Windows アプリの設計・開発を支援します。"
 related_articles:
   - title: "C# async/await のベストプラクティス"
     url: "/blog/2026/03/09/001-csharp-async-await-best-practices/"

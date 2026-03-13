@@ -13,6 +13,18 @@ service_keywords:
   - Device integration
   - Monitoring tools
   - Excel reports
+offer_catalog:
+  - name: "Business desktop application development"
+    description: "Design and implementation of Windows business software with data entry, search, list management, and reporting"
+  - name: "Equipment integration and control app development"
+    description: "Development of Windows applications for configuration, monitoring, and control of industrial devices"
+  - name: "Resident processing and monitoring tools"
+    description: "Implementation of Windows services, resident processing, log collection, and communication monitoring tools"
+faq:
+  - q: "Can we ask for staged development that still reuses existing software?"
+    a: "Yes. We can support staged development that reuses existing assets instead of forcing a full rewrite from the start."
+  - q: "Can this service include device or peripheral integration?"
+    a: "Yes. It covers Windows applications that work with devices through TCP/IP, serial, USB, and other integration boundaries."
 related_articles:
   - title: "C# async/await Best Practices"
     url: "/en/blog/2026/03/09/001-csharp-async-await-best-practices/"

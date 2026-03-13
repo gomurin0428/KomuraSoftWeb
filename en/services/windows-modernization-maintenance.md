@@ -13,6 +13,18 @@ service_keywords:
   - 64-bit migration
   - Existing software
   - Staged upgrade
+offer_catalog:
+  - name: "Feature additions and maintenance for existing Windows software"
+    description: "Safe upgrades and maintenance while respecting current operations"
+  - name: "64-bit migration and boundary cleanup"
+    description: "Review and redesign of x86 assumptions and 32-bit / 64-bit interoperability"
+  - name: "Staged modernization"
+    description: "Practical modernization that proceeds step by step instead of an all-at-once rewrite"
+faq:
+  - q: "Can you work on older Windows software instead of only modern stacks?"
+    a: "Yes. Older Windows software and mixed legacy environments are part of the intended scope of this service."
+  - q: "Can we start with life-extension work before deciding on a full rewrite?"
+    a: "Yes. In many projects, staged stabilization and cleanup is the more realistic first move."
 related_articles:
   - title: "How to Handle ActiveX / OCX Today"
     url: "/en/blog/2026/03/12/001-activex-ocx-keep-wrap-replace-decision-table/"
