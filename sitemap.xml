@@ -1,0 +1,28 @@
+---
+layout: null
+permalink: /sitemap.xml
+sitemap: false
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  {% for page in site.pages %}
+    {% unless page.sitemap == false or page.url == "/sitemap.xml" or page.name == "404.html" or page.url contains ".json" %}
+  <url>
+    <loc>{{ site.url }}{{ page.url }}</loc>
+    <lastmod>{% if page.url == "/" %}{{ site.time | date: "%Y-%m-%d" }}{% elsif page.url == "/blog/" or page.url == "/en/blog/" %}{{ site.time | date: "%Y-%m-%d" }}{% elsif page.url == "/privacy/" %}{{ site.time | date: "%Y-%m-%d" }}{% else %}{{ site.time | date: "%Y-%m-%d" }}{% endif %}</lastmod>
+    <changefreq>{% if page.url == "/" %}monthly{% elsif page.url == "/blog/" or page.url == "/en/blog/" %}weekly{% elsif page.url == "/privacy/" %}yearly{% else %}monthly{% endif %}</changefreq>
+    <priority>{% if page.url == "/" %}1.00{% elsif page.url == "/blog/" or page.url == "/en/blog/" %}0.90{% elsif page.url == "/privacy/" %}0.30{% else %}0.50{% endif %}</priority>
+  </url>
+    {% endunless %}
+  {% endfor %}
+  {% for post in site.posts %}
+    {% unless post.sitemap == false %}
+  <url>
+    <loc>{{ site.url }}{{ post.url }}</loc>
+    <lastmod>{{ site.time | date: "%Y-%m-%d" }}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+    {% endunless %}
+  {% endfor %}
+</urlset>
