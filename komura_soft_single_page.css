@@ -75,6 +75,7 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: nowrap;
   gap: 1rem;
 }
 
@@ -109,9 +110,13 @@ a:hover {
 .site-nav {
   display: none;
   align-items: center;
+  flex-wrap: nowrap;
+  flex: 1 1 auto;
+  justify-content: center;
   gap: 1.5rem;
   font-size: 0.875rem;
   color: var(--color-text-muted);
+  min-width: 0;
 }
 
 @media (min-width: 640px) {
@@ -137,7 +142,7 @@ a:hover {
   left: 0;
   z-index: 20;
   display: none;
-  min-width: 18rem;
+  min-width: 19rem;
   padding: 0.55rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -152,6 +157,7 @@ a:hover {
 
 .nav-dropdown-item {
   display: block;
+  width: 100%;
   padding: 0.65rem 0.8rem;
   border-radius: 0.75rem;
   color: var(--color-text-muted);
@@ -842,6 +848,7 @@ p + p {
 
 .nav-link {
   color: var(--color-text-muted);
+  white-space: nowrap;
 }
 
 .nav-link:hover {
