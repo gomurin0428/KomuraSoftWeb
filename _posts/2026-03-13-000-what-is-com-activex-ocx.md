@@ -453,7 +453,7 @@ COM / ActiveX / OCX の違いを、いちばん雑に、でも実務で役立つ
 - [ActiveX / OCX を今どう扱うか - 残す・包む・置き換える判断表](https://comcomponent.com/blog/2026/03/12/001-activex-ocx-keep-wrap-replace-decision-table/)
 - [コンポーネント オブジェクト モデル (COM) - Microsoft Learn](https://learn.microsoft.com/ja-jp/windows/win32/com/component-object-model--com--portal)
 - [ActiveX コントロール - Win32 apps - Microsoft Learn](https://learn.microsoft.com/ja-jp/windows/win32/com/activex-controls)
-- [ActiveX Controls | MFC - Microsoft Learn](https://learn.microsoft.com/en-us/cpp/mfc/activex-controls?view=msvc-170)
+- [ActiveX Controls - MFC - Microsoft Learn](https://learn.microsoft.com/en-us/cpp/mfc/activex-controls?view=msvc-170)
 - [ActiveX Control - Access VBA - Microsoft Learn](https://learn.microsoft.com/en-us/office/vba/api/overview/activex-control)
 - [Internet Explorer (IE) モードとは - Microsoft Learn](https://learn.microsoft.com/ja-jp/deployedge/edge-ie-mode)
 - [DevTools を Internet Explorer モード (IE モード) で使用する - Microsoft Learn](https://learn.microsoft.com/ja-jp/microsoft-edge/devtools/ie-mode/)
