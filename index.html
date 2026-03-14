@@ -1,6 +1,7 @@
 ---
 lang: ja
 ---
+{% assign homepage_links = site.data.homepage_links[page.lang] %}
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -306,25 +307,14 @@ lang: ja
           <span class="mobile-menu-toggle-text">Menu</span>
         </button>
         <nav class="site-nav" id="site-nav-ja" aria-label="主要ナビゲーション" data-i18n-aria-label="navAriaLabel">
-          <div class="nav-dropdown">
-            <button type="button" class="nav-link nav-link--with-menu nav-dropdown-toggle" data-i18n="navService" aria-haspopup="true" aria-expanded="false" aria-controls="service-menu-ja">サービス</button>
-            <div class="nav-dropdown-menu" id="service-menu-ja">
-              <a class="nav-dropdown-item" href="/services/windows-app-development/" data-i18n="servicePageLink1">Windowsアプリ開発</a>
-              <a class="nav-dropdown-item" href="/services/bug-investigation/" data-i18n="servicePageLink2">不具合調査・原因解析</a>
-              <a class="nav-dropdown-item" href="/services/technical-consulting/" data-i18n="servicePageLink3">技術相談・設計レビュー</a>
-              <a class="nav-dropdown-item" href="/services/windows-modernization-maintenance/" data-i18n="servicePageLink4">既存Windowsソフトの改修・保守</a>
-              <a class="nav-dropdown-item" href="/services/legacy-asset-migration/" data-i18n="servicePageLink5">既存資産活用・移行支援</a>
-            </div>
-          </div>
-          <a class="nav-link" href="/company/" data-i18n="navCompany">会社情報</a>
-          <a class="nav-link" href="/profile/go-komura/" data-i18n="navProfile">代表略歴</a>
-          <a class="nav-link" href="/blog/" data-i18n="navBlog" data-blog-link="true">ブログ</a>
+          {% for item in homepage_links %}
+          <a class="nav-link" href="{{ item.url }}">{{ item.title }}</a>
+          {% endfor %}
           <div class="mobile-nav-actions">
             <div class="language-switch" role="group" aria-label="表示言語の選択" data-i18n-aria-label="languageToggleLabel">
               <a class="language-button language-button-link" href="/" data-i18n="langButtonJa" aria-current="page">日本語</a>
               <a class="language-button language-button-link" href="/en/" data-i18n="langButtonEn">English</a>
             </div>
-            <a class="pill-contact" href="/contact/" data-i18n="consultBadge">お問い合わせ</a>
           </div>
         </nav>
         <div class="header-actions">
@@ -350,16 +340,9 @@ lang: ja
         <h2 class="section-title">詳しく見る</h2>
         <p class="section-description">詳しい内容は、下の入口から必要なページへ進めます。</p>
         <div class="section-related-links-list">
-          <a class="section-related-link" href="/services/windows-app-development/">Windowsアプリ開発</a>
-          <a class="section-related-link" href="/services/bug-investigation/">不具合調査・原因解析</a>
-          <a class="section-related-link" href="/services/technical-consulting/">技術相談・設計レビュー</a>
-          <a class="section-related-link" href="/windows-software-examples/">開発できる Windows ソフトの例</a>
-          <a class="section-related-link" href="/topics/">技術トピック</a>
-          <a class="section-related-link" href="/case-studies/">技術事例</a>
-          <a class="section-related-link" href="/company/">会社情報</a>
-          <a class="section-related-link" href="/profile/go-komura/">代表略歴</a>
-          <a class="section-related-link" href="/contact/">お問い合わせ</a>
-          <a class="section-related-link" href="/blog/">ブログ</a>
+          {% for item in homepage_links %}
+          <a class="section-related-link" href="{{ item.url }}">{{ item.title }}</a>
+          {% endfor %}
         </div>
       </section>
     </main>
