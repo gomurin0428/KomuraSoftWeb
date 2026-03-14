@@ -54,19 +54,6 @@ lang: ja
     gtag('config', 'AW-17858398153');
     gtag('config', 'AW-17889204549');
   </script>
-  <!-- Event snippet for Submit lead form conversion -->
-  <script>
-  function gtag_report_conversion(url) {
-    if (typeof gtag === 'function') {
-      gtag('event', 'conversion', {
-          'send_to': 'AW-17889204549/BetfCITQoewbEMWyntJC',
-          'value': 1.0,
-          'currency': 'JPY'
-      });
-    }
-    // デフォルトのリンク動作を許可（return true または何も返さない）
-  }
-  </script>
   <!-- Structured Data -->
   <script type="application/ld+json">
   {
@@ -518,7 +505,7 @@ lang: ja
             </article>
           </div>
           <div class="case-studies-actions">
-            <a class="button button--primary" href="https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform?usp=dialog" target="_blank" rel="noopener" data-i18n="caseStudiesButton" onclick="return gtag_report_conversion('https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform?usp=dialog');">問い合わせる</a>
+            <a class="button button--primary" href="https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform?usp=dialog" target="_blank" rel="noopener" data-i18n="caseStudiesButton">問い合わせる</a>
           </div>
         </div>
       </section>
@@ -663,7 +650,7 @@ lang: ja
             <p class="contact-flow-note" data-i18n="contactFlowNote">フォームは短いままで構いません。まずは困っていることと、分かっている範囲の情報だけお送りください。</p>
           </div>
           <div class="contact-actions">
-            <a class="button button--primary" href="https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform?usp=dialog" target="_blank" rel="noopener" data-i18n="contactTechButton" onclick="return gtag_report_conversion('https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform?usp=dialog');">問い合わせる</a>
+            <a class="button button--primary" href="https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform?usp=dialog" target="_blank" rel="noopener" data-i18n="contactTechButton">問い合わせる</a>
           </div>
           <p class="contact-note" data-i18n="contactNote">
             ※ 原則として翌営業日以内に受領のご連絡を行い、詳細確認後に進め方をご案内します。
@@ -689,320 +676,15 @@ lang: ja
     (function () {
       'use strict';
 
-      const translations = {
-        ja: {
-          documentTitle: 'KomuraSoft | Windows受託開発・技術相談',
-          metaDescription: 'Windows 開発、COM / ActiveX、C# / .NET、WPF / WinForms、C++/CLI などの受託開発と技術相談を承ります。既存システムの改修、設計レビュー、不具合調査、移行相談にも対応します。',
-          navService: 'サービス',
-          navCompany: '会社情報',
-          navProfile: '代表略歴',
-          navBlog: 'ブログ',
-          consultBadge: '問い合わせる',
-          heroTitle: 'あなたのアイデアを<br><span class=\'hero-title-accent\'>カタチ</span>に。',
-          heroText: 'KomuraSoft は、<strong>Windows の専門家</strong>として、COM や ActiveX などのレガシー技術から最新の .NET まで幅広く対応しています。受託開発だけでなく、既存システムの改修方針の整理、技術選定、設計レビュー、不具合調査などの技術相談も承っています。',
-          primaryButton: 'サービスを見る',
-          secondaryButton: '問い合わせる',
-          heroSupportNote: 'いきなり開発依頼ではない段階でも構いません。まずは状況整理からご相談ください。',
-          serviceHeading: 'サービス',
-          serviceDescription: 'お客様のビジネスを支えるソフトウェア開発をお手伝いします。',
-          serviceCard1Title: 'Windows アプリ開発',
-          serviceCard1Body: '業務用デスクトップアプリ、装置連携アプリ、通信監視ツール、既存 COM / ActiveX 資産と連携する Windows ソフトなどの設計・開発を行います。',
-          serviceCard2Title: '既存システムの改修・保守',
-          serviceCard2Body: '既存システムの機能追加、バグ修正、パフォーマンス改善、モダナイゼーションなどをサポートします。',
-          serviceCard3Title: '技術コンサルティング',
-          serviceCard3Body: '技術選定、アーキテクチャ設計、コードレビューに加え、既存システムの改修方針整理、COM / ActiveX の保守・移行、32bit / 64bit の相互運用、不具合調査、長期稼働時障害の切り分け、ログ設計、異常系テスト基盤の整備などの技術相談に対応します。',
-          servicePageLinksTitle: 'サービス別ページ',
-          servicePageLink1: 'Windowsアプリ開発',
-          servicePageLink2: '不具合調査・原因解析',
-          servicePageLink3: '技術相談・設計レビュー',
-          servicePageLink4: '既存Windowsソフトの改修・保守',
-          servicePageLink5: '既存資産活用・移行支援',
-          softwareExamplesTitle: 'こんな Windows ソフトを開発できます',
-          softwareExamplesDescription: '業務アプリから装置連携、既存資産を活かす改修まで、Windows のややこしい案件を実務に合わせて形にします。',
-          softwareExample1Title: '業務用デスクトップアプリ',
-          softwareExample1Body: '入力、検索、一覧、帳票出力など、社内業務で使う Windows アプリを設計・開発します。',
-          softwareExample2Title: '装置連携・制御アプリ',
-          softwareExample2Body: '産業用カメラや周辺機器と連携する、設定・監視・制御用の Windows アプリに対応します。',
-          softwareExample3Title: '通信クライアント・監視ツール',
-          softwareExample3Body: 'TCP/IP 通信を使うクライアント、状態監視、ログ取得、現象切り分けのためのツールを開発します。',
-          softwareExample4Title: '既存 COM / ActiveX / OCX 資産を活かす連携アプリ',
-          softwareExample4Body: '既存コンポーネントを使った改修、新規連携部の追加、段階的な置き換えに対応します。',
-          softwareExample5Title: '既存 Windows ソフトの改修・64bit 対応',
-          softwareExample5Body: 'x86 前提の既存ソフトの整理や、32bit / 64bit 相互運用を踏まえた改修を支援します。',
-          softwareExample6Title: '調査・検証用の専用ツール',
-          softwareExample6Body: '再現しにくい不具合の原因切り分けや、ログ収集のための専用ツール作成にも対応します。',
-          softwareExample7Title: 'シリアル通信・USB連携アプリ',
-          softwareExample7Body: 'シリアルポートや USB を使って機器と通信する、設定・監視・制御用の Windows ソフトを開発します。既存 ActiveX やサービスプログラムと組み合わせた構成にも対応します。',
-          softwareExample8Title: '独自プロトコルの通信ソフト',
-          softwareExample8Body: 'TCP/IP やソケット通信を使った独自仕様の通信プログラムを開発します。双方向メッセージ連携、状態監視、高負荷を考慮したサーバー処理にも対応します。',
-          softwareExample9Title: 'Windows サービス・常駐プログラム',
-          softwareExample9Body: 'OS 起動時から動作する Windows サービスや常駐型プログラムを開発します。監視、定期処理、バックグラウンド連携などの長時間運用を前提とした構成に対応します。',
-          softwareExample10Title: 'マルチスレッド・マルチプロセス対応ソフト',
-          softwareExample10Body: 'マルチスレッドやプロセス間通信を前提とした Windows ソフトを設計・開発します。複数処理の並行実行、役割分離、安定運用を意識した構成に対応します。',
-          softwareExample11Title: 'Office 連携ツール・アドイン',
-          softwareExample11Body: 'Excel、Access、PowerPoint などと連携する業務ツールやアドインの開発・保守に対応します。既存プラグインの改修や延命についてもご相談いただけます。',
-          softwareExample12Title: 'Excel 帳票出力システム',
-          softwareExample12Body: '業務システムから Excel 帳票を生成・出力する仕組みを開発します。Web システムや社内ツールから、必要なデータが入った帳票をダウンロードできる形にも対応します。',
-          softwareLinksTitle: '関連する技術記事',
-          softwareLink1: '産業用カメラ通信の数秒停止を切り分けた事例',
-          softwareLink2: '長期稼働後のクラッシュをハンドルリークと特定した事例',
-          softwareLink3: 'ActiveX / OCX を今どう扱うかの判断表',
-          softwareLink4: 'COM STA / MTA の基礎知識',
-          softwareLink5: 'C++/CLI ラッパーを使う判断',
-          softwareLink6: 'Windows サービスや常駐処理の設計の考え方',
-          consultationExamplesTitle: 'こんな技術相談に対応できます',
-          consultationExample1: 'COM / ActiveX / OCX の保守・移行',
-          consultationExample2: 'C# / .NET / WPF / WinForms の設計レビュー',
-          consultationExample3: '32bit / 64bit の相互運用や C++/CLI の整理',
-          consultationExample4: 'まれに発生する通信遅延・停止の原因調査',
-          consultationExample5: '長期稼働後に発生するクラッシュや不安定化の調査',
-          consultationExample6: 'メモリリーク / ハンドルリークを見据えたログ設計・異常系テスト基盤の整備',
-          consultationLinksTitle: '近い相談テーマの記事',
-          consultationLink1: 'COM / ActiveX 保守・移行の判断表',
-          consultationLink2: 'まれに発生する通信停止を調べるときの見方',
-          consultationLink3: '長期稼働後の障害調査で見るポイント',
-          consultationLink4: '異常系テスト基盤と Application Verifier',
-          techStackTitle: '主な対応技術',
-          caseStudiesHeading: '技術事例',
-          caseStudiesDescription: '再現しにくい障害の調査、長期稼働時の不具合解析、再発防止のためのログ設計・異常系テスト基盤の整備に対応しています。',
-          caseStudiesNote: '※ 顧客名・製品名は非公開です。内容は特定されない形に要約しています。',
-          caseStudy1Title: 'まれに数秒止まる通信遅延の原因を特定',
-          caseStudy1Body: '産業用カメラ制御アプリとホストの通信で、まれに数秒間通信が止まる事象を調査。パケットロスにより発生した再送待ちの遅延が原因と見抜き、RFC1323 のタイムスタンプ機能を有効にすることで、待機時間を最小限に抑えました。',
-          caseStudy2Title: '長期稼働後のクラッシュをハンドルリークと特定',
-          caseStudy2Body: '産業用カメラ制御アプリが約1か月の連続稼働後に突然落ちる事象を調査。ハンドルリークが原因と判明し、再発時に原因を追いやすくするために、必要なログを整理してログ出力を強化しました。',
-          caseStudy3Title: 'Application Verifier を使った異常系テスト基盤の整備',
-          caseStudy3Body: '産業用カメラ制御アプリで、想定外のプログラムミスによりメモリリークやハンドルリークが発生しても何が起きたか追えるように、Application Verifier を用いた異常系テスト基盤を構築しました。',
-          caseStudiesButton: '問い合わせる',
-          strengthHeading: 'KomuraSoft の強み',
-          strength1Title: '小回りの利く対応',
-          strength1Body: '小規模だからこそ、お客様との密なコミュニケーションと柔軟な対応が可能です。',
-          strength2Title: '技術への深い理解',
-          strength2Body: 'Windows 開発を中心に、低レイヤーから高レイヤーまで幅広い技術領域をカバーします。',
-          strength3Title: '品質へのこだわり',
-          strength3Body: '保守性と拡張性を重視した設計で、長期的に価値のあるソフトウェアを提供します。',
-          companyTitle: '事業者情報',
-          companyNameLabel: '屋号',
-          companyTypeLabel: '形態',
-          companyTypeValue: '個人事業主',
-          companyRepresentativeLabel: '代表',
-          companyBusinessLabel: '事業',
-          companyRepresentativeValue: '小村 豪',
-          companyBusinessValue: 'ソフトウェア受託開発・技術コンサルティング',
-            companyAddressLabel: '所在地',
-            companyAddressValue: '〒107-0061 東京都港区北青山1-3-3 三橋ビル 3階',
-            companyXLabel: 'X (Twitter)',
-            companyGitHubLabel: 'GitHub',
-            companyRepositoriesLabel: '代表リポジトリ',
-            profileTitle: '代表略歴',
-            profileBirthplaceLabel: '出身',
-            profileBirthplaceValue: '宮崎市出身（中学は途中まで宮崎大学教育文化学部付属中学校）',
-          profileEducationLabel: '学歴',
-          profileEducationValue: '2015年 久留米工業高等専門学校 制御情報工学科 卒業<br>2015年 九州大学 理学部 数学科 3年次編入<br>2017年 九州大学 理学部 数学科 卒業<br>2017年 九州大学大学院 数理学府 数理学コース 入学<br>2019年 九州大学大学院 数理学府 数理学コース 中退',
-          profileCareerLabel: '職歴',
-          profileCareerValue: '2019年〜2023年 SES企業にて準委任契約でエンジニアとして従事<br>2023年〜2025年 エイチエスティ・ビジョン株式会社にてエンジニアとして勤務（半導体製造装置向け画像処理製品の開発・受託開発）<br>2025年12月〜 フリーランスとして独立（法人設立予定）',
-          profileCertificationLabel: '資格',
-          profileCertificationValue: '応用情報技術者',
-          contactTitle: 'お問い合わせ',
-          contactDescription: '開発のご依頼だけでなく、技術相談も受け付けています。',
-          contactExample1: '「まれにしか起きない通信停止の原因を調べたい」',
-          contactExample2: '「原因切り分けだけお願いしたい」',
-          contactExample3: '「長期稼働後に落ちる障害を切り分けたい」',
-          contactExample4: '「リークや異常終了に備えたログやテスト基盤を整えたい」',
-          contactProblemNote: '再現しにくい障害や、長時間運転でしか表面化しない問題の調査もご相談ください。',
-          contactGuidance: '内容確認後、対応可否の見立てと進め方をご案内します。具体的な調査・レビュー・原因分析が必要な場合は、初期調査または技術相談として有償でご案内します。',
-          contactFlowTitle: 'お問い合わせ後の流れ',
-          contactFlowStep1Title: '内容確認と一次返信',
-          contactFlowStep1Body: '原則として翌営業日以内に受領のご連絡を行い、対応できそうかどうかと次の確認方法をご案内します。',
-          contactFlowStep2Title: '必要に応じて初回ヒアリング',
-          contactFlowStep2Body: '必要に応じて、15〜30分ほどのヒアリングや追加情報のお願いを行い、症状・制約・共有可能な資料を確認します。',
-          contactFlowStep3Title: '進め方をご提案',
-          contactFlowStep3Body: 'ヒアリング後、技術相談 / 設計レビュー、初期調査、開発 / 改修のお見積りのいずれかをご案内します。',
-          contactFlowStep4Title: '初期調査では前提を整理して返却',
-          contactFlowStep4Body: '初期調査では、事実整理、有力仮説、追加確認事項、進め方や見積りの前提を整理してお返しします。',
-          contactFlowNote: 'フォームは短いままで構いません。まずは困っていることと、分かっている範囲の情報だけお送りください。',
-          contactTechButton: '問い合わせる',
-          contactDevButton: '問い合わせる',
-          contactNote: '※ 原則として翌営業日以内に受領のご連絡を行い、詳細確認後に進め方をご案内します。',
-          footerService: 'サービス',
-          footerCompany: '会社情報',
-          footerProfile: '代表略歴',
-          footerBlog: 'ブログ',
-          footerContact: '問い合わせる',
-          footerPrivacy: 'プライバシーポリシー',
-          navAriaLabel: '主要ナビゲーション',
-          mobileMenuOpen: 'Menu',
-          mobileMenuClose: 'Close',
-          languageToggleLabel: '表示言語の選択',
-          langButtonJa: '日本語',
-          langButtonEn: 'English'
-        },
-        en: {
-          documentTitle: 'KomuraSoft | Windows Contract Development & Technical Consultation',
-          metaDescription: 'We provide Windows contract development and technical consultation for COM / ActiveX, C# / .NET, WPF / WinForms, and C++/CLI. We also support modernization, design reviews, bug investigation, and migration planning.',
-          navService: 'Services',
-          navCompany: 'Company',
-          navProfile: 'Profile',
-          navBlog: 'Blog',
-          consultBadge: 'Contact',
-          heroTitle: 'Bringing Your Ideas<br>to <span class=\'hero-title-accent\'>Life</span>.',
-          heroText: 'KomuraSoft is a <strong>Windows specialist</strong> covering everything from legacy technologies such as COM and ActiveX to modern .NET. In addition to contract development, we also offer technical consultation for modernization planning, technology selection, design reviews, and bug investigation.',
-          primaryButton: 'View Services',
-          secondaryButton: 'Contact',
-          heroSupportNote: 'You do not need to be ready for a full development request. We are happy to start by helping you sort out the situation.',
-          serviceHeading: 'Services',
-          serviceDescription: 'We help support your business through software development.',
-          serviceCard1Title: 'Windows App Development',
-          serviceCard1Body: 'We design and build Windows software such as business desktop applications, device-linked control apps, communication monitoring tools, and systems that work with existing COM / ActiveX assets.',
-          serviceCard2Title: 'System Maintenance & Upgrades',
-          serviceCard2Body: 'We support feature additions, bug fixes, performance improvements, and modernization of existing systems.',
-          serviceCard3Title: 'Technical Consulting',
-          serviceCard3Body: 'We support technology selection, architecture design, code reviews, modernization planning for existing systems, COM / ActiveX maintenance and migration, 32-bit / 64-bit interoperability, bug investigation, isolation of long-running failures, logging design, and failure-path test infrastructure.',
-          servicePageLinksTitle: 'Service Pages',
-          servicePageLink1: 'Windows App Development',
-          servicePageLink2: 'Bug Investigation & Root Cause Analysis',
-          servicePageLink3: 'Technical Consulting & Design Review',
-          servicePageLink4: 'Windows Software Maintenance & Modernization',
-          servicePageLink5: 'Legacy Asset Reuse & Migration Support',
-          softwareExamplesTitle: 'Examples of Windows Software We Can Build',
-          softwareExamplesDescription: 'From business applications to equipment-linked software and staged modernization of existing assets, we build the kind of Windows software that tends to get complicated in real projects.',
-          softwareExample1Title: 'Business Desktop Applications',
-          softwareExample1Body: 'We design and build Windows applications for internal operations such as data entry, search, list management, and report output.',
-          softwareExample2Title: 'Equipment Integration and Control Applications',
-          softwareExample2Body: 'We support Windows applications for configuration, monitoring, and control that work with industrial cameras and peripheral devices.',
-          softwareExample3Title: 'Communication Clients and Monitoring Tools',
-          softwareExample3Body: 'We build TCP/IP-based clients, status monitors, log collection tools, and utilities for narrowing down difficult field issues.',
-          softwareExample4Title: 'Integration Apps That Reuse Existing COM / ActiveX / OCX Assets',
-          softwareExample4Body: 'We support enhancements built on existing components, new integration layers, and staged replacement strategies.',
-          softwareExample5Title: 'Modernization of Existing Windows Software and 64-bit Support',
-          softwareExample5Body: 'We help reorganize x86-based software and support upgrades that take 32-bit / 64-bit interoperability into account.',
-          softwareExample6Title: 'Custom Tools for Investigation and Verification',
-          softwareExample6Body: 'We can also create dedicated tools for root-cause investigation, log collection, and other hard-to-reproduce issues.',
-          softwareExample7Title: 'Serial and USB Device Integration Apps',
-          softwareExample7Body: 'We develop Windows software for configuration, monitoring, and control that communicates with hardware through serial ports or USB. We can also fit the design into existing ActiveX-based or service-based systems.',
-          softwareExample8Title: 'Custom Protocol Communication Software',
-          softwareExample8Body: 'We build custom communication software using TCP/IP and socket-based protocols, including bidirectional messaging, status monitoring, and server-side processing designed for real operational load.',
-          softwareExample9Title: 'Windows Services and Resident Programs',
-          softwareExample9Body: 'We develop Windows services and resident programs that start with the OS. These are well suited to monitoring, scheduled processing, and long-running background integration.',
-          softwareExample10Title: 'Multi-Threaded and Multi-Process Software',
-          softwareExample10Body: 'We design and develop Windows software that assumes multithreading and inter-process communication, with attention to parallel execution, separation of responsibility, and stable long-running operation.',
-          softwareExample11Title: 'Office Integration Tools and Add-ins',
-          softwareExample11Body: 'We support development and maintenance of tools and add-ins that work with Excel, Access, and PowerPoint. We can also help extend or preserve existing Office plug-ins.',
-          softwareExample12Title: 'Excel-Based Report Output Systems',
-          softwareExample12Body: 'We build systems that generate Excel-based reports from business applications, including flows where users download fully populated workbooks from web systems or internal tools.',
-          softwareLinksTitle: 'Related Articles',
-          softwareLink1: 'Case study: isolating multi-second stalls in industrial camera communication',
-          softwareLink2: 'Case study: identifying a long-run crash as a handle leak',
-          softwareLink3: 'Decision table: how to handle ActiveX / OCX today',
-          softwareLink4: 'COM STA / MTA basics',
-          softwareLink5: 'When a C++/CLI wrapper is the right choice',
-          softwareLink6: 'Designing Windows services and resident processing',
-          consultationExamplesTitle: 'Examples of Technical Consultation',
-          consultationExample1: 'Maintaining or migrating COM / ActiveX / OCX systems',
-          consultationExample2: 'Design reviews for C# / .NET / WPF / WinForms',
-          consultationExample3: 'Reviewing 32-bit / 64-bit interoperability and C++/CLI boundaries',
-          consultationExample4: 'Investigating rare communication delays and stoppages',
-          consultationExample5: 'Investigating crashes and instability after long-running operation',
-          consultationExample6: 'Designing logs and failure-path test infrastructure for memory and handle leak scenarios',
-          consultationLinksTitle: 'Related Reading',
-          consultationLink1: 'Decision table for COM / ActiveX maintenance and migration',
-          consultationLink2: 'How to inspect rare communication stoppages',
-          consultationLink3: 'What to inspect in long-run failure investigations',
-          consultationLink4: 'Application Verifier and failure-path test foundations',
-          techStackTitle: 'Core Technologies',
-          caseStudiesHeading: 'Technical Case Studies',
-          caseStudiesDescription: 'We handle investigations of hard-to-reproduce failures, analysis of defects that appear after long uptime, and logging and failure-path test infrastructure for recurrence prevention.',
-          caseStudiesNote: '* Customer and product names are withheld. The content is summarized to avoid identification.',
-          caseStudy1Title: 'Pinpointed the cause of rare multi-second communication stalls',
-          caseStudy1Body: 'We investigated a control application for industrial cameras that occasionally stopped communicating with the host for several seconds. We identified retransmission wait time caused by packet loss and reduced the wait by enabling the RFC1323 timestamp option.',
-          caseStudy2Title: 'Identified a month-later crash as a handle leak',
-          caseStudy2Body: 'We investigated an industrial camera control application that suddenly crashed after about one month of continuous operation. We identified a handle leak and strengthened the logging so the cause would be easier to trace if the issue recurred.',
-          caseStudy3Title: 'Built a failure-path test foundation with Application Verifier',
-          caseStudy3Body: 'For an industrial camera control application, we built a failure-path test foundation using Application Verifier so that memory leaks and handle leaks caused by unexpected programming mistakes could still be traced clearly.',
-          caseStudiesButton: 'Contact',
-          strengthHeading: 'Why KomuraSoft',
-          strength1Title: 'Agile Response',
-          strength1Body: 'Being small allows us to maintain close communication and flexible responses to your needs.',
-          strength2Title: 'Deep Technical Understanding',
-          strength2Body: 'We cover a wide range of technical areas from low-level to high-level, centered on Windows development.',
-          strength3Title: 'Commitment to Quality',
-          strength3Body: 'We focus on maintainability and extensibility to deliver software with long-term value.',
-          companyTitle: 'About',
-          companyNameLabel: 'Trade Name',
-          companyTypeLabel: 'Type',
-          companyTypeValue: 'Sole Proprietor',
-          companyRepresentativeLabel: 'Representative',
-          companyBusinessLabel: 'Business',
-          companyRepresentativeValue: 'Go Komura',
-          companyBusinessValue: 'Contract Software Development & Technical Consulting',
-            companyAddressLabel: 'Address',
-            companyAddressValue: '1-3-3 Kita-Aoyama, Minato-ku, Tokyo 107-0061, Japan (Mitsuhashi Bldg. 3F)',
-            companyXLabel: 'X (Twitter)',
-            companyGitHubLabel: 'GitHub',
-            companyRepositoriesLabel: 'Representative Repositories',
-            profileTitle: 'Profile',
-            profileBirthplaceLabel: 'Hometown',
-            profileBirthplaceValue: 'Born in Miyazaki City (attended Miyazaki University Attached Junior High School until midway)',
-          profileEducationLabel: 'Education',
-          profileEducationValue: '2015: Graduated from Kurume National College of Technology, Dept. of Control and Information Engineering<br>2015: Transferred to Kyushu University, Faculty of Science, Dept. of Mathematics (3rd year)<br>2017: Graduated from Kyushu University, Faculty of Science, Dept. of Mathematics<br>2017: Enrolled in Kyushu University Graduate School of Mathematics<br>2019: Withdrew from Kyushu University Graduate School of Mathematics',
-          profileCareerLabel: 'Career',
-          profileCareerValue: '2019–2023: Worked as an engineer under quasi-delegation contracts at an SES company<br>2023–2025: Engineer at HST Vision Co., Ltd. (development of image processing products for semiconductor manufacturing equipment)<br>Dec 2025–: Independent freelancer (planning to establish a corporation)',
-          profileCertificationLabel: 'Certification',
-          profileCertificationValue: 'Applied Information Technology Engineer (Japanese national qualification)',
-          contactTitle: 'Contact',
-          contactDescription: 'We accept not only development requests but also technical consultation.',
-          contactExample1: '"We want to investigate the cause of a communication stop that only happens rarely."',
-          contactExample2: '"We only want help with root-cause investigation."',
-          contactExample3: '"We want to isolate a failure that appears only after long-running operation."',
-          contactExample4: '"We want to improve logs and test infrastructure for leaks and abnormal termination."',
-          contactProblemNote: 'Please feel free to contact us about failures that are hard to reproduce or issues that only surface after long periods of operation.',
-          contactGuidance: 'After reviewing your message, we will outline whether the request looks like a fit and what the next step would be. If detailed investigation, review, or root-cause analysis is needed, we will guide you to a paid initial investigation or technical consultation.',
-          contactFlowTitle: 'What Happens After You Contact Us',
-          contactFlowStep1Title: 'Review and first reply',
-          contactFlowStep1Body: 'As a rule, we send an acknowledgement by the next business day and let you know whether the request looks feasible and how we should confirm the details.',
-          contactFlowStep2Title: 'Initial hearing if needed',
-          contactFlowStep2Body: 'If needed, we ask for a 15-30 minute hearing or additional information to confirm the symptoms, constraints, and what materials can be shared.',
-          contactFlowStep3Title: 'We propose the next track',
-          contactFlowStep3Body: 'After the hearing, we guide you to one of these paths: technical consultation / design review, an initial investigation, or an estimate for development / modification.',
-          contactFlowStep4Title: 'Initial investigation returns a structured result',
-          contactFlowStep4Body: 'In an initial investigation, we return a structured summary of facts, likely hypotheses, additional checks, and the assumptions needed for the next step or estimate.',
-          contactFlowNote: 'The form can stay short. Please start with what is happening now and whatever information is already available.',
-          contactTechButton: 'Contact',
-          contactDevButton: 'Contact',
-          contactNote: '* As a rule, we send an acknowledgement by the next business day and guide you on the next step after reviewing the details.',
-          footerService: 'Services',
-          footerCompany: 'Company',
-          footerProfile: 'Profile',
-          footerBlog: 'Blog',
-          footerContact: 'Contact',
-          footerPrivacy: 'Privacy Policy',
-          navAriaLabel: 'Primary navigation',
-          mobileMenuOpen: 'Menu',
-          mobileMenuClose: 'Close',
-          languageToggleLabel: 'Language selection',
-          langButtonJa: 'Japanese',
-          langButtonEn: 'English'
-        }
+      const mobileMenuLabels = {
+        open: 'Menu',
+        close: 'Close'
       };
 
       const siteHeader = document.querySelector('.site-header');
       const siteNav = document.querySelector('.site-nav');
       const mobileMenuToggle = document.querySelector('[data-mobile-menu-toggle]');
       const mobileMenuToggleText = mobileMenuToggle ? mobileMenuToggle.querySelector('.mobile-menu-toggle-text') : null;
-      const languageButtons = Array.from(document.querySelectorAll('[data-lang-select]'));
-      const blogLinks = Array.from(document.querySelectorAll('[data-blog-link="true"]'));
-      let currentLanguage = 'ja';
-
-      function toAttributeName(datasetKey) {
-        const suffix = datasetKey.slice(4);
-        if (!suffix) {
-          return null;
-        }
-        return suffix
-          .replace(/([A-Z])/g, function (match) {
-            return '-' + match.toLowerCase();
-          })
-          .replace(/^-/, '');
-      }
 
       function isMobileViewport() {
         return window.matchMedia('(max-width: 639px)').matches;
@@ -1013,13 +695,8 @@ lang: ja
           return;
         }
 
-        const dictionary = translations[currentLanguage];
-        if (!dictionary) {
-          return;
-        }
-
         const isOpen = siteHeader && siteHeader.classList.contains('is-mobile-nav-open');
-        const label = isOpen ? dictionary.mobileMenuClose : dictionary.mobileMenuOpen;
+        const label = isOpen ? mobileMenuLabels.close : mobileMenuLabels.open;
         mobileMenuToggle.setAttribute('aria-label', label);
         mobileMenuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
         if (mobileMenuToggleText) {
@@ -1046,84 +723,6 @@ lang: ja
         }
         updateMobileMenuToggle();
       }
-
-      function applyLanguage(lang) {
-        const dictionary = translations[lang];
-        if (!dictionary) {
-          throw new Error('Unsupported language: ' + lang);
-        }
-
-        currentLanguage = lang;
-        document.documentElement.lang = lang;
-        document.title = dictionary.documentTitle;
-
-        const metaDescription = document.getElementById('meta-description');
-        const metaOgTitle = document.getElementById('meta-og-title');
-        const metaOgDescription = document.getElementById('meta-og-description');
-        const metaTwitterTitle = document.getElementById('meta-twitter-title');
-        const metaTwitterDescription = document.getElementById('meta-twitter-description');
-
-        if (metaDescription) {
-          metaDescription.setAttribute('content', dictionary.metaDescription);
-        }
-        if (metaOgTitle) {
-          metaOgTitle.setAttribute('content', dictionary.documentTitle);
-        }
-        if (metaOgDescription) {
-          metaOgDescription.setAttribute('content', dictionary.metaDescription);
-        }
-        if (metaTwitterTitle) {
-          metaTwitterTitle.setAttribute('content', dictionary.documentTitle);
-        }
-        if (metaTwitterDescription) {
-          metaTwitterDescription.setAttribute('content', dictionary.metaDescription);
-        }
-
-        const elements = Array.from(document.querySelectorAll('[data-i18n]'));
-
-        elements.forEach(function (element) {
-          const key = element.dataset.i18n;
-          const value = dictionary[key];
-          if (value === undefined) {
-            throw new Error('Translation missing for key ' + key + ' in language ' + lang);
-          }
-
-          if (element.dataset.i18nHtml === 'true') {
-            element.innerHTML = value;
-          } else {
-            element.textContent = value;
-          }
-
-          Object.keys(element.dataset).forEach(function (datasetKey) {
-            if (datasetKey === 'i18n' || datasetKey === 'i18nHtml') {
-              return;
-            }
-            if (datasetKey.startsWith('i18n')) {
-              var attrName = toAttributeName(datasetKey);
-              if (!attrName) {
-                return;
-              }
-              var attrKey = element.dataset[datasetKey];
-              var attrValue = dictionary[attrKey];
-              if (attrValue === undefined) {
-                throw new Error('Translation missing for key ' + attrKey + ' in language ' + lang);
-              }
-              element.setAttribute(attrName, attrValue);
-            }
-          });
-        });
-
-        languageButtons.forEach(function (button) {
-          button.setAttribute('aria-pressed', button.dataset.langSelect === lang ? 'true' : 'false');
-        });
-
-        blogLinks.forEach(function (link) {
-          link.setAttribute('href', lang === 'en' ? '/en/blog/' : '/blog/');
-        });
-
-        updateMobileMenuToggle();
-      }
-
       var navDropdowns = Array.from(document.querySelectorAll('.nav-dropdown'));
 
       function closeDropdowns() {
@@ -1192,8 +791,7 @@ lang: ja
       window.addEventListener('resize', function () {
         setMobileNavOpen(siteHeader ? siteHeader.classList.contains('is-mobile-nav-open') : false);
       });
-
-      applyLanguage('{{ page.lang | default: "ja" }}');
+      updateMobileMenuToggle();
       setMobileNavOpen(false);
     })();
   </script>
