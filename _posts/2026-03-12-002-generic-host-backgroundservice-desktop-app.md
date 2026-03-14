@@ -14,6 +14,11 @@ tags:
   - Windows開発
   - 設計
 description: Windows ツールや常駐系アプリで、起動処理、定期処理、終了処理、ログ、設定、依存関係が散らばり始めたら、.NET Generic Host と BackgroundService を持ち込む価値があります。起動と lifetime を整理し、graceful shutdown とバックグラウンド処理を管理しやすくする考え方を、デスクトップアプリ前提で整理します。
+consultation_services:
+  - id: windows-app-development
+    reason: "バックグラウンド処理、定期処理、再接続、終了処理まで含むデスクトップアプリ開発そのものに近いテーマです。"
+  - id: technical-consulting
+    reason: "UI と常駐処理の責務分割や graceful shutdown の設計を先に見直したい場合は、技術相談・設計レビューとして整理できます。"
 ---
 
 Windows ツールや常駐系アプリを少し育てると、UI の外側にある処理がじわじわ増えてきます。

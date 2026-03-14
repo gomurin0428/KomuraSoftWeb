@@ -6,6 +6,27 @@
 {% assign article_author = page.author | default: site.founder_name | default: "KomuraSoft" %}
 {% assign translation_candidates = site.posts | where: "translation_key", page.translation_key %}
 {% assign contact_url = site.contact_url %}
+{% assign article_consulting_services = site.data.article_consulting_services[lang] %}
+{% capture article_service_cards %}
+  {% if page.consultation_services %}
+    {% for consultation_service in page.consultation_services %}
+      {% assign service = article_consulting_services | where: "id", consultation_service.id | first %}
+      {% if service %}
+      <article class="article-service-card">
+        <h3 class="article-service-card-title">
+          <a href="{{ service.url }}">{{ service.title }}</a>
+        </h3>
+        <p class="article-service-card-text">{{ consultation_service.reason | default: service.description }}</p>
+        <div class="article-consult-cta-actions">
+          <a class="article-consult-cta-button article-consult-cta-button-secondary" href="{{ service.url }}">{{ ui.post.service_links_service_button }}</a>
+          <a class="article-consult-cta-button" href="{{ contact_url }}" target="_blank" rel="noopener">{{ ui.post.service_links_contact_button }}</a>
+        </div>
+      </article>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endcapture %}
+{% assign has_article_service_cards = article_service_cards | strip %}
 {% if lang == "en" %}
   {% assign blog_url = "/en/blog/" %}
   {% assign home_url = "/" %}
@@ -383,6 +404,57 @@
     .article-consult-cta-sidebar {
       margin: 0;
     }
+    .article-service-links {
+      margin: 2.5rem 0 0 0;
+      padding: 1.5rem;
+      border: 1px solid var(--color-border);
+      border-radius: calc(var(--radius-md) + 0.15rem);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(243, 247, 252, 0.98));
+      box-shadow: var(--shadow-sm);
+    }
+    .article-service-links-title {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--color-text);
+    }
+    .article-service-links-intro {
+      margin: 0.75rem 0 0 0;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+    }
+    .article-service-links-grid {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+    .article-service-card {
+      padding: 1.15rem 1.15rem 1.2rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.95);
+    }
+    .article-service-card-title {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+    .article-service-card-title a {
+      color: var(--color-text);
+      text-decoration: none;
+    }
+    .article-service-card-title a:hover,
+    .article-service-card-title a:focus-visible {
+      color: var(--color-accent-light);
+      text-decoration: underline;
+    }
+    .article-service-card-text {
+      margin: 0.75rem 0 0;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+    }
     .article-github-links {
       margin: 2.5rem 0 0 0;
       padding: 1.25rem 1.5rem;
@@ -477,6 +549,9 @@
       .article-main > .article-consult-cta {
         display: none;
       }
+      .article-service-links-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
   </style>
 </head>
@@ -502,6 +577,15 @@
             <div class="blog-content">
               {{ content }}
             </div>
+            {% if has_article_service_cards != "" %}
+            <section class="article-service-links" aria-labelledby="article-service-links-title">
+              <h2 id="article-service-links-title" class="article-service-links-title">{{ ui.post.service_links_title }}</h2>
+              <p class="article-service-links-intro">{{ ui.post.service_links_intro }}</p>
+              <div class="article-service-links-grid">
+                {{ article_service_cards }}
+              </div>
+            </section>
+            {% endif %}
             <section class="article-github-links" aria-label="GitHub links">
               <h2 class="article-github-links-title">{{ ui.post.github_title }}</h2>
               <p class="article-github-links-text">
@@ -737,7 +821,7 @@
 
     const insertArticleConsultCta = () => {
       const blogContent = document.querySelector('.blog-content');
-      if (!blogContent || blogContent.querySelector('.article-consult-cta') || window.innerWidth >= 1100) {
+      if (!blogContent || document.querySelector('.article-service-links') || blogContent.querySelector('.article-consult-cta') || window.innerWidth >= 1100) {
         return;
       }
 

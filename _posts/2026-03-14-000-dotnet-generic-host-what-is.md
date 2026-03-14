@@ -10,6 +10,11 @@ tags:
   - Worker
   - 設計
 description: "Generic Host とは何かを、DI、設定、ログ、IHostedService、BackgroundService、Host.CreateApplicationBuilder と WebApplicationBuilder の関係から整理し、どこで効いてどこでは過剰かを実務目線でまとめます。"
+consultation_services:
+  - id: windows-app-development
+    reason: "常駐処理、終了処理、ログ、設定を含む Windows アプリを組み立てる話なので、実装案件としては Windowsアプリ開発 と相性がよいテーマです。"
+  - id: technical-consulting
+    reason: "DI、ライフタイム、責務分割を実装前に整理したい段階なら、技術相談・設計レビューとして方針整理から入れます。"
 ---
 
 `.NET` でコンソールアプリや worker を書き始めると、最初は `Main` に少し処理を書くだけで済みます。  

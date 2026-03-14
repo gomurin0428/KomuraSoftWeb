@@ -12,6 +12,11 @@ tags:
   - Windows Development
   - Modernization
 description: "A practical decision guide for what to do when you find ActiveX / OCX in a real project: keep it, wrap it, or replace it, with bitness, registration, browser dependence, and vendor support all taken into account."
+consultation_services:
+  - id: legacy-asset-migration
+    reason: "Deciding whether to keep, wrap, or replace ActiveX / OCX is exactly the kind of staged legacy migration problem this service is built for."
+  - id: technical-consulting
+    reason: "If the main need is to review boundaries and choose the migration order before coding starts, this also fits technical consulting and design review."
 ---
 
 Projects that still mention ActiveX / OCX usually come with a certain heaviness in the air.

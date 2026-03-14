@@ -11,6 +11,11 @@ tags:
   - Windows開発
   - レガシー技術
 description: "COMとは何か、ActiveXとは何か、OCXとは何かを、違いと関係、OLEとのつながり、どこで使われるのか、今どう捉えるべきかまで実務目線で整理します。"
+consultation_services:
+  - id: legacy-asset-migration
+    reason: "COM / ActiveX / OCX の違いを整理する話は、既存資産をどう活かしてどう移行するかを考える入口として相性がよいです。"
+  - id: technical-consulting
+    reason: "まず用語と境界の意味を揃えてから方針を決めたい案件なら、技術相談・設計レビューとして整理を進められます。"
 ---
 
 COM / ActiveX / OCX という 3 つの単語は、Windows のレガシー案件でだいたいセットで出てきます。

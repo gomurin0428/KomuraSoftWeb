@@ -1,0 +1,42 @@
+ja:
+  - id: windows-app-development
+    title: "Windowsアプリ開発"
+    url: "/services/windows-app-development/"
+    description: "業務用デスクトップアプリ、常駐処理、装置連携、ログ設計を含む Windows ソフト開発を支援します。"
+  - id: bug-investigation
+    title: "不具合調査・原因解析"
+    url: "/services/bug-investigation/"
+    description: "再現しにくい障害、長時間運転後の停止、リーク、通信不具合の切り分けと再発防止を支援します。"
+  - id: technical-consulting
+    title: "技術相談・設計レビュー"
+    url: "/services/technical-consulting/"
+    description: "実装前の方針整理、設計レビュー、既存資産の扱い、責務分割やライフタイム設計の相談に対応します。"
+  - id: windows-modernization-maintenance
+    title: "既存Windowsソフトの改修・保守"
+    url: "/services/windows-modernization-maintenance/"
+    description: "既存 Windows ソフトの機能追加、保守、64bit 対応、段階的なモダナイゼーションを支援します。"
+  - id: legacy-asset-migration
+    title: "既存資産活用・移行支援"
+    url: "/services/legacy-asset-migration/"
+    description: "COM / ActiveX / OCX、C++/CLI、32bit / 64bit を含む既存資産の活用と段階移行を支援します。"
+en:
+  - id: windows-app-development
+    title: "Windows App Development"
+    url: "/en/services/windows-app-development/"
+    description: "We support Windows desktop applications that involve resident processing, device integration, operational logging, and maintainable structure."
+  - id: bug-investigation
+    title: "Bug Investigation & Root Cause Analysis"
+    url: "/en/services/bug-investigation/"
+    description: "We investigate difficult production issues such as intermittent failures, long-run crashes, leaks, and communication stoppages."
+  - id: technical-consulting
+    title: "Technical Consulting & Design Review"
+    url: "/en/services/technical-consulting/"
+    description: "We help clarify design direction, architectural boundaries, lifetime ownership, and how to handle legacy Windows assets."
+  - id: windows-modernization-maintenance
+    title: "Windows Software Maintenance & Modernization"
+    url: "/en/services/windows-modernization-maintenance/"
+    description: "We support staged upgrades, feature additions, 64-bit readiness, and maintainable restructuring for existing Windows software."
+  - id: legacy-asset-migration
+    title: "Legacy Asset Reuse & Migration Support"
+    url: "/en/services/legacy-asset-migration/"
+    description: "We help plan staged migration while continuing to reuse COM / ActiveX / OCX assets, native code, and 32-bit dependencies."

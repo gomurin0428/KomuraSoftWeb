@@ -13,6 +13,11 @@ tags:
   - Legacy Technology
 author: Go Komura
 description: "A practical explanation of what COM, ActiveX, and OCX are, how they differ, how they relate to OLE, where they were used, and how to think about them today."
+consultation_services:
+  - id: legacy-asset-migration
+    reason: "Clarifying the meaning of COM / ActiveX / OCX is often the first step in deciding how a legacy Windows asset should be reused or migrated."
+  - id: technical-consulting
+    reason: "If the immediate need is to align terminology, boundaries, and migration direction before implementation, this fits technical consulting and design review."
 ---
 
 The three terms COM / ActiveX / OCX tend to appear together in Windows legacy projects.

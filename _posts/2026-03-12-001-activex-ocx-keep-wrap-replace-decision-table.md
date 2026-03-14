@@ -11,6 +11,11 @@ tags:
   - Windows開発
   - モダナイゼーション
 description: ActiveX / OCX を見つけたときに、残す・包む・置き換えるのどれを選ぶべきかを、32bit / 64bit、登録、ブラウザ依存、ベンダー保守まで含めて整理します。
+consultation_services:
+  - id: legacy-asset-migration
+    reason: "COM / ActiveX / OCX を残す・包む・置き換える判断は、そのまま既存資産活用・移行支援の中心テーマです。"
+  - id: technical-consulting
+    reason: "実装前に境界整理や置き換え順序を決めたい段階なら、技術相談・設計レビューとして方針を詰める進め方が合います。"
 ---
 
 ActiveX / OCX という言葉が出てくる案件は、だいたい空気が少し重いです。

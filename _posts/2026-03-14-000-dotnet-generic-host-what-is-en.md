@@ -12,6 +12,11 @@ tags:
   - Architecture
 author: Go Komura
 description: "A practical explanation of what the .NET Generic Host is, how it ties together DI, configuration, logging, IHostedService, and BackgroundService, and where it helps or becomes unnecessary."
+consultation_services:
+  - id: windows-app-development
+    reason: "This topic connects directly to Windows application work that needs resident processing, shutdown design, logging, configuration, and maintainable startup structure."
+  - id: technical-consulting
+    reason: "If the main need is to sort out DI, lifetime ownership, and responsibility boundaries before implementation, this fits technical consulting and design review well."
 ---
 
 When you start writing a console app or worker in `.NET`, you can often get away with putting a little logic directly in `Main`.  

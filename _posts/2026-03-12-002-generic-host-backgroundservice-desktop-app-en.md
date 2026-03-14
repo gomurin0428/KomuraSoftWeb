@@ -15,6 +15,11 @@ tags:
   - Windows Development
   - Design
 description: "When startup logic, periodic work, shutdown handling, logging, configuration, and dependencies begin to scatter across a Windows desktop app, bringing in .NET Generic Host and BackgroundService can be worth it. This article explains how to organize startup and lifetime, and how to manage graceful shutdown and background processing more cleanly in desktop applications."
+consultation_services:
+  - id: windows-app-development
+    reason: "This is a direct fit for Windows application projects that include background work, periodic processing, reconnect loops, and clean shutdown behavior."
+  - id: technical-consulting
+    reason: "If the main challenge is to redesign responsibility boundaries between UI and background work before implementation, this fits technical consulting and design review well."
 ---
 
 As a Windows tool or resident desktop app grows a little, the work outside the UI starts to increase gradually.
