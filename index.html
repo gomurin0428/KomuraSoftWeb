@@ -327,13 +327,6 @@ lang: ja
             <a class="pill-contact" href="/contact/" data-i18n="consultBadge">お問い合わせ</a>
           </div>
         </nav>
-        <div class="header-actions">
-          <div class="language-switch" role="group" aria-label="表示言語の選択" data-i18n-aria-label="languageToggleLabel">
-            <a class="language-button language-button-link" href="/" data-i18n="langButtonJa" aria-current="page">日本語</a>
-            <a class="language-button language-button-link" href="/en/" data-i18n="langButtonEn">English</a>
-          </div>
-          <a class="pill-contact" href="/contact/" data-i18n="consultBadge">お問い合わせ</a>
-        </div>
       </div>
     </header>
     <main>
@@ -390,10 +383,6 @@ lang: ja
       const mobileMenuToggle = document.querySelector('[data-mobile-menu-toggle]');
       const mobileMenuToggleText = mobileMenuToggle ? mobileMenuToggle.querySelector('.mobile-menu-toggle-text') : null;
 
-      function isMobileViewport() {
-        return window.matchMedia('(max-width: 639px)').matches;
-      }
-
       function updateMobileMenuToggle() {
         if (!mobileMenuToggle) {
           return;
@@ -410,13 +399,6 @@ lang: ja
 
       function setMobileNavOpen(isOpen) {
         if (!siteHeader || !siteNav) {
-          return;
-        }
-
-        if (!isMobileViewport()) {
-          siteHeader.classList.remove('is-mobile-nav-open');
-          siteNav.hidden = false;
-          updateMobileMenuToggle();
           return;
         }
 
@@ -469,7 +451,7 @@ lang: ja
       if (siteNav) {
         siteNav.addEventListener('click', function (event) {
           var clickedLink = event.target instanceof Element ? event.target.closest('a') : null;
-          if (!clickedLink || !isMobileViewport()) {
+          if (!clickedLink) {
             return;
           }
           setMobileNavOpen(false);
@@ -481,7 +463,7 @@ lang: ja
         if (!eventTarget || !eventTarget.closest('.nav-dropdown')) {
           closeDropdowns();
         }
-        if (isMobileViewport() && siteHeader && (!eventTarget || !eventTarget.closest('.site-header'))) {
+        if (siteHeader && (!eventTarget || !eventTarget.closest('.site-header'))) {
           setMobileNavOpen(false);
         }
       });
@@ -492,9 +474,6 @@ lang: ja
         }
       });
 
-      window.addEventListener('resize', function () {
-        setMobileNavOpen(siteHeader ? siteHeader.classList.contains('is-mobile-nav-open') : false);
-      });
       updateMobileMenuToggle();
       setMobileNavOpen(false);
     })();
