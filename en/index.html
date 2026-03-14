@@ -992,6 +992,19 @@ permalink: /en/
         }
       }
 
+      function syncMobileNavVisibility() {
+        if (!siteHeader || !siteNav) {
+          return;
+        }
+
+        if (!isMobileViewport()) {
+          siteNav.style.display = '';
+          return;
+        }
+
+        siteNav.style.display = siteHeader.classList.contains('is-mobile-nav-open') ? 'flex' : 'none';
+      }
+
       function applyLanguage(lang) {
         const dictionary = translations[lang];
         if (!dictionary) {
@@ -1089,6 +1102,7 @@ permalink: /en/
         siteHeader.classList.remove('is-mobile-nav-open');
         closeDropdowns();
         updateMobileMenuToggle();
+        syncMobileNavVisibility();
       }
 
       navDropdowns.forEach(function (dropdown) {
@@ -1120,12 +1134,13 @@ permalink: /en/
             siteHeader.classList.add('is-mobile-nav-open');
           }
           updateMobileMenuToggle();
+          syncMobileNavVisibility();
         });
       }
 
       if (siteNav) {
         siteNav.addEventListener('click', function (event) {
-          var clickedLink = event.target.closest('a');
+          var clickedLink = event.target instanceof Element ? event.target.closest('a') : null;
           if (!clickedLink || !isMobileViewport()) {
             return;
           }
@@ -1134,10 +1149,11 @@ permalink: /en/
       }
 
       document.addEventListener('click', function (event) {
-        if (!event.target.closest('.nav-dropdown')) {
+        var eventTarget = event.target instanceof Element ? event.target : null;
+        if (!eventTarget || !eventTarget.closest('.nav-dropdown')) {
           closeDropdowns();
         }
-        if (isMobileViewport() && siteHeader && !event.target.closest('.site-header')) {
+        if (isMobileViewport() && siteHeader && (!eventTarget || !eventTarget.closest('.site-header'))) {
           closeMobileNav();
         }
       });
@@ -1152,10 +1168,14 @@ permalink: /en/
       window.addEventListener('resize', function () {
         if (!isMobileViewport()) {
           closeMobileNav();
+          return;
         }
+
+        syncMobileNavVisibility();
       });
 
       applyLanguage('{{ page.lang | default: "ja" }}');
+      syncMobileNavVisibility();
     })();
   </script>
 </body>
