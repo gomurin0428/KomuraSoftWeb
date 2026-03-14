@@ -1,14 +1,8 @@
 <script>
   (() => {
-    const mobileMenuLabels = {
-      open: 'Menu',
-      close: 'Close'
-    };
-
     const siteHeader = document.querySelector('.site-header');
     const siteNav = document.querySelector('.site-nav');
     const mobileMenuToggle = document.querySelector('[data-mobile-menu-toggle]');
-    const mobileMenuToggleText = mobileMenuToggle ? mobileMenuToggle.querySelector('.mobile-menu-toggle-text') : null;
 
     if (!siteHeader || !siteNav || !mobileMenuToggle) {
       return;
@@ -16,12 +10,7 @@
 
     function updateMobileMenuToggle() {
       const isOpen = siteHeader.classList.contains('is-mobile-nav-open');
-      const label = isOpen ? mobileMenuLabels.close : mobileMenuLabels.open;
-      mobileMenuToggle.setAttribute('aria-label', label);
       mobileMenuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      if (mobileMenuToggleText) {
-        mobileMenuToggleText.textContent = label;
-      }
     }
 
     function setMobileNavOpen(isOpen) {
