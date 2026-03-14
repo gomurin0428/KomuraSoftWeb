@@ -13,6 +13,11 @@ tags:
   - Design
 author: Go Komura
 description: "A practical guide to FileSystemWatcher that explains missed events, duplicate notifications, completion-detection traps, rescans, atomic claims, and idempotency in file-based integration."
+consultation_services:
+  - id: windows-app-development
+    reason: "FileSystemWatcher-based monitoring and file-integration tools connect naturally to practical Windows application work."
+  - id: technical-consulting
+    reason: "If the main task is to design around missed events, rescans, and completion detection before implementation, this also fits technical consulting and design review."
 ---
 
 `FileSystemWatcher` is one of the first APIs people reach for when monitoring file changes on Windows from .NET.

@@ -6,6 +6,11 @@ translation_key: file-integration-locking-best-practices-komurasoft-style
 tags: [ファイル連携, 排他制御, 設計, Windows開発]
 author: Go Komura
 description: "ファイル連携の排他制御を、ファイルロック、原子的 claim、temp -> rename、idempotency の観点から整理し、共有フォルダ連携で事故を避ける設計をまとめます。"
+consultation_services:
+  - id: windows-app-development
+    reason: "共有フォルダ連携や夜間バッチを含む Windows アプリ開発では、排他制御の設計がそのまま実装品質に効きます。"
+  - id: technical-consulting
+    reason: "ロック、原子的 claim、idempotency の責務分割を先に整理したい場合は、技術相談・設計レビューとして扱えます。"
 ---
 
 ファイル連携の排他制御は、共有フォルダや夜間バッチ、別プロセス連携でほぼ必ず問題になります。

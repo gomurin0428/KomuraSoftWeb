@@ -7,6 +7,9 @@ permalink: /en/blog/2026/02/22/000-what-is-hcp-chart-and-making-hcp-chart-skill/
 tags: [HCP, Codex, SVG, Python, Design]
 author: Go Komura
 description: "An introduction to HCP charts and a practical walkthrough of how MakingHCPChartSkill turns HCP-DSL into deterministic SVG, including the basic idea, repository layout, hands-on steps, and how to read the results."
+consultation_services:
+  - id: technical-consulting
+    reason: "This article is most closely related to technical consulting and design review, where visualizing structure and flow is valuable."
 ---
 
 # What an HCP Chart Is - How to Use MakingHCPChartSkill to Turn HCP-DSL into Deterministic SVG

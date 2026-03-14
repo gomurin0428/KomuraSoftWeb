@@ -7,6 +7,11 @@ permalink: /en/blog/2026/01/31/000-sta-mta-com-relationship/
 tags: [COM, Windows Development, STA, MTA, Threading]
 author: Go Komura
 description: "A practical introduction to COM STA/MTA covering the apartment model, UI threads, message loops, marshaling, and the kind of hang patterns that appear in Windows development."
+consultation_services:
+  - id: technical-consulting
+    reason: "Clarifying STA / MTA, message loops, and marshaling usually belongs to design review before the structure hardens."
+  - id: legacy-asset-migration
+    reason: "These COM threading concerns are also common in legacy-asset migration work where old boundaries still matter."
 ---
 
 # COM STA/MTA Basics - Threading Models and How to Avoid Hangs

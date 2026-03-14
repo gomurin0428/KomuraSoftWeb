@@ -12,6 +12,11 @@ tags:
   - 異常系テスト
   - ハンドルリーク
 description: "Application Verifier とは何かを、Handles、Heaps、Low Resource Simulation、!htrace を使った Windows の異常系テスト基盤づくりとあわせて整理します。"
+consultation_services:
+  - id: bug-investigation
+    reason: "Application Verifier や異常系テスト基盤は、障害の再現と原因特定を進める不具合調査・原因解析 の中心的なテーマです。"
+  - id: technical-consulting
+    reason: "異常系テストや観測点をどこまで設計へ織り込むべきか整理したい場合は、技術相談・設計レビューとして検討できます。"
 ---
 
 Application Verifier は、Windows のネイティブコードや Win32 境界で起きる異常を前倒しで表面化させたいときに有力なツールです。

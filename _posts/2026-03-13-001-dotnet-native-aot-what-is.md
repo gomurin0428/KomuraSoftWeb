@@ -10,6 +10,11 @@ tags:
   - 発行
   - 設計
 description: "Native AOT とは何かを、JIT、ReadyToRun、self-contained、single-file、trimming、source generator との違いから整理し、向いているケースと厳しいケースを実務目線でまとめます。"
+consultation_services:
+  - id: windows-app-development
+    reason: "配布形態、起動特性、制約込みで .NET アプリの作り方を考える話なので、Windowsアプリ開発 に近いテーマです。"
+  - id: technical-consulting
+    reason: "Native AOT を採るべきかどうかを設計方針として見極めたい場合は、技術相談・設計レビューとして整理できます。"
 ---
 
 前に [C# を Native AOT でネイティブ DLL にする方法 - UnmanagedCallersOnly で C/C++ から呼び出す](https://comcomponent.com/blog/2026/03/12/003-csharp-native-aot-native-dll-from-c-cpp/) を書いたのですが、あれは少し順番が逆でした。  

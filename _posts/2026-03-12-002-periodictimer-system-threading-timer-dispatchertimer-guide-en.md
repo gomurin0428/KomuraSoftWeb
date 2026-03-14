@@ -11,6 +11,11 @@ tags:
   - Timer
   - Design
 description: "A practical guide to choosing between PeriodicTimer, System.Threading.Timer, and DispatcherTimer, including async processing, ThreadPool callbacks, and WPF UI updates."
+consultation_services:
+  - id: windows-app-development
+    reason: "Timer choices quickly become implementation-critical in Windows applications that mix UI updates and background work."
+  - id: technical-consulting
+    reason: "If the real question is how to separate responsibilities between PeriodicTimer, ThreadPool callbacks, and UI timers, this also fits technical consulting and design review."
 ---
 
 In the previous article, [A Practical Guide to Soft Real-Time on Windows - A Checklist for Reducing Latency](/en/blog/2026/03/09/000-windows-soft-realtime-practical-guide-natural/), I organized how to avoid `Sleep`-driven periodic loops and when to think in terms of event-driven design or waitable timers.

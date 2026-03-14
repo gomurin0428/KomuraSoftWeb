@@ -6,6 +6,9 @@ translation_key: what-is-hcp-chart-and-making-hcp-chart-skill
 tags: [HCP, Codex, SVG, Python, 設計]
 author: Go Komura
 description: "HCPチャートとは何かを説明しつつ、MakingHCPChartSkill で HCP-DSL を決定的 SVG に変換する流れ、読み方、使い方をまとめます。"
+consultation_services:
+  - id: technical-consulting
+    reason: "設計や処理の流れを見える形で整理したいテーマなので、技術相談・設計レビューの文脈で活きやすい記事です。"
 ---
 
 # HCPチャートとは何か - HCP-DSL を決定的 SVG に変換する MakingHCPChartSkill の使い方

@@ -12,6 +12,11 @@ tags:
   - Handle Leak
   - Logging Design
 description: "A practical case study on how to investigate a Windows application that crashes only after long-running operation, using an industrial camera control app example to explain how to find handle leaks and what logs matter for recurrence prevention."
+consultation_services:
+  - id: bug-investigation
+    reason: "This is a strong fit for bug investigation and root-cause analysis because it focuses on long-run failures that are hard to reproduce."
+  - id: windows-app-development
+    reason: "It also connects to Windows application work where logging and operational observability need to be improved in the product itself."
 ---
 
 When a Windows application suddenly crashes only after running for a long time, it is very common to suspect a memory leak first.  

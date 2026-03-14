@@ -7,6 +7,11 @@ permalink: /en/blog/2026/03/09/000-windows-soft-realtime-practical-guide-natural
 tags: [Windows Development, Soft Real-Time, Design, Measurement]
 author: Go Komura
 description: "A checklist-style guide to soft real-time on ordinary Windows, covering waiting strategy, priorities, timers, power settings, queue design, and measurement."
+consultation_services:
+  - id: windows-app-development
+    reason: "This connects directly to Windows application projects where latency, timing behavior, and long-running operation matter in practice."
+  - id: technical-consulting
+    reason: "If the first step is to sort out waiting strategy, priorities, and measurement before implementation changes, this also fits technical consulting and design review."
 ---
 
 # A Practical Guide to Soft Real-Time on Windows - A Checklist for Reducing Latency

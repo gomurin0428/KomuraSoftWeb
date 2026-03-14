@@ -7,6 +7,11 @@ permalink: /en/blog/2026/03/09/001-csharp-async-await-best-practices/
 tags: [C#, async/await, .NET, Design]
 author: Go Komura
 description: "A practical guide to C# async/await, organized around decision tables for I/O-bound work, CPU-bound work, Task.Run, ConfigureAwait(false), fire-and-forget, and concurrency control."
+consultation_services:
+  - id: windows-app-development
+    reason: "For Windows applications with UI, background work, and I/O, async/await decisions quickly become implementation-critical."
+  - id: technical-consulting
+    reason: "If the real need is to review how Task.Run, ConfigureAwait, and fire-and-forget fit into the structure, this also fits technical consulting and design review."
 ---
 
 C# `async` / `await` is something we use all the time, but in real projects the confusing part is usually not the syntax itself.  

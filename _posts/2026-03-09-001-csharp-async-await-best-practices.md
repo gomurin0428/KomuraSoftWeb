@@ -6,6 +6,11 @@ translation_key: csharp-async-await-best-practices
 tags: [C#, async/await, .NET, 設計]
 author: Go Komura
 description: "C# async/await のベストプラクティスを、I/O 待ち、CPU 計算、Task.Run、ConfigureAwait(false)、fire-and-forget の判断表つきで整理します。"
+consultation_services:
+  - id: windows-app-development
+    reason: "UI、バックグラウンド処理、I/O を含む Windows アプリでは、async/await の使い分けが実装品質に直結します。"
+  - id: technical-consulting
+    reason: "Task.Run や ConfigureAwait の判断を責務分割とあわせて整理したい場合は、技術相談・設計レビューにつながります。"
 ---
 
 C# の `async` / `await` は日常的に使いますが、実務で迷いやすいのは構文そのものより、**どの場面でどの書き方を選ぶべきか** です。

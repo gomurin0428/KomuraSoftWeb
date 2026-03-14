@@ -11,6 +11,11 @@ tags:
   - ハンドルリーク
   - ログ設計
 description: "Windows アプリが長時間運転後に突然落ちるときの見方を、産業用カメラ制御アプリの事例を使って、ハンドルリークの見つけ方とログ設計の観点から整理します。"
+consultation_services:
+  - id: bug-investigation
+    reason: "長期稼働後にだけ落ちる障害の切り分けは、不具合調査・原因解析 として非常に相性がよいテーマです。"
+  - id: windows-app-development
+    reason: "ログ設計や運用観測を含めて Windows アプリ側の作りを見直したい場合は、Windowsアプリ開発 の相談にもつながります。"
 ---
 
 Windows アプリが長時間運転後に突然落ちるとき、最初にメモリリークを疑いたくなることはかなり多いです。  

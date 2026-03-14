@@ -6,6 +6,11 @@ translation_key: cpp-cli-wrapper-for-native-dlls
 tags: [C++/CLI, C#, Windows開発, ネイティブ連携]
 author: Go Komura
 description: "C# からネイティブ DLL を呼び出すときに、P/Invoke で十分なケースと C++/CLI ラッパーが有力になるケースを、所有権や例外、C++ 型の扱いまで含めて整理します。"
+consultation_services:
+  - id: legacy-asset-migration
+    reason: "既存 DLL や C++ 資産を C# 側へ安全につなぐ話なので、既存資産活用・移行支援 と相性がよいテーマです。"
+  - id: technical-consulting
+    reason: "P/Invoke と C++/CLI の境界判断を先に整理したい段階なら、技術相談・設計レビューとして比較できます。"
 ---
 
 Windows の既存資産や既存 DLL を C# から使いたい、という要件はかなりよくあります。

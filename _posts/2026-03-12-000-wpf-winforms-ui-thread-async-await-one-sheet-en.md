@@ -1,6 +1,11 @@
 ---
 title: "WPF / WinForms async/await and the UI Thread in One Sheet - Where Continuations Return, Dispatcher, ConfigureAwait, and Why .Result / .Wait() Get Stuck"
 description: "A practical guide to the relationship between async/await and the UI thread in WPF and WinForms, covering continuation destinations after await, Dispatcher / Invoke, ConfigureAwait(false), and why .Result / .Wait() freeze the UI."
+consultation_services:
+  - id: windows-app-development
+    reason: "UI-thread behavior in WPF and WinForms is one of the most practical and failure-prone topics in Windows application work."
+  - id: technical-consulting
+    reason: "If the goal is to review responsibility boundaries between UI and background work before changing code, this also fits technical consulting and design review."
 date: 2026-03-12T10:00:00+09:00
 lang: en
 translation_key: wpf-winforms-ui-thread-async-await-one-sheet

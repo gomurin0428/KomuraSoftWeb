@@ -6,6 +6,11 @@ translation_key: media-foundation-why-it-feels-like-com
 tags: [Media Foundation, COM, C++, Windows開発]
 author: Go Komura
 description: "Media Foundation とは何かを、COM、HRESULT、IMFSourceReader、MFT など Windows メディア API の基本用語とあわせて、最初に押さえる順番で整理します。"
+consultation_services:
+  - id: windows-app-development
+    reason: "Media Foundation、COM、HRESULT を含む Windows メディア処理は、Windowsアプリ開発 として扱う実装テーマに近いです。"
+  - id: technical-consulting
+    reason: "COM 的な境界や初期化順序を先に整理したい場合は、技術相談・設計レビューとして設計面から入れます。"
 ---
 
 Media Foundation を触り始めると、「Windows の動画や音声 API を使っているはずなのに、急に COM の話が増えた」と感じやすいです。

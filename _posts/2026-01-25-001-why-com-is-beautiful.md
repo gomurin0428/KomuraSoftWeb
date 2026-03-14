@@ -6,6 +6,11 @@ translation_key: why-com-is-beautiful
 tags: [COM, ActiveX, Windows開発]
 author: Go Komura
 description: "COM とは何かを、Windows COM のインターフェース設計、IUnknown、GUID、バイナリ互換性の観点から整理し、今でも通用する理由を解説します。"
+consultation_services:
+  - id: legacy-asset-migration
+    reason: "COM の設計や互換性を理解することは、既存 Windows 資産をどう活かすかを考える入口として相性がよいです。"
+  - id: technical-consulting
+    reason: "IUnknown、GUID、境界設計の見方を踏まえて方針整理したい場合は、技術相談・設計レビューにつながります。"
 ---
 
 # COM とは何か - Windows COM の設計が今でも美しい理由

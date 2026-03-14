@@ -11,6 +11,11 @@ tags:
   - Windows Development
   - Industrial Camera
 description: "A practical guide to diagnosing industrial-camera TCP pauses that last several seconds, using packet loss, RTO behavior, RFC1323 timestamps, and Wireshark evidence."
+consultation_services:
+  - id: bug-investigation
+    reason: "This is directly about evidence-driven diagnosis of difficult communication pauses, which fits bug investigation and root-cause analysis."
+  - id: windows-app-development
+    reason: "It also connects to Windows application work that involves equipment communication, monitoring, and recovery design."
 ---
 
 # When Industrial Camera TCP Traffic Stops for Several Seconds - How to Narrow Down Retransmission Waits with RFC1323 Timestamps

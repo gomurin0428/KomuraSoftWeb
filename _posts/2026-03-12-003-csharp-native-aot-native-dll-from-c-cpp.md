@@ -12,6 +12,11 @@ tags:
   - Windows開発
   - ネイティブ連携
 description: "C# のクラスライブラリを Native AOT でネイティブ DLL として発行し、UnmanagedCallersOnly のエントリポイントを C/C++ から呼び出す構成を、使いどころと実装パターンと注意点から整理します。"
+consultation_services:
+  - id: windows-app-development
+    reason: "C# と C/C++ の境界を実装するテーマなので、Windowsアプリ開発 としての設計・実装相談に直結します。"
+  - id: legacy-asset-migration
+    reason: "既存ネイティブ資産と .NET の橋をどう作るかという点で、既存資産活用・移行支援 とも相性がよいです。"
 ---
 
 前回の [C# からネイティブ DLL を使うなら C++/CLI ラッパーが有力な理由](https://comcomponent.com/blog/2026/03/07/000-cpp-cli-wrapper-for-native-dlls/) では、C# から C++ を呼ぶときの境界面を整理しました。今回は向きを逆にして、C/C++ から C# を呼ぶ話です。

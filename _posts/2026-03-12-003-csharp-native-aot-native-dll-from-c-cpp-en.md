@@ -7,6 +7,11 @@ permalink: /en/blog/2026/03/12/003-csharp-native-aot-native-dll-from-c-cpp/
 author: Go Komura
 tags: [C#, .NET, Native AOT, C++, Windows Development, Native Interop]
 description: "A practical guide to publishing a C# class library as a native DLL with Native AOT and exposing UnmanagedCallersOnly entry points that can be called from C or C++."
+consultation_services:
+  - id: windows-app-development
+    reason: "This connects directly to Windows application work that has to build and maintain a boundary between C# and native code."
+  - id: legacy-asset-migration
+    reason: "It also fits staged migration work where existing native assets still need a practical bridge to newer .NET code."
 ---
 
 # How to Turn C# into a Native DLL with Native AOT - Calling UnmanagedCallersOnly Exports from C/C++

@@ -6,6 +6,11 @@ translation_key: hello-world
 permalink: /en/blog/2026/01/25/000-hello-world/
 tags: [Announcement]
 description: "Announcing the launch of the KomuraSoft technical blog. We will be sharing practical knowledge about Windows development, C# / .NET, COM, software design, and development tools."
+consultation_services:
+  - id: windows-app-development
+    reason: "As an overview of the practical themes this blog covers, this article naturally connects to Windows application work and implementation planning."
+  - id: technical-consulting
+    reason: "If the main need is to clarify which technical direction to take before implementation starts, this also fits technical consulting and design review."
 ---
 
 KomuraSoft has launched its technical blog.

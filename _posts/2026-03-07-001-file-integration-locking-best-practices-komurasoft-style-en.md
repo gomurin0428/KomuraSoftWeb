@@ -7,6 +7,11 @@ permalink: /en/blog/2026/03/07/001-file-integration-locking-best-practices-komur
 tags: [File Integration, Concurrency Control, Design, Windows Development]
 author: Go Komura
 description: "A practical guide to file-integration concurrency control, organized around file locks, atomic claims, temp-to-rename publication, and idempotency."
+consultation_services:
+  - id: windows-app-development
+    reason: "For Windows applications that depend on shared-folder or batch-style integration, this kind of concurrency design connects directly to implementation work."
+  - id: technical-consulting
+    reason: "If the need is to clarify locking, atomic claims, and idempotency responsibilities before coding, this also fits technical consulting and design review."
 ---
 
 # Safe File Integration Locking - Best Practices for File Locks, Atomic Claims, and Idempotent Processing

@@ -6,6 +6,11 @@ translation_key: com-case-study-32bit-to-64bit
 tags: [COM, Windows開発, 32bit, 64bit]
 author: Go Komura
 description: "32bit アプリから 64bit DLL を直接呼び出せないときに、COM ブリッジで連携する考え方を、Windows の制約、構成、処理の流れとあわせて整理します。"
+consultation_services:
+  - id: legacy-asset-migration
+    reason: "32bit 資産を残しながら 64bit 側へ橋をかける話なので、既存資産活用・移行支援 に直結するテーマです。"
+  - id: technical-consulting
+    reason: "COM ブリッジやプロセス境界の切り方を先に整理したい段階なら、技術相談・設計レビューとして比較検討できます。"
 ---
 
 # 32bit アプリから 64bit DLL を呼び出す方法 - COM ブリッジが役立つケーススタディ

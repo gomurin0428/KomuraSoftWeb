@@ -7,6 +7,11 @@ permalink: /en/blog/2026/03/09/002-media-foundation-why-it-feels-like-com/
 tags: [Media Foundation, COM, C++, Windows Development]
 author: Go Komura
 description: "A practical introduction to Media Foundation that explains the basic terms of Windows media APIs together with COM concepts such as HRESULT, IMFSourceReader, IMFTransform, GUIDs, and activation objects."
+consultation_services:
+  - id: windows-app-development
+    reason: "This is closely related to Windows application work that touches Media Foundation, COM-style boundaries, and real media-processing implementation."
+  - id: technical-consulting
+    reason: "If the main need is to sort out COM-flavored boundaries and initialization order before coding, this also fits technical consulting and design review."
 ---
 
 When you first start touching Media Foundation, it often feels like this:

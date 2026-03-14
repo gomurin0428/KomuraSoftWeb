@@ -7,6 +7,11 @@ permalink: /en/blog/2026/01/25/001-why-com-is-beautiful/
 tags: [COM, ActiveX, Windows Development]
 author: Go Komura
 description: "This article explains what COM is from the viewpoints of Windows COM interface design, IUnknown, GUIDs, and binary compatibility, and why the model still matters today."
+consultation_services:
+  - id: legacy-asset-migration
+    reason: "Understanding COM design and compatibility is often the first step in deciding how an existing Windows asset should be reused."
+  - id: technical-consulting
+    reason: "If the practical need is to translate COM concepts into boundary and migration decisions, this also fits technical consulting and design review."
 ---
 
 # What COM Is - Why Windows COM Still Feels Beautifully Designed

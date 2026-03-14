@@ -1,6 +1,11 @@
 ---
 title: "WPF / WinForms の async/await と UI スレッドを一枚で整理 - await 後の戻り先、Dispatcher、ConfigureAwait、.Result / .Wait() の詰まりどころ"
 description: "WPF / WinForms の async/await と UI スレッドの関係を、await 後の戻り先、Dispatcher / Invoke、ConfigureAwait(false)、.Result / .Wait() で画面が固まる理由まで一枚で整理します。"
+consultation_services:
+  - id: windows-app-development
+    reason: "WPF / WinForms の UI スレッドと async/await は、Windowsアプリ開発 の実装で最も詰まりやすい論点の一つです。"
+  - id: technical-consulting
+    reason: "UI とバックグラウンド処理の責務や Dispatcher の使い分けを整理したい段階なら、技術相談・設計レビューとして見直せます。"
 date: 2026-03-12T10:00:00+09:00
 lang: ja
 translation_key: wpf-winforms-ui-thread-async-await-one-sheet

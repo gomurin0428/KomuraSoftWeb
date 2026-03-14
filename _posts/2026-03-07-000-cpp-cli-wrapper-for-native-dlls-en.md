@@ -7,6 +7,11 @@ permalink: /en/blog/2026/03/07/000-cpp-cli-wrapper-for-native-dlls/
 tags: [C++/CLI, C#, Windows Development, Native Interop]
 author: Go Komura
 description: "When calling a native DLL from C#, there are cases where P/Invoke is enough and cases where a thin C++/CLI wrapper becomes the cleaner option. This article organizes the boundary around ownership, exceptions, and C++ types."
+consultation_services:
+  - id: legacy-asset-migration
+    reason: "This is directly about how to connect existing native assets to newer C# code without breaking the boundary."
+  - id: technical-consulting
+    reason: "If the main decision is whether the boundary should be P/Invoke or C++/CLI before implementation, this also fits technical consulting and design review."
 ---
 
 # Why a C++/CLI Wrapper Is Often the Best Way to Use a Native DLL from C# - A Practical Comparison with P/Invoke

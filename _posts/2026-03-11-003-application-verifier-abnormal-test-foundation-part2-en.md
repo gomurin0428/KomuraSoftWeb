@@ -13,6 +13,11 @@ tags:
   - Failure-Path Testing
   - Handle Leak
 description: "A practical explanation of Application Verifier and how to use Handles, Heaps, Low Resource Simulation, and tools such as !htrace to build a failure-path testing foundation for Windows applications."
+consultation_services:
+  - id: bug-investigation
+    reason: "Application Verifier and failure-path testing connect directly to bug investigation and root-cause analysis work."
+  - id: technical-consulting
+    reason: "If the main question is how much failure-path testing and observability should be designed in from the start, this also fits technical consulting and design review."
 ---
 
 Application Verifier is a very strong tool when you want to surface strange behavior around Windows native code or Win32 boundaries earlier than normal testing would.

@@ -12,6 +12,11 @@ tags:
   - ファイル連携
   - 設計
 description: "FileSystemWatcher の使い方と注意点を、取りこぼし、重複通知、完了判定の落とし穴、再スキャン、原子的 claim、idempotency の観点から整理します。"
+consultation_services:
+  - id: windows-app-development
+    reason: "FileSystemWatcher を使うファイル連携や監視ツールは、Windowsアプリ開発 の中でも実務でよく出るテーマです。"
+  - id: technical-consulting
+    reason: "取りこぼし対策、再スキャン、完了判定を設計として整理したい場合は、技術相談・設計レビューとして相性がよいです。"
 ---
 
 `FileSystemWatcher` は、Windows 上の .NET でファイル変更を監視するときにまず候補になる API です。

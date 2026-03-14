@@ -7,6 +7,11 @@ permalink: /en/blog/2026/01/25/002-com-case-study-32bit-to-64bit/
 tags: [COM, Windows Development, 32-bit, 64-bit]
 author: Go Komura
 description: "When a 32-bit application cannot directly load a 64-bit DLL, an out-of-process COM bridge is often the cleanest solution. This article walks through the Windows constraint, the architecture, and the call flow."
+consultation_services:
+  - id: legacy-asset-migration
+    reason: "This is directly about bridging a 32-bit legacy asset to newer 64-bit functionality, which is a core staged-migration problem."
+  - id: technical-consulting
+    reason: "If the immediate need is to compare COM bridge options and process boundaries before implementation, this also fits technical consulting and design review."
 ---
 
 # How to Call a 64-bit DLL from a 32-bit Application - A Practical COM Bridge Case Study

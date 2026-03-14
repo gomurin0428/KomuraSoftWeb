@@ -6,6 +6,11 @@ translation_key: windows-soft-realtime-practical-guide-natural
 tags: [Windows開発, ソフトリアルタイム, 設計, 計測]
 author: Go Komura
 description: "Windows ソフトリアルタイムを実現するために、タイマ、待機方法、優先度、電源設定、計測、キュー設計をどう見直すかをチェックリスト形式で整理します。"
+consultation_services:
+  - id: windows-app-development
+    reason: "Windows 上で遅延を抑えたアプリを作るテーマなので、Windowsアプリ開発 の設計・実装相談に直結します。"
+  - id: technical-consulting
+    reason: "待機方法、優先度、計測、キュー設計をどこから見直すべきか整理したい段階なら、技術相談・設計レビューが合います。"
 ---
 
 この記事で扱うのは、特別なリアルタイム拡張を入れた Windows ではなく、**普通の Windows 10 / 11** です。

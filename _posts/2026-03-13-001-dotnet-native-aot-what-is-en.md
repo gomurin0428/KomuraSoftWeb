@@ -12,6 +12,11 @@ tags:
   - Architecture
 author: Go Komura
 description: "A practical explanation of what Native AOT is in .NET, how it differs from JIT, ReadyToRun, self-contained deployment, single-file publishing, and trimming, and where it fits in real work."
+consultation_services:
+  - id: windows-app-development
+    reason: "This is closely tied to Windows application work where publishing model, startup behavior, and deployment constraints matter."
+  - id: technical-consulting
+    reason: "If the main task is to decide whether Native AOT is actually the right architectural choice, this also fits technical consulting and design review."
 ---
 
 I already wrote about using Native AOT to let C/C++ call into C# in [How to Build a Native DLL from C# with Native AOT - Calling It from C/C++ with UnmanagedCallersOnly](https://comcomponent.com/en/blog/2026/03/12/003-csharp-native-aot-native-dll-from-c-cpp/).  

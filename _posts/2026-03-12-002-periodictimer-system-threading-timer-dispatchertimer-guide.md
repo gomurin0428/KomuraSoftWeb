@@ -10,6 +10,11 @@ tags:
   - タイマー
   - 設計
 description: PeriodicTimer / System.Threading.Timer / DispatcherTimer の違いと、async 処理、ThreadPool callback、WPF の UI 更新でどう使い分けるかを整理します。
+consultation_services:
+  - id: windows-app-development
+    reason: "定期実行や UI 更新、バックグラウンド処理を含む Windowsアプリ開発 では、タイマー選定がそのまま実装品質に効きます。"
+  - id: technical-consulting
+    reason: "PeriodicTimer と DispatcherTimer の責務をどこで分けるか整理したい段階なら、技術相談・設計レビューとして検討できます。"
 ---
 
 前回の [普通のWindowsでソフトリアルタイムをできるだけ実現するための実践ガイド - まず見るチェックリスト](https://comcomponent.com/blog/2026/03/09/000-windows-soft-realtime-practical-guide-natural/) では、`Sleep` 任せの周期ループを避け、イベント駆動や waitable timer を使う話を整理しました。

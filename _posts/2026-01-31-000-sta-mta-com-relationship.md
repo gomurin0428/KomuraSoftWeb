@@ -6,6 +6,11 @@ translation_key: sta-mta-com-relationship
 tags: [COM, Windows開発, STA, MTA, スレッド]
 author: Go Komura
 description: "COM STA/MTA の基礎知識を、Apartment Model、UI スレッド、メッセージループ、マーシャリング、ハングを避ける考え方まで含めて整理します。"
+consultation_services:
+  - id: technical-consulting
+    reason: "STA / MTA、メッセージループ、マーシャリングの整理は、実装前の責務分割やスレッド境界レビューに直結します。"
+  - id: legacy-asset-migration
+    reason: "COM を含む既存資産を扱うときに避けにくい基礎なので、既存資産活用・移行支援 の相談とも相性がよいです。"
 ---
 
 # COM STA/MTA の基礎知識 - スレッドモデルとハングを避ける考え方
