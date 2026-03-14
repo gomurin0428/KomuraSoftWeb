@@ -1,5 +1,6 @@
 ---
 ---
+{% assign lang = "ja" %}
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -119,19 +120,7 @@
 </head>
 <body>
   <div class="page">
-    <header class="site-header">
-      <div class="header-inner">
-        <a href="/" class="brand">
-          <img src="/logo.png" alt="KomuraSoft" class="brand-logo" style="width: 2.5rem; height: 2.5rem; max-width: 2.5rem; max-height: 2.5rem;">
-          <span class="brand-name">KomuraSoft</span>
-        </a>
-        <nav class="site-nav">
-          <a class="nav-link" href="/">ホーム</a>
-          <a class="nav-link" href="/blog/">ブログ</a>
-        </nav>
-        <a class="pill-contact" href="https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform?usp=dialog" target="_blank" rel="noopener">問い合わせる</a>
-      </div>
-    </header>
+    {% include site-header.html lang=lang ja_url="/" %}
     <main>
       <div class="privacy-container">
         <h1 class="section-title">プライバシーポリシー</h1>
@@ -209,5 +198,6 @@
       </div>
     </footer>
   </div>
+  {% include site-header-script.html %}
 </body>
 </html>

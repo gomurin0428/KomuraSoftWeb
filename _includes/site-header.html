@@ -1,0 +1,50 @@
+{% assign header_lang = include.lang | default: page.lang | default: "ja" %}
+{% assign header_links = site.data.homepage_links[header_lang] %}
+{% if header_lang == "en" %}
+  {% assign header_home_url = include.home_url | default: "/en/" %}
+  {% assign header_ja_url = include.ja_url | default: "/" %}
+  {% assign header_en_url = include.en_url | default: "/en/" %}
+  {% assign header_nav_label = "Primary navigation" %}
+  {% assign header_lang_label = "Language selection" %}
+  {% assign header_menu_label = "Menu" %}
+  {% assign header_ja_label = "Japanese" %}
+{% else %}
+  {% assign header_home_url = include.home_url | default: "/" %}
+  {% assign header_ja_url = include.ja_url | default: "/" %}
+  {% assign header_en_url = include.en_url %}
+  {% assign header_nav_label = "主要ナビゲーション" %}
+  {% assign header_lang_label = "表示言語の選択" %}
+  {% assign header_menu_label = "メニュー" %}
+  {% assign header_ja_label = "日本語" %}
+{% endif %}
+<header class="site-header">
+  <div class="header-inner">
+    <a href="{{ header_home_url }}" class="brand">
+      <img src="/logo-ui.jpg" alt="KomuraSoft" class="brand-logo" style="width: 2.5rem; height: 2.5rem; max-width: 2.5rem; max-height: 2.5rem;">
+      <span class="brand-name">KomuraSoft</span>
+    </a>
+    <button type="button" class="mobile-menu-toggle" data-mobile-menu-toggle aria-expanded="false" aria-controls="site-nav-{{ header_lang }}" aria-label="{{ header_menu_label }}">
+      <span class="mobile-menu-toggle-bars" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+      <span class="mobile-menu-toggle-text">{{ header_menu_label }}</span>
+    </button>
+    <nav class="site-nav" id="site-nav-{{ header_lang }}" aria-label="{{ header_nav_label }}">
+      {% for item in header_links %}
+      <a class="nav-link" href="{{ item.url }}">{{ item.title }}</a>
+      {% endfor %}
+      <div class="mobile-nav-actions">
+        <div class="language-switch" role="group" aria-label="{{ header_lang_label }}">
+          <a class="language-button language-button-link" href="{{ header_ja_url }}"{% unless header_lang == "en" %} aria-current="page"{% endunless %}>{{ header_ja_label }}</a>
+          {% if header_lang == "en" or header_en_url %}
+          <a class="language-button language-button-link" href="{{ header_en_url }}"{% if header_lang == "en" %} aria-current="page"{% endif %}>English</a>
+          {% else %}
+          <span class="language-button is-disabled">English</span>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>

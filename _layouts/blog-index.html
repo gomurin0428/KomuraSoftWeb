@@ -259,23 +259,7 @@
 </head>
 <body>
   <div class="page">
-    <header class="site-header">
-      <div class="header-inner">
-        <a href="/" class="brand">
-          <img src="/logo-ui.jpg" alt="KomuraSoft" class="brand-logo" style="width: 2.5rem; height: 2.5rem; max-width: 2.5rem; max-height: 2.5rem;">
-          <span class="brand-name">KomuraSoft</span>
-        </a>
-        <nav class="site-nav">
-          <a class="nav-link" href="/">{{ ui.home_label }}</a>
-          <a class="nav-link" href="{% if is_english %}/en/blog/{% else %}/blog/{% endif %}">{{ ui.blog_label }}</a>
-        </nav>
-        <div class="language-switch" role="group" aria-label="{{ ui.post.language_toggle_label }}">
-          <a class="language-button language-button-link" href="{{ ja_url }}" aria-current="{% unless is_english %}page{% endunless %}">{{ ui.post.language_button_ja }}</a>
-          <a class="language-button language-button-link" href="{{ en_url }}" aria-current="{% if is_english %}page{% endif %}">{{ ui.post.language_button_en }}</a>
-        </div>
-        <a class="pill-contact" href="{{ contact_url }}" target="_blank" rel="noopener">{{ ui.contact_label }}</a>
-      </div>
-    </header>
+    {% include site-header.html lang=lang ja_url=ja_url en_url=en_url %}
     <main>
       <div class="blog-container">
         <h1 class="section-title">{{ ui.list.title }}</h1>
@@ -339,6 +323,7 @@
       </div>
     </footer>
   </div>
+  {% include site-header-script.html %}
   <script>
     (() => {
       const messages = {

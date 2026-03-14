@@ -482,27 +482,7 @@
 </head>
 <body>
   <div class="page">
-    <header class="site-header">
-      <div class="header-inner">
-        <a href="/" class="brand">
-          <img src="/logo-ui.jpg" alt="KomuraSoft" class="brand-logo" style="width: 2.5rem; height: 2.5rem; max-width: 2.5rem; max-height: 2.5rem;">
-          <span class="brand-name">KomuraSoft</span>
-        </a>
-        <nav class="site-nav">
-          <a class="nav-link" href="{{ home_url }}">{{ ui.home_label }}</a>
-          <a class="nav-link" href="{{ blog_url }}">{{ ui.blog_label }}</a>
-        </nav>
-        <div class="language-switch" role="group" aria-label="{{ ui.post.language_toggle_label }}">
-          <a class="language-button language-button-link" href="{{ ja_url }}" aria-current="{% unless lang == 'en' %}page{% endunless %}">{{ ui.post.language_button_ja }}</a>
-          {% if lang == "en" or alternate_post %}
-          <a class="language-button language-button-link" href="{{ en_url }}" aria-current="{% if lang == 'en' %}page{% endif %}">{{ ui.post.language_button_en }}</a>
-          {% else %}
-          <span class="language-button is-disabled">{{ ui.post.language_button_en }}</span>
-          {% endif %}
-        </div>
-        <a class="pill-contact" href="{{ contact_url }}" target="_blank" rel="noopener">{{ ui.contact_label }}</a>
-      </div>
-    </header>
+    {% include site-header.html lang=lang ja_url=ja_url en_url=en_url %}
     <main>
       <article class="blog-container">
         <div class="article-layout">
@@ -584,6 +564,7 @@
     </div>
     <div id="mobile-toc-body" class="mobile-toc-body"></div>
   </section>
+  {% include site-header-script.html %}
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     mermaid.initialize({ startOnLoad: false, theme: 'default' });

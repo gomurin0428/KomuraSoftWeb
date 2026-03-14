@@ -356,35 +356,7 @@
 </head>
 <body>
   <div class="page">
-    <header class="site-header">
-      <div class="header-inner">
-        <a href="{{ home_url }}" class="brand">
-          <img src="/logo-ui.jpg" alt="KomuraSoft" class="brand-logo" style="width: 2.5rem; height: 2.5rem; max-width: 2.5rem; max-height: 2.5rem;">
-          <span class="brand-name">KomuraSoft</span>
-        </a>
-        <nav class="site-nav">
-          <a class="nav-link" href="{{ home_url }}">{{ home_label }}</a>
-          <div class="nav-dropdown">
-            <button type="button" class="nav-link nav-link--with-menu nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="service-menu-{{ lang }}">{{ services_label }}</button>
-            <div class="nav-dropdown-menu" id="service-menu-{{ lang }}">
-              {% for item in service_nav %}
-              <a class="nav-dropdown-item" href="{{ item.url }}">{{ item.title }}</a>
-              {% endfor %}
-            </div>
-          </div>
-          <a class="nav-link" href="{{ blog_url }}">{{ blog_label }}</a>
-        </nav>
-        <div class="language-switch" role="group" aria-label="{% if lang == 'en' %}Language selection{% else %}言語選択{% endif %}">
-          <a class="language-button language-button-link" href="{{ ja_url }}" aria-current="{% unless lang == 'en' %}page{% endunless %}">{% if lang == 'en' %}Japanese{% else %}日本語{% endif %}</a>
-          {% if lang == "en" or alternate_page %}
-          <a class="language-button language-button-link" href="{{ en_url }}" aria-current="{% if lang == 'en' %}page{% endif %}">English</a>
-          {% else %}
-          <span class="language-button is-disabled">English</span>
-          {% endif %}
-        </div>
-        <a class="pill-contact" href="{{ contact_url }}" target="_blank" rel="noopener">{{ contact_label }}</a>
-      </div>
-    </header>
+    {% include site-header.html lang=lang ja_url=ja_url en_url=en_url home_url=home_url %}
     <main>
       <article class="detail-page-shell">
         <div class="detail-page-layout">
@@ -470,49 +442,6 @@
       </div>
     </footer>
   </div>
-  <script>
-    (() => {
-      const navDropdowns = Array.from(document.querySelectorAll('.nav-dropdown'));
-
-      function closeDropdowns() {
-        navDropdowns.forEach((dropdown) => {
-          dropdown.classList.remove('is-open');
-          const toggle = dropdown.querySelector('.nav-dropdown-toggle');
-          if (toggle) {
-            toggle.setAttribute('aria-expanded', 'false');
-          }
-        });
-      }
-
-      navDropdowns.forEach((dropdown) => {
-        const toggle = dropdown.querySelector('.nav-dropdown-toggle');
-        if (!toggle) {
-          return;
-        }
-
-        toggle.addEventListener('click', (event) => {
-          event.preventDefault();
-          const willOpen = !dropdown.classList.contains('is-open');
-          closeDropdowns();
-          if (willOpen) {
-            dropdown.classList.add('is-open');
-            toggle.setAttribute('aria-expanded', 'true');
-          }
-        });
-      });
-
-      document.addEventListener('click', (event) => {
-        if (!event.target.closest('.nav-dropdown')) {
-          closeDropdowns();
-        }
-      });
-
-      document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-          closeDropdowns();
-        }
-      });
-    })();
-  </script>
+  {% include site-header-script.html %}
 </body>
 </html>
