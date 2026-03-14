@@ -45,53 +45,7 @@ permalink: /en/
   <meta name="twitter:image:alt" content="KomuraSoft logo">
   <meta name="twitter:site" content="@komurasoft">
   <meta name="twitter:creator" content="@komurasoft">
-  <style>
-    :root{--color-background:#eff5fb;--color-surface:rgba(255,255,255,.8);--color-border:rgba(47,111,221,.24);--color-text:#142033;--color-text-muted:#2f445e;--color-text-subtle:#5c718b;--color-accent:#2f6fdd;--color-accent-glow:rgba(47,111,221,.28);--color-accent-light:#1d4fbf;--max-width:64rem;--radius-md:1rem;--shadow-glow:0 0 40px var(--color-accent-glow)}
-    *,*::before,*::after{box-sizing:border-box}
-    body{margin:0;min-height:100vh;font-family:'Noto Sans JP','Segoe UI','Hiragino Sans','Meiryo',sans-serif;color:var(--color-text);background-color:var(--color-background);background-image:linear-gradient(145deg,rgba(251,254,255,.88),rgba(243,249,255,.84)),radial-gradient(circle at 12% 18%,rgba(255,255,255,.62),rgba(255,255,255,0)),url('/IMG_7729.PNG');background-position:center,left top,center;background-repeat:no-repeat,no-repeat,no-repeat;background-size:cover,cover,cover;background-attachment:fixed,fixed,fixed}
-    a{color:inherit;text-decoration:none;transition:color .2s ease}
-    a:hover{color:var(--color-accent-light)}
-    h1,h2,h3,h4,p{margin:0}
-    .page{display:flex;flex-direction:column;min-height:100vh;position:relative;z-index:1}
-    .site-header{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(251,254,255,.78);border-bottom:1px solid var(--color-border);box-shadow:0 8px 22px rgba(20,32,51,.08)}
-    .header-inner{max-width:var(--max-width);margin:0 auto;padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:1rem}
-    .brand{display:flex;align-items:center;gap:.75rem;font-weight:600}
-    .brand-name{font-weight:600;letter-spacing:-.01em}
-    .brand-logo{width:2.5rem;height:2.5rem;max-width:2.5rem;max-height:2.5rem;border-radius:.5rem;object-fit:contain}
-    .header-actions{display:flex;align-items:center;gap:.75rem}
-    .mobile-menu-toggle{display:none;align-items:center;justify-content:center;gap:.5rem;border:1px solid var(--color-border);border-radius:999px;padding:.45rem .75rem;background:rgba(255,255,255,.92);color:var(--color-text);font-size:.8125rem;font-weight:600;cursor:pointer}
-    .mobile-menu-toggle-bars{display:inline-flex;flex-direction:column;gap:.2rem}
-    .mobile-menu-toggle-bars span{display:block;width:1rem;height:2px;border-radius:999px;background:currentColor}
-    .mobile-nav-actions{display:none}
-    .site-nav{display:none;align-items:center;flex-wrap:nowrap;flex:1 1 auto;justify-content:center;gap:1.5rem;font-size:.875rem;color:var(--color-text-muted);min-width:0}
-    .nav-link{color:var(--color-text-muted);white-space:nowrap}
-    .nav-dropdown{position:relative}
-    .nav-dropdown-toggle{appearance:none;border:none;background:transparent;font:inherit;padding:0;cursor:pointer}
-    .nav-link--with-menu::after{content:"▾";margin-left:.35rem;font-size:.75em;color:var(--color-text-subtle)}
-    .language-switch{display:flex;align-items:center;gap:.5rem}
-    .language-button{border:1px solid var(--color-border);border-radius:999px;padding:.375rem .75rem;background:transparent;color:var(--color-text-muted);font-size:.8125rem;font-weight:600}
-    .language-button-link{display:inline-flex;align-items:center;justify-content:center}
-    .language-button[aria-current="page"]{background:var(--color-accent);color:#fff;border-color:var(--color-accent)}
-    .pill-contact{display:inline-block;border-radius:999px;border:1px solid var(--color-accent);padding:.375rem .875rem;font-size:.875rem;font-weight:600;color:var(--color-accent-light)}
-    main{flex:1 0 auto}
-    .section{max-width:var(--max-width);margin:0 auto;padding:5rem 1rem}
-    .section--hero{padding-top:6rem;padding-bottom:4rem}
-    .hero-grid{display:grid;gap:2rem;align-items:center}
-    .hero-content{max-width:40rem}
-    .hero-title{font-size:clamp(2.5rem,5vw + 1rem,3.5rem);font-weight:800;letter-spacing:-.02em;line-height:1.2;color:var(--color-text)}
-    .hero-title-accent{background:linear-gradient(135deg,var(--color-accent) 0%,#a78bfa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .hero-text{margin-top:1.5rem;font-size:1.125rem;color:var(--color-text-muted);line-height:1.8}
-    .hero-text strong{color:var(--color-text)}
-    .button-group{margin-top:2rem;display:flex;flex-wrap:wrap;gap:1rem}
-    .button{display:inline-block;border-radius:999px;padding:.875rem 1.75rem;font-size:.9375rem;font-weight:600}
-    .button--primary{background:linear-gradient(135deg,var(--color-accent) 0%,#8b5cf6 100%);color:#fff;box-shadow:var(--shadow-glow)}
-    .button--secondary{border:1px solid var(--color-border);color:var(--color-text);background:rgba(255,255,255,.55)}
-    .hero-support-note{margin-top:1rem;font-size:.95rem;color:var(--color-text-subtle);line-height:1.7}
-    @media (min-width:640px){.site-nav{display:flex}}
-    @media (max-width:639px){.header-inner{align-items:center;flex-wrap:wrap;gap:.5rem;padding:.5rem .5rem}.brand{order:1}.brand-name{display:none}.brand-logo{width:2rem;height:2rem;max-width:2rem;max-height:2rem}.mobile-menu-toggle{display:inline-flex;order:2;margin-left:auto}.header-actions{display:none}.site-nav{display:none;order:3;width:100%;flex-direction:column;align-items:flex-start;gap:.75rem;font-size:.75rem;padding:.85rem;border:1px solid var(--color-border);border-radius:var(--radius-md);background:rgba(255,255,255,.96)}.site-header.is-mobile-nav-open .site-nav{display:flex}.site-nav .nav-link,.nav-dropdown-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;white-space:nowrap}.nav-dropdown{display:flex;flex-direction:column;align-items:flex-start;width:100%}.mobile-nav-actions{display:flex;width:100%;flex-direction:column;gap:.75rem;padding-top:.75rem;border-top:1px solid var(--color-border)}.language-switch{flex-direction:row;flex-shrink:0;gap:.25rem;order:2}.language-button,.pill-contact{padding:.25rem .5rem;font-size:.6875rem;white-space:nowrap}.section{padding:3rem 1rem}.section--hero{padding-top:4rem;padding-bottom:2rem}.hero-title{font-size:clamp(2rem,8vw,2.6rem)}.hero-text{font-size:1rem}}
-  </style>
-  <link rel="preload" href="/komura_soft_single_page.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="/komura_soft_single_page.css"></noscript>
+  <link rel="stylesheet" href="/komura_soft_single_page.css">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17858398153"></script>
   <script>
