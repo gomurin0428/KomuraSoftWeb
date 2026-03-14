@@ -53,6 +53,13 @@ related_pages:
 現象だけでなく、構成・責務・境界の置き方まで含めて問題を見る傾向があります。
 そのため、単発の不具合調査だけでなく、調査しやすい構造に寄せるための設計相談にもつなげやすいのが特徴です。
 
+## 公開プロフィールと代表的な発信先
+
+- GitHub: [gomurin0428](https://github.com/gomurin0428)
+- Representative repository: [COM_BLAS](https://github.com/gomurin0428/COM_BLAS)
+- Representative repository: [COM_BigDecimal](https://github.com/LongTail-Software/COM_BigDecimal)
+- X: [@komurasoft](https://x.com/komurasoft)
+
 ## 保有資格
 
 - 応用情報技術者

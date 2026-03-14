@@ -55,6 +55,13 @@ responsibility boundaries, lifetime design, communication paths, and how the sys
 
 That makes the profile relevant not only to implementation work, but also to design review and investigation-oriented consulting.
 
+## Public profiles and representative links
+
+- GitHub: [gomurin0428](https://github.com/gomurin0428)
+- Representative repository: [COM_BLAS](https://github.com/gomurin0428/COM_BLAS)
+- Representative repository: [COM_BigDecimal](https://github.com/LongTail-Software/COM_BigDecimal)
+- X: [@komurasoft](https://x.com/komurasoft)
+
 ## Certification
 
 - Applied Information Technology Engineer

@@ -60,8 +60,3 @@ The strongest fit is usually in Windows projects that are a little old and a lit
 - the team needs to decide whether COM / ActiveX / OCX assets should be kept, wrapped, or replaced
 - a project needs architectural advice around 32-bit / 64-bit constraints or C++/CLI boundaries
 - there is a long-run failure, rare communication issue, or field-only defect that needs investigation
-
-## Related pages
-
-Sometimes the better next step is to look at the representative profile, concrete case studies, or technical topic pages before contacting us.
-Those pages are linked from the side panel for quick navigation.
