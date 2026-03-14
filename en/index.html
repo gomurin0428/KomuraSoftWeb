@@ -992,17 +992,24 @@ permalink: /en/
         }
       }
 
-      function syncMobileNavVisibility() {
+      function setMobileNavOpen(isOpen) {
         if (!siteHeader || !siteNav) {
           return;
         }
 
         if (!isMobileViewport()) {
-          siteNav.style.display = '';
+          siteHeader.classList.remove('is-mobile-nav-open');
+          siteNav.hidden = false;
+          updateMobileMenuToggle();
           return;
         }
 
-        siteNav.style.display = siteHeader.classList.contains('is-mobile-nav-open') ? 'flex' : 'none';
+        siteHeader.classList.toggle('is-mobile-nav-open', isOpen);
+        siteNav.hidden = !isOpen;
+        if (!isOpen) {
+          closeDropdowns();
+        }
+        updateMobileMenuToggle();
       }
 
       function applyLanguage(lang) {
@@ -1094,17 +1101,6 @@ permalink: /en/
         });
       }
 
-      function closeMobileNav() {
-        if (!siteHeader) {
-          return;
-        }
-
-        siteHeader.classList.remove('is-mobile-nav-open');
-        closeDropdowns();
-        updateMobileMenuToggle();
-        syncMobileNavVisibility();
-      }
-
       navDropdowns.forEach(function (dropdown) {
         var toggle = dropdown.querySelector('.nav-dropdown-toggle');
         if (!toggle) {
@@ -1128,13 +1124,7 @@ permalink: /en/
             return;
           }
 
-          var willOpen = !siteHeader.classList.contains('is-mobile-nav-open');
-          closeMobileNav();
-          if (willOpen) {
-            siteHeader.classList.add('is-mobile-nav-open');
-          }
-          updateMobileMenuToggle();
-          syncMobileNavVisibility();
+          setMobileNavOpen(!siteHeader.classList.contains('is-mobile-nav-open'));
         });
       }
 
@@ -1144,7 +1134,7 @@ permalink: /en/
           if (!clickedLink || !isMobileViewport()) {
             return;
           }
-          closeMobileNav();
+          setMobileNavOpen(false);
         });
       }
 
@@ -1154,28 +1144,22 @@ permalink: /en/
           closeDropdowns();
         }
         if (isMobileViewport() && siteHeader && (!eventTarget || !eventTarget.closest('.site-header'))) {
-          closeMobileNav();
+          setMobileNavOpen(false);
         }
       });
 
       document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
-          closeMobileNav();
-          closeDropdowns();
+          setMobileNavOpen(false);
         }
       });
 
       window.addEventListener('resize', function () {
-        if (!isMobileViewport()) {
-          closeMobileNav();
-          return;
-        }
-
-        syncMobileNavVisibility();
+        setMobileNavOpen(siteHeader ? siteHeader.classList.contains('is-mobile-nav-open') : false);
       });
 
       applyLanguage('{{ page.lang | default: "ja" }}');
-      syncMobileNavVisibility();
+      setMobileNavOpen(false);
     })();
   </script>
 </body>
