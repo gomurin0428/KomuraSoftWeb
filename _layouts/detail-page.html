@@ -258,6 +258,85 @@
     .detail-page-content strong {
       color: var(--color-text);
     }
+    .topic-hub-intro {
+      display: grid;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .topic-hub-grid {
+      display: grid;
+      gap: 1.1rem;
+      margin-top: 1.5rem;
+    }
+    .topic-hub-card {
+      padding: 1.4rem;
+      border: 1px solid var(--color-border);
+      border-radius: calc(var(--radius-md) + 0.1rem);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 248, 252, 0.98));
+      box-shadow: var(--shadow-sm);
+    }
+    .topic-hub-card h3 {
+      margin-top: 0;
+    }
+    .topic-hub-card p:first-of-type {
+      margin-top: 0.55rem;
+    }
+    .topic-hub-points {
+      margin-top: 0.95rem;
+      display: grid;
+      gap: 0.45rem;
+    }
+    .topic-hub-point {
+      display: flex;
+      gap: 0.55rem;
+      color: var(--color-text-muted);
+      line-height: 1.75;
+    }
+    .topic-hub-point::before {
+      content: "•";
+      flex: 0 0 auto;
+      color: var(--color-accent-light);
+      font-weight: 700;
+    }
+    .topic-hub-link-group {
+      margin-top: 1rem;
+    }
+    .topic-hub-link-group-title {
+      margin: 0;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .topic-hub-links {
+      margin-top: 0.65rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+    }
+    .topic-hub-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.2rem;
+      padding: 0.5rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--color-accent-light);
+      font-size: 0.85rem;
+      font-weight: 700;
+      line-height: 1.45;
+      text-decoration: none;
+    }
+    .topic-hub-link:hover,
+    .topic-hub-link:focus-visible {
+      border-color: var(--color-accent);
+      background: #fff;
+      color: var(--color-accent);
+    }
+    .topic-hub-link-secondary {
+      color: var(--color-text);
+    }
     .detail-related-block,
     .detail-page-cta,
     .detail-faq {
@@ -346,6 +425,9 @@
         grid-template-columns: minmax(0, 48rem) minmax(18rem, 22rem);
         align-items: start;
         justify-content: center;
+      }
+      .topic-hub-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
       .detail-page-side {
         position: sticky;
