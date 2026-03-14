@@ -32,6 +32,7 @@ exclude:
   - activex-ocx-keep-wrap-replace-decision-table.md
   - generic-host-backgroundservice-desktop-app.md
   - csharp-native-aot-native-dll-from-c-cpp.md
+  - what-is-com-activex-ocx.md
 
 # Permalink for posts
 permalink: /blog/:year/:month/:day/:title/
