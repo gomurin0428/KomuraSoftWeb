@@ -33,7 +33,7 @@ body {
   background-image:
     linear-gradient(145deg, rgba(251, 254, 255, 0.88), rgba(243, 249, 255, 0.84)),
     radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0)),
-    url('/IMG_7729.PNG');
+    url('/bg-abstract.png');
   background-position: center, left top, center;
   background-repeat: no-repeat, no-repeat, no-repeat;
   background-size: cover, cover, cover;
@@ -933,7 +933,7 @@ p + p {
     background-image:
       linear-gradient(145deg, rgba(251, 254, 255, 0.88), rgba(243, 249, 255, 0.84)),
       radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0)),
-      url('/IMG_7729.PNG');
+      url('/bg-abstract.png');
     background-position: center, left top, center 4.5rem;
     background-repeat: no-repeat, no-repeat, no-repeat;
     background-size: cover, cover, contain;
