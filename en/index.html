@@ -328,6 +328,13 @@ permalink: /en/
             <a class="pill-contact" href="/en/contact/" data-i18n="consultBadge">Contact</a>
           </div>
         </nav>
+        <div class="header-actions">
+          <div class="language-switch" role="group" aria-label="Language selection" data-i18n-aria-label="languageToggleLabel">
+            <a class="language-button language-button-link" href="/" data-i18n="langButtonJa">Japanese</a>
+            <a class="language-button language-button-link" href="/en/" data-i18n="langButtonEn" aria-current="page">English</a>
+          </div>
+          <a class="pill-contact" href="/en/contact/" data-i18n="consultBadge">Contact</a>
+        </div>
       </div>
     </header>
     <main>
@@ -353,6 +360,7 @@ permalink: /en/
           <a class="section-related-link" href="/en/company/">Company</a>
           <a class="section-related-link" href="/en/profile/go-komura/">Go Komura Profile</a>
           <a class="section-related-link" href="/en/contact/">Contact</a>
+          <a class="section-related-link" href="/en/blog/">Blog</a>
         </div>
       </section>
     </main>
@@ -384,6 +392,10 @@ permalink: /en/
       const mobileMenuToggle = document.querySelector('[data-mobile-menu-toggle]');
       const mobileMenuToggleText = mobileMenuToggle ? mobileMenuToggle.querySelector('.mobile-menu-toggle-text') : null;
 
+      function isMobileViewport() {
+        return window.matchMedia('(max-width: 639px)').matches;
+      }
+
       function updateMobileMenuToggle() {
         if (!mobileMenuToggle) {
           return;
@@ -400,6 +412,13 @@ permalink: /en/
 
       function setMobileNavOpen(isOpen) {
         if (!siteHeader || !siteNav) {
+          return;
+        }
+
+        if (!isMobileViewport()) {
+          siteHeader.classList.remove('is-mobile-nav-open');
+          siteNav.hidden = false;
+          updateMobileMenuToggle();
           return;
         }
 
@@ -452,7 +471,7 @@ permalink: /en/
       if (siteNav) {
         siteNav.addEventListener('click', function (event) {
           var clickedLink = event.target instanceof Element ? event.target.closest('a') : null;
-          if (!clickedLink) {
+          if (!clickedLink || !isMobileViewport()) {
             return;
           }
           setMobileNavOpen(false);
@@ -464,7 +483,7 @@ permalink: /en/
         if (!eventTarget || !eventTarget.closest('.nav-dropdown')) {
           closeDropdowns();
         }
-        if (siteHeader && (!eventTarget || !eventTarget.closest('.site-header'))) {
+        if (isMobileViewport() && siteHeader && (!eventTarget || !eventTarget.closest('.site-header'))) {
           setMobileNavOpen(false);
         }
       });
@@ -473,6 +492,10 @@ permalink: /en/
         if (event.key === 'Escape') {
           setMobileNavOpen(false);
         }
+      });
+
+      window.addEventListener('resize', function () {
+        setMobileNavOpen(siteHeader ? siteHeader.classList.contains('is-mobile-nav-open') : false);
       });
 
       updateMobileMenuToggle();
