@@ -500,20 +500,12 @@ lang: ja
         <div class="case-studies-card">
           <h2 class="section-title" data-i18n="caseStudiesHeading">技術事例</h2>
           <p class="section-description" data-i18n="caseStudiesDescription">再現しにくい障害の調査、長期稼働時の不具合解析、再発防止のためのログ設計・異常系テスト基盤の整備に対応しています。</p>
-          <p class="case-studies-note" data-i18n="caseStudiesNote">※ 顧客名・製品名は非公開です。内容は特定されない形に要約しています。</p>
-          <div class="case-study-list">
-            <article class="case-study-item">
-              <h3 class="case-study-title" data-i18n="caseStudy1Title">まれに数秒止まる通信遅延の原因を特定</h3>
-              <p class="case-study-body" data-i18n="caseStudy1Body">産業用カメラ制御アプリとホストの通信で、まれに数秒間通信が止まる事象を調査。パケットロスにより発生した再送待ちの遅延が原因と見抜き、RFC1323 のタイムスタンプ機能を有効にすることで、待機時間を最小限に抑えました。</p>
-            </article>
-            <article class="case-study-item">
-              <h3 class="case-study-title" data-i18n="caseStudy2Title">長期稼働後のクラッシュをハンドルリークと特定</h3>
-              <p class="case-study-body" data-i18n="caseStudy2Body">産業用カメラ制御アプリが約1か月の連続稼働後に突然落ちる事象を調査。ハンドルリークが原因と判明し、再発時に原因を追いやすくするために、必要なログを整理してログ出力を強化しました。</p>
-            </article>
-            <article class="case-study-item">
-              <h3 class="case-study-title" data-i18n="caseStudy3Title">Application Verifier を使った異常系テスト基盤の整備</h3>
-              <p class="case-study-body" data-i18n="caseStudy3Body">産業用カメラ制御アプリで、想定外のプログラムミスによりメモリリークやハンドルリークが発生しても何が起きたか追えるように、Application Verifier を用いた異常系テスト基盤を構築しました。</p>
-            </article>
+          <p class="case-studies-note">ホームでは概要だけを案内しています。個別の事例と背景は専用ページにまとめています。</p>
+          <div class="section-related-links-list">
+            <a class="section-related-link" href="/case-studies/">技術事例一覧</a>
+            <a class="section-related-link" href="/blog/2026/03/11/001-tcp-retransmission-rfc1323-industrial-camera/">通信停止の切り分け事例</a>
+            <a class="section-related-link" href="/blog/2026/03/11/002-handle-leak-industrial-camera-long-run-crash-part1/">長期稼働障害の調査事例</a>
+            <a class="section-related-link" href="/blog/2026/03/11/003-application-verifier-abnormal-test-foundation-part2/">異常系テスト基盤の事例</a>
           </div>
           <div class="case-studies-actions">
             <a class="button button--primary" href="/case-studies/">技術事例ページへ</a>
@@ -549,124 +541,27 @@ lang: ja
           </div>
         </div>
       </section>
-      <section class="section" id="company">
-        <h2 class="section-title" data-i18n="companyTitle">事業者情報</h2>
+      <section class="section" id="about-pages">
+        <h2 class="section-title">会社情報と代表略歴</h2>
         <div class="company-card">
-          <dl class="company-dl">
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="companyNameLabel">屋号</dt>
-              <dd class="company-dd">KomuraSoft</dd>
-            </div>
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="companyTypeLabel">形態</dt>
-              <dd class="company-dd" data-i18n="companyTypeValue">個人事業主</dd>
-            </div>
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="companyRepresentativeLabel">代表</dt>
-              <dd class="company-dd" data-i18n="companyRepresentativeValue">小村 豪</dd>
-            </div>
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="companyBusinessLabel">事業</dt>
-              <dd class="company-dd" data-i18n="companyBusinessValue">ソフトウェア受託開発・技術コンサルティング</dd>
-            </div>
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="companyAddressLabel">所在地</dt>
-              <dd class="company-dd" data-i18n="companyAddressValue">〒107-0061 東京都港区北青山1-3-3 三橋ビル 3階</dd>
-            </div>
-              <div class="company-row">
-                <dt class="company-dt" data-i18n="companyXLabel">X (Twitter)</dt>
-                <dd class="company-dd"><a href="https://x.com/komurasoft" target="_blank" rel="noopener">@komurasoft</a></dd>
-              </div>
-              <div class="company-row">
-                <dt class="company-dt" data-i18n="companyGitHubLabel">GitHub</dt>
-                <dd class="company-dd"><a href="https://github.com/gomurin0428" target="_blank" rel="noopener">github.com/gomurin0428</a></dd>
-              </div>
-              <div class="company-row">
-                <dt class="company-dt" data-i18n="companyRepositoriesLabel">代表リポジトリ</dt>
-                <dd class="company-dd">
-                  <a href="https://github.com/gomurin0428/COM_BLAS" target="_blank" rel="noopener">COM_BLAS</a>
-                  /
-                  <a href="https://github.com/LongTail-Software/COM_BigDecimal" target="_blank" rel="noopener">COM_BigDecimal</a>
-                </dd>
-              </div>
-            </dl>
+          <p class="section-description">事業者情報や代表の経歴は、ホームでは概要に留めず、専用ページに分けています。</p>
+          <div class="section-related-links-list">
+            <a class="section-related-link" href="/company/">会社情報を見る</a>
+            <a class="section-related-link" href="/profile/go-komura/">代表略歴を見る</a>
+            <a class="section-related-link" href="/topics/">技術トピックを見る</a>
           </div>
-        </section>
-      <section class="section" id="profile">
-        <h2 class="section-title" data-i18n="profileTitle">代表略歴</h2>
-        <div class="company-card">
-          <dl class="company-dl">
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="profileBirthplaceLabel">出身</dt>
-              <dd class="company-dd" data-i18n="profileBirthplaceValue">宮崎市出身（中学は途中まで宮崎大学教育文化学部付属中学校）</dd>
-            </div>
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="profileEducationLabel">学歴</dt>
-              <dd class="company-dd" data-i18n="profileEducationValue" data-i18n-html="true">2015年 久留米工業高等専門学校 制御情報工学科 卒業<br>2015年 九州大学 理学部 数学科 3年次編入<br>2017年 九州大学 理学部 数学科 卒業<br>2017年 九州大学大学院 数理学府 数理学コース 入学<br>2019年 九州大学大学院 数理学府 数理学コース 中退</dd>
-            </div>
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="profileCareerLabel">職歴</dt>
-              <dd class="company-dd" data-i18n="profileCareerValue" data-i18n-html="true">2019年〜2023年 SES企業にて準委任契約でエンジニアとして従事<br>2023年〜2025年 エイチエスティ・ビジョン株式会社にてエンジニアとして勤務（半導体製造装置向け画像処理製品の開発・受託開発）<br>2025年12月〜 フリーランスとして独立（法人設立予定）</dd>
-            </div>
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="profileCertificationLabel">資格</dt>
-              <dd class="company-dd" data-i18n="profileCertificationValue">応用情報技術者</dd>
-            </div>
-          </dl>
         </div>
       </section>
       <section class="section" id="contact">
         <div class="contact-card">
           <h2 class="section-title" data-i18n="contactTitle">お問い合わせ</h2>
           <p class="section-description" data-i18n="contactDescription" data-i18n-html="true">開発のご依頼だけでなく、技術相談も受け付けています。</p>
-          <ul class="contact-example-list">
-            <li data-i18n="contactExample1">「まれにしか起きない通信停止の原因を調べたい」</li>
-            <li data-i18n="contactExample2">「原因切り分けだけお願いしたい」</li>
-            <li data-i18n="contactExample3">「長期稼働後に落ちる障害を切り分けたい」</li>
-            <li data-i18n="contactExample4">「リークや異常終了に備えたログやテスト基盤を整えたい」</li>
-          </ul>
-          <p class="contact-guidance" data-i18n="contactProblemNote">再現しにくい障害や、長時間運転でしか表面化しない問題の調査もご相談ください。</p>
-          <p class="contact-guidance" data-i18n="contactGuidance">内容確認後、対応可否の見立てと進め方をご案内します。具体的な調査・レビュー・原因分析が必要な場合は、初期調査または技術相談として有償でご案内します。</p>
-          <div class="contact-flow">
-            <h3 class="contact-flow-title" data-i18n="contactFlowTitle">お問い合わせ後の流れ</h3>
-            <ol class="contact-flow-list">
-              <li class="contact-flow-item">
-                <div class="contact-flow-step">1</div>
-                <div class="contact-flow-content">
-                  <h4 class="contact-flow-item-title" data-i18n="contactFlowStep1Title">内容確認と一次返信</h4>
-                  <p class="contact-flow-item-text" data-i18n="contactFlowStep1Body">原則として翌営業日以内に受領のご連絡を行い、対応できそうかどうかと次の確認方法をご案内します。</p>
-                </div>
-              </li>
-              <li class="contact-flow-item">
-                <div class="contact-flow-step">2</div>
-                <div class="contact-flow-content">
-                  <h4 class="contact-flow-item-title" data-i18n="contactFlowStep2Title">必要に応じて初回ヒアリング</h4>
-                  <p class="contact-flow-item-text" data-i18n="contactFlowStep2Body">必要に応じて、15〜30分ほどのヒアリングや追加情報のお願いを行い、症状・制約・共有可能な資料を確認します。</p>
-                </div>
-              </li>
-              <li class="contact-flow-item">
-                <div class="contact-flow-step">3</div>
-                <div class="contact-flow-content">
-                  <h4 class="contact-flow-item-title" data-i18n="contactFlowStep3Title">進め方をご提案</h4>
-                  <p class="contact-flow-item-text" data-i18n="contactFlowStep3Body">ヒアリング後、技術相談 / 設計レビュー、初期調査、開発 / 改修のお見積りのいずれかをご案内します。</p>
-                </div>
-              </li>
-              <li class="contact-flow-item">
-                <div class="contact-flow-step">4</div>
-                <div class="contact-flow-content">
-                  <h4 class="contact-flow-item-title" data-i18n="contactFlowStep4Title">初期調査では前提を整理して返却</h4>
-                  <p class="contact-flow-item-text" data-i18n="contactFlowStep4Body">初期調査では、事実整理、有力仮説、追加確認事項、進め方や見積りの前提を整理してお返しします。</p>
-                </div>
-              </li>
-            </ol>
-            <p class="contact-flow-note" data-i18n="contactFlowNote">フォームは短いままで構いません。まずは困っていることと、分かっている範囲の情報だけお送りください。</p>
-          </div>
+          <p class="contact-guidance">フォームは短いままで構いません。今困っていることと、分かっている範囲の情報だけで十分です。</p>
+          <p class="contact-guidance">再現しにくい障害や、長時間運転でしか表面化しない問題の調査もご相談ください。</p>
           <div class="contact-actions">
             <a class="button button--primary" href="https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform?usp=dialog" target="_blank" rel="noopener" data-i18n="contactTechButton">問い合わせる</a>
           </div>
-          <p class="contact-note" data-i18n="contactNote">
-            ※ 原則として翌営業日以内に受領のご連絡を行い、詳細確認後に進め方をご案内します。
-          </p>
+          <p class="contact-note">※ 原則として翌営業日以内に受領のご連絡を行い、詳細確認後に進め方をご案内します。</p>
         </div>
       </section>
     </main>

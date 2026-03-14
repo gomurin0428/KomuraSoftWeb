@@ -495,20 +495,12 @@ permalink: /en/
         <div class="case-studies-card">
           <h2 class="section-title" data-i18n="caseStudiesHeading">Technical Case Studies</h2>
           <p class="section-description" data-i18n="caseStudiesDescription">We handle investigations of hard-to-reproduce failures, analysis of defects that appear after long uptime, and logging and failure-path test infrastructure for recurrence prevention.</p>
-          <p class="case-studies-note" data-i18n="caseStudiesNote">* Customer and product names are withheld. The content is summarized to avoid identification.</p>
-          <div class="case-study-list">
-            <article class="case-study-item">
-              <h3 class="case-study-title" data-i18n="caseStudy1Title">Pinpointed the cause of rare multi-second communication stalls</h3>
-              <p class="case-study-body" data-i18n="caseStudy1Body">We investigated a control application for industrial cameras that occasionally stopped communicating with the host for several seconds. We identified retransmission wait time caused by packet loss and reduced the wait by enabling the RFC1323 timestamp option.</p>
-            </article>
-            <article class="case-study-item">
-              <h3 class="case-study-title" data-i18n="caseStudy2Title">Identified a month-later crash as a handle leak</h3>
-              <p class="case-study-body" data-i18n="caseStudy2Body">We investigated an industrial camera control application that suddenly crashed after about one month of continuous operation. We identified a handle leak and strengthened the logging so the cause would be easier to trace if the issue recurred.</p>
-            </article>
-            <article class="case-study-item">
-              <h3 class="case-study-title" data-i18n="caseStudy3Title">Built a failure-path test foundation with Application Verifier</h3>
-              <p class="case-study-body" data-i18n="caseStudy3Body">For an industrial camera control application, we built a failure-path test foundation using Application Verifier so that memory leaks and handle leaks caused by unexpected programming mistakes could still be traced clearly.</p>
-            </article>
+          <p class="case-studies-note">The homepage only points to the case-study area. The concrete examples live on dedicated pages.</p>
+          <div class="section-related-links-list">
+            <a class="section-related-link" href="/en/case-studies/">Case Studies Hub</a>
+            <a class="section-related-link" href="/en/blog/2026/03/11/001-tcp-retransmission-rfc1323-industrial-camera/">Communication Stall Investigation</a>
+            <a class="section-related-link" href="/en/blog/2026/03/11/002-handle-leak-industrial-camera-long-run-crash-part1/">Long-Run Crash Investigation</a>
+            <a class="section-related-link" href="/en/blog/2026/03/11/003-application-verifier-abnormal-test-foundation-part2/">Failure-Path Test Foundation</a>
           </div>
           <div class="case-studies-actions">
             <a class="button button--primary" href="/en/case-studies/">Open Case Studies</a>
@@ -544,118 +536,23 @@ permalink: /en/
           </div>
         </div>
       </section>
-      <section class="section" id="company">
-        <h2 class="section-title" data-i18n="companyTitle">About</h2>
+      <section class="section" id="about-pages">
+        <h2 class="section-title">Company and Profile</h2>
         <div class="company-card">
-          <dl class="company-dl">
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="companyNameLabel">Trade Name</dt>
-              <dd class="company-dd">KomuraSoft</dd>
-            </div>
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="companyTypeLabel">Type</dt>
-              <dd class="company-dd" data-i18n="companyTypeValue">Sole Proprietor</dd>
-            </div>
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="companyRepresentativeLabel">Representative</dt>
-              <dd class="company-dd" data-i18n="companyRepresentativeValue">Go Komura</dd>
-            </div>
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="companyBusinessLabel">Business</dt>
-              <dd class="company-dd" data-i18n="companyBusinessValue">Contract Software Development &amp; Technical Consulting</dd>
-            </div>
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="companyAddressLabel">Address</dt>
-              <dd class="company-dd" data-i18n="companyAddressValue">1-3-3 Kita-Aoyama, Minato-ku, Tokyo 107-0061, Japan (Mitsuhashi Bldg. 3F)</dd>
-            </div>
-              <div class="company-row">
-                <dt class="company-dt" data-i18n="companyXLabel">X (Twitter)</dt>
-                <dd class="company-dd"><a href="https://x.com/komurasoft" target="_blank" rel="noopener">@komurasoft</a></dd>
-              </div>
-              <div class="company-row">
-                <dt class="company-dt" data-i18n="companyGitHubLabel">GitHub</dt>
-                <dd class="company-dd"><a href="https://github.com/gomurin0428" target="_blank" rel="noopener">github.com/gomurin0428</a></dd>
-              </div>
-              <div class="company-row">
-                <dt class="company-dt" data-i18n="companyRepositoriesLabel">Representative Repositories</dt>
-                <dd class="company-dd">
-                  <a href="https://github.com/gomurin0428/COM_BLAS" target="_blank" rel="noopener">COM_BLAS</a>
-                  /
-                  <a href="https://github.com/LongTail-Software/COM_BigDecimal" target="_blank" rel="noopener">COM_BigDecimal</a>
-                </dd>
-              </div>
-            </dl>
+          <p class="section-description">The homepage no longer carries the full company and profile details. Those live on dedicated pages.</p>
+          <div class="section-related-links-list">
+            <a class="section-related-link" href="/en/company/">Open Company Page</a>
+            <a class="section-related-link" href="/en/profile/go-komura/">Open Go Komura Profile</a>
+            <a class="section-related-link" href="/en/topics/">Open Topics</a>
           </div>
-        </section>
-      <section class="section" id="profile">
-        <h2 class="section-title" data-i18n="profileTitle">Profile</h2>
-        <div class="company-card">
-          <dl class="company-dl">
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="profileBirthplaceLabel">Hometown</dt>
-              <dd class="company-dd" data-i18n="profileBirthplaceValue">Born in Miyazaki City (attended Miyazaki University Attached Junior High School until midway)</dd>
-            </div>
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="profileEducationLabel">Education</dt>
-              <dd class="company-dd" data-i18n="profileEducationValue" data-i18n-html="true">2015: Graduated from Kurume National College of Technology, Dept. of Control and Information Engineering<br>2015: Transferred to Kyushu University, Faculty of Science, Dept. of Mathematics (3rd year)<br>2017: Graduated from Kyushu University, Faculty of Science, Dept. of Mathematics<br>2017: Enrolled in Kyushu University Graduate School of Mathematics<br>2019: Withdrew from Kyushu University Graduate School of Mathematics</dd>
-            </div>
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="profileCareerLabel">Career</dt>
-              <dd class="company-dd" data-i18n="profileCareerValue" data-i18n-html="true">2019–2023: Worked as an engineer under quasi-delegation contracts at an SES company<br>2023–2025: Engineer at HST Vision Co., Ltd. (development of image processing products for semiconductor manufacturing equipment)<br>Dec 2025–: Independent freelancer (planning to establish a corporation)</dd>
-            </div>
-            <div class="company-row">
-              <dt class="company-dt" data-i18n="profileCertificationLabel">Certification</dt>
-              <dd class="company-dd" data-i18n="profileCertificationValue">Applied Information Technology Engineer (Japanese national qualification)</dd>
-            </div>
-          </dl>
         </div>
       </section>
       <section class="section" id="contact">
         <div class="contact-card">
           <h2 class="section-title" data-i18n="contactTitle">Contact</h2>
           <p class="section-description" data-i18n="contactDescription" data-i18n-html="true">We accept not only development requests but also technical consultation.</p>
-          <ul class="contact-example-list">
-            <li data-i18n="contactExample1">"We want to investigate the cause of a communication stop that only happens rarely."</li>
-            <li data-i18n="contactExample2">"We only want help with root-cause investigation."</li>
-            <li data-i18n="contactExample3">"We want to isolate a failure that appears only after long-running operation."</li>
-            <li data-i18n="contactExample4">"We want to improve logs and test infrastructure for leaks and abnormal termination."</li>
-          </ul>
-          <p class="contact-guidance" data-i18n="contactProblemNote">Please feel free to contact us about failures that are hard to reproduce or issues that only surface after long periods of operation.</p>
-          <p class="contact-guidance" data-i18n="contactGuidance">After reviewing your message, we will outline whether the request looks like a fit and what the next step would be. If detailed investigation, review, or root-cause analysis is needed, we will guide you to a paid initial investigation or technical consultation.</p>
-          <div class="contact-flow">
-            <h3 class="contact-flow-title" data-i18n="contactFlowTitle">What Happens After You Contact Us</h3>
-            <ol class="contact-flow-list">
-              <li class="contact-flow-item">
-                <div class="contact-flow-step">1</div>
-                <div class="contact-flow-content">
-                  <h4 class="contact-flow-item-title" data-i18n="contactFlowStep1Title">Review and first reply</h4>
-                  <p class="contact-flow-item-text" data-i18n="contactFlowStep1Body">As a rule, we send an acknowledgement by the next business day and let you know whether the request looks feasible and how we should confirm the details.</p>
-                </div>
-              </li>
-              <li class="contact-flow-item">
-                <div class="contact-flow-step">2</div>
-                <div class="contact-flow-content">
-                  <h4 class="contact-flow-item-title" data-i18n="contactFlowStep2Title">Initial hearing if needed</h4>
-                  <p class="contact-flow-item-text" data-i18n="contactFlowStep2Body">If needed, we ask for a 15-30 minute hearing or additional information to confirm the symptoms, constraints, and what materials can be shared.</p>
-                </div>
-              </li>
-              <li class="contact-flow-item">
-                <div class="contact-flow-step">3</div>
-                <div class="contact-flow-content">
-                  <h4 class="contact-flow-item-title" data-i18n="contactFlowStep3Title">We propose the next track</h4>
-                  <p class="contact-flow-item-text" data-i18n="contactFlowStep3Body">After the hearing, we guide you to one of these paths: technical consultation / design review, an initial investigation, or an estimate for development / modification.</p>
-                </div>
-              </li>
-              <li class="contact-flow-item">
-                <div class="contact-flow-step">4</div>
-                <div class="contact-flow-content">
-                  <h4 class="contact-flow-item-title" data-i18n="contactFlowStep4Title">Initial investigation returns a structured result</h4>
-                  <p class="contact-flow-item-text" data-i18n="contactFlowStep4Body">In an initial investigation, we return a structured summary of facts, likely hypotheses, additional checks, and the assumptions needed for the next step or estimate.</p>
-                </div>
-              </li>
-            </ol>
-            <p class="contact-flow-note" data-i18n="contactFlowNote">The form can stay short. Please start with what is happening now and whatever information is already available.</p>
-          </div>
+          <p class="contact-guidance">The form can stay short. Start with what is happening now and whatever information is already available.</p>
+          <p class="contact-guidance">Please feel free to contact us about failures that are hard to reproduce or issues that appear only after long periods of operation.</p>
           <div class="contact-actions">
             <a class="button button--primary" href="https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform?usp=dialog" target="_blank" rel="noopener" data-i18n="contactTechButton">Contact</a>
           </div>
