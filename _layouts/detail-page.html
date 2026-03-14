@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+{% assign lang = page.lang | default: "ja" %}
+{% assign contact_url = site.contact_url %}
+{% assign translation_candidates = site.pages | where: "translation_key", page.translation_key %}
+{% assign service_nav = site.data.service_pages[lang] %}
+{% assign schema_type = page.schema_type | default: "WebPage" %}
+{% if lang == "en" %}
+  {% assign home_url = "/en/" %}
+  {% assign services_url = "/en/#service" %}
+  {% assign blog_url = "/en/blog/" %}
+  {% assign home_label = "Home" %}
+  {% assign services_label = "Services" %}
+  {% assign blog_label = "Blog" %}
+  {% assign contact_label = "Contact" %}
+  {% assign related_articles_label = "Related Articles" %}
+  {% assign related_pages_label = "Related Pages" %}
+  {% assign cta_title = "Get in Touch" %}
+  {% assign cta_body = "If this page is close to the situation you are dealing with, please contact us with the current context and what kind of support you need." %}
+  {% assign cta_button = "Contact" %}
+  {% assign back_label = "Back to Home" %}
+  {% assign faq_label = "Frequently Asked Questions" %}
+  {% assign alternate_page = translation_candidates | where_exp: "p", "p.lang != 'en'" | first %}
+  {% assign ja_url = alternate_page.url %}
+  {% assign en_url = page.url %}
+{% else %}
+  {% assign home_url = "/" %}
+  {% assign services_url = "/#service" %}
+  {% assign blog_url = "/blog/" %}
+  {% assign home_label = "ホーム" %}
+  {% assign services_label = "サービス" %}
+  {% assign blog_label = "ブログ" %}
+  {% assign contact_label = "お問い合わせ" %}
+  {% assign related_articles_label = "関連する記事" %}
+  {% assign related_pages_label = "関連ページ" %}
+  {% assign cta_title = "ご相談はこちら" %}
+  {% assign cta_body = "このページの内容に近い課題があれば、現状と必要な支援の形を添えてご相談ください。" %}
+  {% assign cta_button = "お問い合わせ" %}
+  {% assign back_label = "ホームに戻る" %}
+  {% assign faq_label = "よくある質問" %}
+  {% assign alternate_page = translation_candidates | where: "lang", "en" | first %}
+  {% assign ja_url = page.url %}
+  {% assign en_url = alternate_page.url %}
+{% endif %}
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/jpeg" href="/logo-ui.jpg">
+  <title>{{ page.title }}</title>
+  <meta name="description" content="{{ page.description }}">
+  <link rel="canonical" href="{{ page.url | absolute_url }}">
+  {% if alternate_page %}
+  <link rel="alternate" hreflang="ja" href="{{ ja_url | absolute_url }}">
+  <link rel="alternate" hreflang="en" href="{{ en_url | absolute_url }}">
+  {% endif %}
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <meta name="author" content="KomuraSoft">
+  <meta name="theme-color" content="#0f172a">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ page.title }}">
+  <meta property="og:description" content="{{ page.description }}">
+  <meta property="og:url" content="{{ page.url | absolute_url }}">
+  <meta property="og:site_name" content="KomuraSoft">
+  <meta property="og:locale" content="{% if lang == 'en' %}en_US{% else %}ja_JP{% endif %}">
+  <meta property="og:image" content="{{ site.logo | absolute_url }}">
+  <meta property="og:image:secure_url" content="{{ site.logo | absolute_url }}">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="{{ page.title }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page.title }}">
+  <meta name="twitter:description" content="{{ page.description }}">
+  <meta name="twitter:image" content="{{ site.logo | absolute_url }}">
+  <meta name="twitter:image:alt" content="{{ page.title }}">
+  <meta name="twitter:site" content="{{ site.x_username }}">
+  <meta name="twitter:creator" content="{{ site.x_username }}">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": {{ schema_type | jsonify }},
+    "name": {{ page.page_name | default: page.title | jsonify }},
+    "description": {{ page.description | jsonify }},
+    "url": {{ page.url | absolute_url | jsonify }},
+    "inLanguage": {{ lang | jsonify }},
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "KomuraSoft",
+      "url": {{ home_url | absolute_url | jsonify }}
+    }{% if page.page_keywords %},
+    "keywords": {{ page.page_keywords | join: ", " | jsonify }}{% endif %}{% if page.about_keywords %},
+    "about": {{ page.about_keywords | jsonify }}{% endif %}{% if page.main_entity_type %},
+    "mainEntity": {
+      "@type": {{ page.main_entity_type | jsonify }},
+      "name": {{ page.main_entity_name | default: page.page_name | default: page.title | jsonify }}{% if page.main_entity_url %},
+      "url": {{ page.main_entity_url | jsonify }}{% endif %}{% if page.main_entity_description %},
+      "description": {{ page.main_entity_description | jsonify }}{% endif %}
+    }{% endif %}
+  }
+  </script>
+  {% if page.faq %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {% for item in page.faq %}
+      {
+        "@type": "Question",
+        "name": {{ item.q | jsonify }},
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": {{ item.a | jsonify }}
+        }
+      }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  }
+  </script>
+  {% endif %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": {{ home_label | jsonify }},
+        "item": {{ home_url | absolute_url | jsonify }}
+      }{% if page.breadcrumb_parent_label and page.breadcrumb_parent_url %},
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ page.breadcrumb_parent_label | jsonify }},
+        "item": {{ page.breadcrumb_parent_url | absolute_url | jsonify }}
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": {{ page.page_name | default: page.title | jsonify }},
+        "item": {{ page.url | absolute_url | jsonify }}
+      }{% else %},
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ page.page_name | default: page.title | jsonify }},
+        "item": {{ page.url | absolute_url | jsonify }}
+      }{% endif %}
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="/komura_soft_single_page.css">
+  <style>
+    .site-nav {
+      gap: 1rem;
+      font-size: 0.84rem;
+    }
+    .detail-page-shell {
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 2rem 1rem 4rem;
+    }
+    .detail-page-layout {
+      display: grid;
+      gap: 1.5rem;
+    }
+    .detail-page-main {
+      min-width: 0;
+    }
+    .detail-page-hero {
+      border-radius: calc(var(--radius-lg) + 0.5rem);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      padding: 2.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .detail-page-eyebrow {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-accent-light);
+    }
+    .detail-page-title {
+      margin-top: 0.75rem;
+      font-size: clamp(2rem, 3vw + 1rem, 2.9rem);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--color-text);
+    }
+    .detail-page-lead {
+      margin-top: 1rem;
+      max-width: 48rem;
+      font-size: 1.02rem;
+      line-height: 1.85;
+      color: var(--color-text-muted);
+    }
+    .detail-page-highlight-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-top: 1.25rem;
+    }
+    .detail-page-highlight {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      background: rgba(255, 255, 255, 0.96);
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--color-accent-light);
+    }
+    .detail-page-content {
+      margin-top: 1.5rem;
+      border-radius: calc(var(--radius-lg) + 0.25rem);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+      line-height: 1.85;
+      color: var(--color-text);
+    }
+    .detail-page-content h2 {
+      margin: 2rem 0 0.85rem;
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--color-text);
+    }
+    .detail-page-content h2:first-child {
+      margin-top: 0;
+    }
+    .detail-page-content h3 {
+      margin: 1.5rem 0 0.7rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .detail-page-content p {
+      margin: 0;
+      color: var(--color-text-muted);
+    }
+    .detail-page-content p + p {
+      margin-top: 0.85rem;
+    }
+    .detail-page-content ul,
+    .detail-page-content ol {
+      margin: 0.75rem 0 0;
+      padding-left: 1.25rem;
+      color: var(--color-text-muted);
+    }
+    .detail-page-content li + li {
+      margin-top: 0.45rem;
+    }
+    .detail-page-content strong {
+      color: var(--color-text);
+    }
+    .detail-related-block,
+    .detail-page-cta,
+    .detail-faq {
+      margin-top: 1.5rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface-elevated);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .detail-related-title,
+    .detail-page-cta-title,
+    .detail-faq-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .detail-related-links {
+      margin-top: 0.85rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+    }
+    .detail-related-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.2rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--color-accent-light);
+      font-size: 0.85rem;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .detail-related-link:hover {
+      border-color: var(--color-accent);
+      background: #fff;
+      color: var(--color-accent);
+    }
+    .detail-page-cta-text {
+      margin-top: 0.75rem;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+    }
+    .detail-page-cta-actions {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .detail-faq-list {
+      margin-top: 0.9rem;
+      display: grid;
+      gap: 0.9rem;
+    }
+    .detail-faq-item {
+      padding-bottom: 0.9rem;
+      border-bottom: 1px solid rgba(47, 111, 221, 0.14);
+    }
+    .detail-faq-item:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .detail-faq-question {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .detail-faq-answer {
+      margin-top: 0.45rem;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+    }
+    .detail-page-back {
+      display: inline-block;
+      margin-top: 2rem;
+      color: var(--color-accent-light);
+      font-weight: 600;
+    }
+    @media (min-width: 1080px) {
+      .detail-page-layout {
+        grid-template-columns: minmax(0, 48rem) minmax(18rem, 22rem);
+        align-items: start;
+        justify-content: center;
+      }
+      .detail-page-side {
+        position: sticky;
+        top: 5.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="site-header">
+      <div class="header-inner">
+        <a href="{{ home_url }}" class="brand">
+          <img src="/logo-ui.jpg" alt="KomuraSoft" class="brand-logo" style="width: 2.5rem; height: 2.5rem; max-width: 2.5rem; max-height: 2.5rem;">
+          <span class="brand-name">KomuraSoft</span>
+        </a>
+        <nav class="site-nav">
+          <a class="nav-link" href="{{ home_url }}">{{ home_label }}</a>
+          <div class="nav-dropdown">
+            <button type="button" class="nav-link nav-link--with-menu nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="service-menu-{{ lang }}">{{ services_label }}</button>
+            <div class="nav-dropdown-menu" id="service-menu-{{ lang }}">
+              {% for item in service_nav %}
+              <a class="nav-dropdown-item" href="{{ item.url }}">{{ item.title }}</a>
+              {% endfor %}
+            </div>
+          </div>
+          <a class="nav-link" href="{{ blog_url }}">{{ blog_label }}</a>
+        </nav>
+        <div class="language-switch" role="group" aria-label="{% if lang == 'en' %}Language selection{% else %}言語選択{% endif %}">
+          <a class="language-button language-button-link" href="{{ ja_url }}" aria-current="{% unless lang == 'en' %}page{% endunless %}">{% if lang == 'en' %}Japanese{% else %}日本語{% endif %}</a>
+          {% if lang == "en" or alternate_page %}
+          <a class="language-button language-button-link" href="{{ en_url }}" aria-current="{% if lang == 'en' %}page{% endif %}">English</a>
+          {% else %}
+          <span class="language-button is-disabled">English</span>
+          {% endif %}
+        </div>
+        <a class="pill-contact" href="{{ contact_url }}" target="_blank" rel="noopener">{{ contact_label }}</a>
+      </div>
+    </header>
+    <main>
+      <article class="detail-page-shell">
+        <div class="detail-page-layout">
+          <div class="detail-page-main">
+            <header class="detail-page-hero">
+              {% if page.page_eyebrow %}
+              <div class="detail-page-eyebrow">{{ page.page_eyebrow }}</div>
+              {% endif %}
+              <h1 class="detail-page-title">{{ page.page_name | default: page.title }}</h1>
+              <p class="detail-page-lead">{{ page.description }}</p>
+              {% if page.page_keywords %}
+              <div class="detail-page-highlight-list">
+                {% for keyword in page.page_keywords %}
+                <span class="detail-page-highlight">{{ keyword }}</span>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </header>
+
+            <section class="detail-page-content">
+              {{ content }}
+            </section>
+
+            {% if page.related_articles %}
+            <section class="detail-related-block">
+              <h2 class="detail-related-title">{{ related_articles_label }}</h2>
+              <div class="detail-related-links">
+                {% for article in page.related_articles %}
+                <a class="detail-related-link" href="{{ article.url }}">{{ article.title }}</a>
+                {% endfor %}
+              </div>
+            </section>
+            {% endif %}
+
+            {% if page.faq %}
+            <section class="detail-faq">
+              <h2 class="detail-faq-title">{{ faq_label }}</h2>
+              <div class="detail-faq-list">
+                {% for item in page.faq %}
+                <div class="detail-faq-item">
+                  <p class="detail-faq-question">{{ item.q }}</p>
+                  <p class="detail-faq-answer">{{ item.a }}</p>
+                </div>
+                {% endfor %}
+              </div>
+            </section>
+            {% endif %}
+
+            <section class="detail-page-cta">
+              <h2 class="detail-page-cta-title">{{ cta_title }}</h2>
+              <p class="detail-page-cta-text">{{ cta_body }}</p>
+              <div class="detail-page-cta-actions">
+                <a class="button button--primary" href="{{ contact_url }}" target="_blank" rel="noopener">{{ cta_button }}</a>
+              </div>
+            </section>
+
+            <a href="{{ home_url }}" class="detail-page-back">{{ back_label }}</a>
+          </div>
+
+          <aside class="detail-page-side">
+            {% if page.related_pages %}
+            <section class="detail-related-block">
+              <h2 class="detail-related-title">{{ related_pages_label }}</h2>
+              <div class="detail-related-links">
+                {% for item in page.related_pages %}
+                <a class="detail-related-link" href="{{ item.url }}">{{ item.title }}</a>
+                {% endfor %}
+              </div>
+            </section>
+            {% endif %}
+          </aside>
+        </div>
+      </article>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div>© 2026 KomuraSoft</div>
+        <div class="footer-links">
+          <a class="nav-link" href="{{ home_url }}">{{ home_label }}</a>
+          <a class="nav-link" href="{{ blog_url }}">{{ blog_label }}</a>
+          <a class="nav-link" href="/privacy/">{% if lang == "en" %}Privacy Policy{% else %}プライバシーポリシー{% endif %}</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <script>
+    (() => {
+      const navDropdowns = Array.from(document.querySelectorAll('.nav-dropdown'));
+
+      function closeDropdowns() {
+        navDropdowns.forEach((dropdown) => {
+          dropdown.classList.remove('is-open');
+          const toggle = dropdown.querySelector('.nav-dropdown-toggle');
+          if (toggle) {
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      navDropdowns.forEach((dropdown) => {
+        const toggle = dropdown.querySelector('.nav-dropdown-toggle');
+        if (!toggle) {
+          return;
+        }
+
+        toggle.addEventListener('click', (event) => {
+          event.preventDefault();
+          const willOpen = !dropdown.classList.contains('is-open');
+          closeDropdowns();
+          if (willOpen) {
+            dropdown.classList.add('is-open');
+            toggle.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!event.target.closest('.nav-dropdown')) {
+          closeDropdowns();
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeDropdowns();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
