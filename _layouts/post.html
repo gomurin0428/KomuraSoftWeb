@@ -379,6 +379,15 @@
       border-radius: 0.25rem;
       font-size: 0.875em;
     }
+    .blog-content .code-copy-block {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    .blog-content .code-copy-block > .highlighter-rouge,
+    .blog-content .code-copy-block > pre,
+    .blog-content .code-copy-block > .mermaid {
+      margin-bottom: 0;
+    }
     .blog-content pre {
       background: var(--color-surface);
       padding: 1rem;
@@ -386,9 +395,18 @@
       overflow-x: auto;
       margin-bottom: 1rem;
     }
+    .blog-content .code-copy-block pre {
+      margin-bottom: 0;
+      padding-top: 3.75rem;
+    }
     .blog-content pre code {
       background: none;
       padding: 0;
+    }
+    .blog-content .code-copy-block-mermaid > .mermaid {
+      background: var(--color-surface);
+      border-radius: 0.5rem;
+      padding: 3.75rem 1rem 1rem;
     }
     .blog-content .mermaid {
       margin-bottom: 1rem;
@@ -399,6 +417,60 @@
       max-width: 100%;
       height: auto;
       margin: 0 auto;
+    }
+    .blog-content .code-copy-button {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--color-text);
+      box-shadow: var(--shadow-sm);
+      padding: 0.45rem 0.8rem;
+      font: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+    .blog-content .code-copy-button:hover,
+    .blog-content .code-copy-button:focus-visible {
+      background: #ffffff;
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      transform: translateY(-1px);
+      outline: none;
+    }
+    .blog-content .code-copy-button[data-state="copied"] {
+      border-color: #15803d;
+      color: #15803d;
+    }
+    .blog-content .code-copy-button[data-state="failed"] {
+      border-color: #b91c1c;
+      color: #b91c1c;
+    }
+    .blog-content .code-copy-button-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .blog-content .code-copy-button-icon svg {
+      width: 1rem;
+      height: 1rem;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .blog-content .code-copy-button-label {
+      white-space: nowrap;
     }
     .blog-content ul, .blog-content ol {
       margin-bottom: 1rem;
@@ -827,7 +899,21 @@
     const mobileConsultText = {{ ui.post.consult_cta_text | jsonify }};
     const mobileConsultNote = {{ ui.post.consult_cta_note | jsonify }};
     const articleConsultLabel = {{ ui.article_consult_label | jsonify }};
+    const copyCodeLabel = {{ ui.post.copy_code_label | jsonify }};
+    const copiedCodeLabel = {{ ui.post.copied_code_label | jsonify }};
+    const copyFailedLabel = {{ ui.post.copy_failed_label | jsonify }};
+    const copyStateResetDelayMs = 2000;
+    const copyButtonIcons = {
+      default: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"></path></svg>',
+      copied: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>',
+      failed: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg>'
+    };
 
+    /**
+     * 入力: value には正規化対象の文字列を受け取る。
+     * 出力: 連続空白を 1 文字にそろえた文字列を返す。
+     * 処理内容: 目次の見出し照合で表記揺れを減らすため、空白を正規化する。
+     */
     const normalizeText = (value) => value.replace(/\s+/g, ' ').trim();
 
     const findTocList = () => {
@@ -1020,6 +1106,240 @@
       blogContent.append(cta);
     };
 
+    /**
+     * 入力: なし。
+     * 出力: コピー状態の見た目情報を保持したオブジェクトを返す。
+     * 処理内容: ボタン状態ごとのラベルとアイコンを一元管理する。
+     */
+    const getCopyButtonPresentation = () => ({
+      idle: { label: copyCodeLabel, icon: copyButtonIcons.default },
+      copied: { label: copiedCodeLabel, icon: copyButtonIcons.copied },
+      failed: { label: copyFailedLabel, icon: copyButtonIcons.failed }
+    });
+
+    /**
+     * 入力: button には状態を変えるボタン要素、state には適用する状態名を受け取る。
+     * 出力: なし。
+     * 処理内容: ボタンのラベル、アイコン、属性を現在のコピー状態に合わせて更新する。
+     */
+    const setCopyButtonState = (button, state) => {
+      const presentation = getCopyButtonPresentation()[state] ?? getCopyButtonPresentation().idle;
+      const iconElement = button.querySelector('.code-copy-button-icon');
+      const labelElement = button.querySelector('.code-copy-button-label');
+
+      button.dataset.state = state;
+      button.setAttribute('aria-label', presentation.label);
+      button.setAttribute('title', presentation.label);
+
+      if (iconElement) {
+        iconElement.innerHTML = presentation.icon;
+      }
+
+      if (labelElement) {
+        labelElement.textContent = presentation.label;
+      }
+    };
+
+    /**
+     * 入力: button には一定時間後に既定状態へ戻したいボタン要素を受け取る。
+     * 出力: なし。
+     * 処理内容: 既存タイマーを整理しつつ、指定時間後にボタン表示を初期状態へ戻す。
+     */
+    const scheduleCopyButtonReset = (button) => {
+      const activeTimerId = Number.parseInt(button.dataset.resetTimerId ?? '', 10);
+      if (!Number.isNaN(activeTimerId)) {
+        window.clearTimeout(activeTimerId);
+      }
+
+      const timerId = window.setTimeout(() => {
+        setCopyButtonState(button, 'idle');
+        delete button.dataset.resetTimerId;
+      }, copyStateResetDelayMs);
+
+      button.dataset.resetTimerId = String(timerId);
+    };
+
+    /**
+     * 入力: なし。
+     * 出力: 初期化済みのコピー用 button 要素を返す。
+     * 処理内容: アイコンとラベルを持つコピー操作ボタンを生成する。
+     */
+    const createCopyButton = () => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'code-copy-button';
+
+      const icon = document.createElement('span');
+      icon.className = 'code-copy-button-icon';
+      icon.setAttribute('aria-hidden', 'true');
+
+      const label = document.createElement('span');
+      label.className = 'code-copy-button-label';
+
+      button.append(icon, label);
+      setCopyButtonState(button, 'idle');
+      return button;
+    };
+
+    /**
+     * 入力: text にはクリップボードへ書き込む文字列を受け取る。
+     * 出力: なし。
+     * 処理内容: Clipboard API の存在を検証したうえで、テキスト全体をクリップボードへ書き込む。
+     */
+    const writeTextToClipboard = async (text) => {
+      if (!navigator.clipboard || typeof navigator.clipboard.writeText !== 'function') {
+        throw new Error('Clipboard API is not available.');
+      }
+
+      await navigator.clipboard.writeText(text);
+    };
+
+    /**
+     * 入力: target にはラップ対象の要素、additionalClassName には必要な追加クラス名を受け取る。
+     * 出力: コピー UI を保持するラッパー要素を返す。
+     * 処理内容: 対象要素の親子関係を保ったまま、コピー UI 用の共通ラッパーを作成または再利用する。
+     */
+    const ensureCodeCopyWrapper = (target, additionalClassName = '') => {
+      const parent = target.parentElement;
+      if (parent && parent.classList.contains('code-copy-block')) {
+        if (additionalClassName) {
+          parent.classList.add(additionalClassName);
+        }
+
+        return parent;
+      }
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'code-copy-block';
+      if (additionalClassName) {
+        wrapper.classList.add(additionalClassName);
+      }
+
+      target.before(wrapper);
+      wrapper.append(target);
+      return wrapper;
+    };
+
+    /**
+     * 入力: target にはコピー対象を含む要素、getCopyText にはコピー文字列を返す関数、additionalClassName には追加クラス名を受け取る。
+     * 出力: なし。
+     * 処理内容: 対象ブロックへコピー button を注入し、成功時と失敗時の状態遷移もまとめて設定する。
+     */
+    const registerCopyButton = (target, getCopyText, additionalClassName = '') => {
+      const wrapper = ensureCodeCopyWrapper(target, additionalClassName);
+      const existingButton = Array.from(wrapper.children).find(
+        (child) => child instanceof HTMLElement && child.classList.contains('code-copy-button')
+      );
+      if (existingButton) {
+        return;
+      }
+
+      const button = createCopyButton();
+      button.addEventListener('click', async () => {
+        try {
+          const copyText = getCopyText();
+          if (!copyText) {
+            throw new Error('Copy source is empty.');
+          }
+
+          await writeTextToClipboard(copyText);
+          setCopyButtonState(button, 'copied');
+        } catch (error) {
+          console.error('Copy failed.', error);
+          setCopyButtonState(button, 'failed');
+        }
+
+        scheduleCopyButtonReset(button);
+      });
+
+      wrapper.append(button);
+    };
+
+    /**
+     * 入力: なし。
+     * 出力: なし。
+     * 処理内容: 通常のブロックコードを走査し、インラインコードを除外したうえでコピー button を追加する。
+     */
+    const setupStandardCodeCopyButtons = () => {
+      for (const preElement of document.querySelectorAll('.blog-content pre')) {
+        if (preElement.classList.contains('mermaid')) {
+          continue;
+        }
+
+        const blockRoot = preElement.closest('.highlighter-rouge') ?? preElement;
+        if (!(blockRoot instanceof HTMLElement) || blockRoot.closest('.code-copy-block')) {
+          continue;
+        }
+
+        if (blockRoot.classList.contains('language-mermaid')) {
+          continue;
+        }
+
+        registerCopyButton(blockRoot, () => {
+          const sourceElement = blockRoot.querySelector('code') ?? preElement;
+          return sourceElement.textContent ?? '';
+        });
+      }
+    };
+
+    /**
+     * 入力: なし。
+     * 出力: Mermaid レンダリング対象の要素配列を返す。
+     * 処理内容: 記事本文から Mermaid 記法のブロック候補を重複なく収集する。
+     */
+    const collectMermaidTargets = () => {
+      const mermaidCandidates = document.querySelectorAll(
+        '.blog-content .language-mermaid, .blog-content pre.mermaid, .blog-content pre code[data-lang="mermaid"], .blog-content pre code.lang-mermaid, .blog-content pre code.language-mermaid'
+      );
+      const targets = [];
+      const processedTargets = new Set();
+
+      for (const candidate of mermaidCandidates) {
+        const target =
+          candidate.closest('.language-mermaid') ??
+          candidate.closest('.highlighter-rouge') ??
+          candidate.closest('pre') ??
+          candidate;
+
+        if (!(target instanceof HTMLElement) || processedTargets.has(target)) {
+          continue;
+        }
+
+        processedTargets.add(target);
+        targets.push(target);
+      }
+
+      return targets;
+    };
+
+    /**
+     * 入力: なし。
+     * 出力: Mermaid 変換後の要素配列を返す。
+     * 処理内容: Mermaid ソースを保持しながら描画用要素へ置換し、コピー button も同時に追加する。
+     */
+    const setupMermaidBlocks = () => {
+      const diagrams = [];
+
+      for (const target of collectMermaidTargets()) {
+        const sourceElement = target.querySelector('code') ?? target;
+        const mermaidSource = sourceElement.textContent.trim();
+        if (!mermaidSource) {
+          continue;
+        }
+
+        const wrapper = ensureCodeCopyWrapper(target, 'code-copy-block-mermaid');
+        const diagram = document.createElement('div');
+        diagram.className = 'mermaid';
+        diagram.dataset.copySource = mermaidSource;
+        diagram.textContent = mermaidSource;
+        target.replaceWith(diagram);
+        registerCopyButton(diagram, () => diagram.dataset.copySource ?? '', 'code-copy-block-mermaid');
+        diagrams.push(diagram);
+      }
+
+      return diagrams;
+    };
+
     const setupMobileToc = (headings) => {
       const trigger = document.querySelector('#mobile-toc-trigger');
       const backdrop = document.querySelector('#mobile-toc-backdrop');
@@ -1086,35 +1406,12 @@
     }
 
     insertArticleConsultCta();
+    const mermaidDiagrams = setupMermaidBlocks();
+    setupStandardCodeCopyButtons();
 
-    const mermaidCandidates = document.querySelectorAll(
-      '.language-mermaid, pre code[data-lang="mermaid"], pre code.lang-mermaid, pre code.language-mermaid'
-    );
-    const processedTargets = new Set();
-
-    for (const candidate of mermaidCandidates) {
-      const target =
-        candidate.closest('.language-mermaid') ??
-        candidate.closest('.highlighter-rouge') ??
-        candidate.closest('pre') ??
-        candidate;
-
-      if (processedTargets.has(target)) {
-        continue;
-      }
-
-      processedTargets.add(target);
-
-      const sourceElement = candidate.tagName === 'CODE'
-        ? candidate
-        : candidate.querySelector('code') ?? candidate;
-      const diagram = document.createElement('div');
-      diagram.className = 'mermaid';
-      diagram.textContent = sourceElement.textContent.trim();
-      target.replaceWith(diagram);
+    if (mermaidDiagrams.length > 0) {
+      await mermaid.run({ querySelector: '.blog-content .mermaid' });
     }
-
-    await mermaid.run({ querySelector: '.mermaid' });
   </script>
 </body>
 </html>

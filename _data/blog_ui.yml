@@ -67,6 +67,9 @@ ja:
     language_toggle_label: "表示言語の選択"
     language_button_ja: "日本語"
     language_button_en: "English"
+    copy_code_label: "Copy code"
+    copied_code_label: "Copied"
+    copy_failed_label: "Copy failed"
 en:
   locale: en_US
   html_lang: en
@@ -136,3 +139,6 @@ en:
     language_toggle_label: "Language selection"
     language_button_ja: "Japanese"
     language_button_en: "English"
+    copy_code_label: "Copy code"
+    copied_code_label: "Copied"
+    copy_failed_label: "Copy failed"
