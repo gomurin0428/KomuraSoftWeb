@@ -11,7 +11,7 @@ main_entity_type: "Organization"
 main_entity_name: "KomuraSoft"
 main_entity_url: "https://comcomponent.com/"
 main_entity_description: "Windows受託開発と技術相談を行う KomuraSoft の会社情報ページ。"
-description: "KomuraSoft の事業内容、対応領域、拠点、公開している窓口情報をまとめたページです。Windows受託開発と技術相談の基本情報を確認できます。"
+description: "KomuraSoft の事業内容、対応領域、拠点、公開窓口をまとめた会社情報ページです。Windows ソフト開発と技術相談の概要を確認できます。"
 page_keywords:
   - KomuraSoft
   - 会社情報

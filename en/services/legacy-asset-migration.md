@@ -6,7 +6,7 @@ permalink: /en/services/legacy-asset-migration/
 title: "Legacy Asset Reuse & Migration Support | KomuraSoft"
 service_name: "Legacy Asset Reuse & Migration Support"
 service_type: "Legacy asset reuse and migration support"
-description: "We help organize staged migration and boundary design while continuing to reuse assets such as COM / ActiveX / OCX components, C++ libraries, and 32-bit dependencies."
+description: "Service page for teams that need staged modernization of Windows systems while continuing to reuse COM / ActiveX / OCX assets or other older dependencies."
 service_keywords:
   - COM
   - ActiveX

@@ -6,7 +6,7 @@ permalink: /services/bug-investigation/
 title: "不具合調査・原因解析 | KomuraSoft"
 service_name: "不具合調査・原因解析"
 service_type: "Bug investigation and root cause analysis"
-description: "再現しにくい不具合、通信停止、長期稼働後のクラッシュ、リーク、異常系の切り分けなど、Windowsソフトの原因調査と再発防止を支援します。"
+description: "再現しにくい不具合や長期稼働障害で困っている方向けに、Windows ソフトの切り分け、原因調査、再発防止を支援するサービスページです。"
 service_keywords:
   - 不具合調査
   - 原因解析

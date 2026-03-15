@@ -6,7 +6,7 @@ permalink: /services/windows-modernization-maintenance/
 title: "既存Windowsソフトの改修・保守 | KomuraSoft"
 service_name: "既存Windowsソフトの改修・保守"
 service_type: "Windows software maintenance and modernization"
-description: "既存Windowsソフトの機能追加、バグ修正、性能改善、保守しやすい形への整理、段階的なモダナイゼーションに対応します。"
+description: "既存 Windows ソフトを壊さずに改修・保守したい方向けに、機能追加、安定化、段階的なモダナイズを支援するサービスページです。"
 service_keywords:
   - Windows改修
   - 保守

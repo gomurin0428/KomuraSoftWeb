@@ -6,7 +6,7 @@ permalink: /en/services/windows-modernization-maintenance/
 title: "Windows Software Maintenance & Modernization | KomuraSoft"
 service_name: "Windows Software Maintenance & Modernization"
 service_type: "Windows software maintenance and modernization"
-description: "We support feature additions, bug fixes, performance work, maintainability improvements, and staged modernization of existing Windows software."
+description: "Service page for teams that need safe changes, maintenance, and staged modernization for existing Windows software."
 service_keywords:
   - Windows maintenance
   - Modernization

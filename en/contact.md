@@ -10,7 +10,7 @@ schema_type: "ContactPage"
 main_entity_type: "Organization"
 main_entity_name: "KomuraSoft"
 main_entity_description: "Contact page for KomuraSoft, including inquiry entry points for Windows software development and technical consultation."
-description: "Contact page for KomuraSoft. Development requests, technical consultation, defect investigation, and design review inquiries are all welcome."
+description: "Contact page for teams that want to ask KomuraSoft about Windows software development, modernization, technical consulting, or defect investigation."
 page_keywords:
   - Contact
   - Technical Consultation

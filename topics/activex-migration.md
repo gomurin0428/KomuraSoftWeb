@@ -9,7 +9,7 @@ page_eyebrow: "Topic"
 schema_type: "CollectionPage"
 breadcrumb_parent_label: "技術トピック"
 breadcrumb_parent_url: "/topics/"
-description: "COM / ActiveX / OCX を残すか、ラップするか、置き換えるかを検討するための技術テーマページです。保守・移行の考え方と関連ページを整理しています。"
+description: "ActiveX / OCX を残すか置き換えるか迷う方向けに、保守・移行の考え方と関連ページをまとめたトピックページです。"
 page_keywords:
   - ActiveX
   - COM

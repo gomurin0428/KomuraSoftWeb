@@ -6,7 +6,7 @@ permalink: /services/windows-app-development/
 title: "Windowsアプリ開発 | KomuraSoft"
 service_name: "Windowsアプリ開発"
 service_type: "Windows application development"
-description: "業務用デスクトップアプリ、装置連携アプリ、通信監視ツール、常駐ソフト、Excel帳票出力など、Windowsソフトの設計・開発に対応します。"
+description: "業務アプリや装置連携ツールなど、Windows ソフトを新規開発したい方向けに、要件整理から設計・実装まで支援するサービスページです。"
 service_keywords:
   - Windows受託開発
   - デスクトップアプリ

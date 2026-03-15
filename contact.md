@@ -10,7 +10,7 @@ schema_type: "ContactPage"
 main_entity_type: "Organization"
 main_entity_name: "KomuraSoft"
 main_entity_description: "KomuraSoft へのお問い合わせページ。Windows受託開発と技術相談の問い合わせ窓口。"
-description: "KomuraSoft へのお問い合わせページです。開発のご依頼だけでなく、技術相談、不具合調査、設計レビューの相談も受け付けています。"
+description: "Windows ソフト開発、改修、技術相談、不具合調査を KomuraSoft に相談したい方向けのお問い合わせページです。"
 page_keywords:
   - お問い合わせ
   - 技術相談

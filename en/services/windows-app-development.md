@@ -6,7 +6,7 @@ permalink: /en/services/windows-app-development/
 title: "Windows App Development | KomuraSoft"
 service_name: "Windows App Development"
 service_type: "Windows application development"
-description: "We design and build business desktop applications, equipment-linked apps, monitoring tools, resident software, and Excel-based report systems for Windows."
+description: "Service page for teams building Windows business apps, device-linked tools, monitoring software, or other desktop applications."
 service_keywords:
   - Windows contract development
   - Desktop applications

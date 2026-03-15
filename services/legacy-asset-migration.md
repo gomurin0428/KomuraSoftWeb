@@ -6,7 +6,7 @@ permalink: /services/legacy-asset-migration/
 title: "既存資産活用・移行支援 | KomuraSoft"
 service_name: "既存資産活用・移行支援"
 service_type: "Legacy asset reuse and migration support"
-description: "COM / ActiveX / OCX、32bit / 64bit、C++/CLI などを含む既存資産を活かしながら、段階的な移行や境界整理を進める支援を行います。"
+description: "COM / ActiveX / OCX や 32bit / 64bit 問題を抱える既存 Windows システムを、安全に段階移行するための支援ページです。"
 service_keywords:
   - COM
   - ActiveX

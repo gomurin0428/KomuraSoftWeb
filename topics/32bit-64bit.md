@@ -9,7 +9,7 @@ page_eyebrow: "Topic"
 schema_type: "CollectionPage"
 breadcrumb_parent_label: "技術トピック"
 breadcrumb_parent_url: "/topics/"
-description: "32bit / 64bit 相互運用、C++/CLI 境界、ネイティブ DLL 連携を含むテーマページです。改修時に詰まりやすい論点と関連ページをまとめています。"
+description: "32bit / 64bit 相互運用や C++/CLI 境界で悩む方向けに、関連論点と記事をまとめたトピックページです。"
 page_keywords:
   - 32bit / 64bit
   - 相互運用

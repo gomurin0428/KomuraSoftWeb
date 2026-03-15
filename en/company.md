@@ -11,7 +11,7 @@ main_entity_type: "Organization"
 main_entity_name: "KomuraSoft"
 main_entity_url: "https://comcomponent.com/"
 main_entity_description: "Company overview for KomuraSoft, a Windows software development and technical consulting business."
-description: "Company overview for KomuraSoft, including business scope, technical focus, and public contact information for Windows software development and technical consultation."
+description: "Company overview for KomuraSoft, including what we build, where we focus technically, and how to get in touch about Windows software work."
 page_keywords:
   - KomuraSoft
   - Company

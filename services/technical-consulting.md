@@ -6,7 +6,7 @@ permalink: /services/technical-consulting/
 title: "技術相談・設計レビュー | KomuraSoft"
 service_name: "技術相談・設計レビュー"
 service_type: "Technical consulting and design review"
-description: "Windows開発を前提に、技術選定、設計レビュー、改修方針整理、既存資産の扱い、不具合調査の進め方などの技術相談に対応します。"
+description: "Windows ソフトの設計や改修方針に迷っている方向けに、技術選定、設計レビュー、既存資産の整理を支援するサービスページです。"
 service_keywords:
   - 技術相談
   - 設計レビュー

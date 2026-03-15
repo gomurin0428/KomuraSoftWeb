@@ -449,13 +449,6 @@
               {% endif %}
               <h1 class="detail-page-title">{{ page.page_name | default: page.title }}</h1>
               <p class="detail-page-lead">{{ page.description }}</p>
-              {% if page.page_keywords %}
-              <div class="detail-page-highlight-list">
-                {% for keyword in page.page_keywords %}
-                <span class="detail-page-highlight">{{ keyword }}</span>
-                {% endfor %}
-              </div>
-              {% endif %}
             </header>
 
             <section class="detail-page-content">

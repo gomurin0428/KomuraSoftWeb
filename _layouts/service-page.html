@@ -393,13 +393,6 @@
               <div class="service-page-eyebrow">{{ service_intro_label }}</div>
               <h1 class="service-page-title">{{ page.service_name | default: page.title }}</h1>
               <p class="service-page-lead">{{ page.description }}</p>
-              {% if page.service_keywords %}
-              <div class="service-page-highlight-list">
-                {% for keyword in page.service_keywords %}
-                <span class="service-page-highlight">{{ keyword }}</span>
-                {% endfor %}
-              </div>
-              {% endif %}
             </header>
 
             <section class="service-page-content">

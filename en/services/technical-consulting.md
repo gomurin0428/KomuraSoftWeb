@@ -6,7 +6,7 @@ permalink: /en/services/technical-consulting/
 title: "Technical Consulting & Design Review | KomuraSoft"
 service_name: "Technical Consulting & Design Review"
 service_type: "Technical consulting and design review"
-description: "We support technology selection, design review, modernization planning, and architectural boundary decisions for Windows software projects."
+description: "Service page for teams that need help choosing architecture, reviewing designs, or planning safe changes in Windows software."
 service_keywords:
   - Technical consulting
   - Design review

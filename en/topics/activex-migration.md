@@ -9,7 +9,7 @@ page_eyebrow: "Topic"
 schema_type: "CollectionPage"
 breadcrumb_parent_label: "Topics"
 breadcrumb_parent_url: "/en/topics/"
-description: "Topic page for deciding how to keep, wrap, or replace COM / ActiveX / OCX assets in a staged and practical way."
+description: "Topic page for teams deciding how to keep, wrap, or replace existing ActiveX / OCX assets without forcing an all-at-once rewrite."
 page_keywords:
   - ActiveX
   - COM

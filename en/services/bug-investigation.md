@@ -6,7 +6,7 @@ permalink: /en/services/bug-investigation/
 title: "Bug Investigation & Root Cause Analysis | KomuraSoft"
 service_name: "Bug Investigation & Root Cause Analysis"
 service_type: "Bug investigation and root cause analysis"
-description: "We help investigate hard-to-reproduce defects, communication stoppages, long-running crashes, leaks, and abnormal-case behavior in Windows software."
+description: "Service page for teams dealing with hard-to-reproduce defects, long-run failures, communication stalls, or other difficult Windows software problems."
 service_keywords:
   - Bug investigation
   - Root cause analysis

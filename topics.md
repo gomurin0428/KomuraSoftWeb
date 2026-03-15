@@ -7,7 +7,7 @@ title: "技術トピック | KomuraSoft"
 page_name: "技術トピック"
 page_eyebrow: "Topics"
 schema_type: "CollectionPage"
-description: "COM、.NET、WPF / WinForms、32bit / 64bit、不具合調査など、KomuraSoft がよく扱う技術テーマごとに関連記事と関連サービスをまとめたトピックハブです。"
+description: "KomuraSoft の技術記事と関連サービスを、課題別にたどれるトピック一覧ページです。関心の近いテーマから調査や相談の入口を見つけられます。"
 page_keywords:
   - 技術トピック
   - COM

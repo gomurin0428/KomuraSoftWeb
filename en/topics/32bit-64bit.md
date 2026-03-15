@@ -9,7 +9,7 @@ page_eyebrow: "Topic"
 schema_type: "CollectionPage"
 breadcrumb_parent_label: "Topics"
 breadcrumb_parent_url: "/en/topics/"
-description: "Topic page for 32-bit / 64-bit interoperability, C++/CLI boundaries, and native DLL integration decisions in Windows systems."
+description: "Topic page for teams working through 32-bit / 64-bit interoperability, C++/CLI boundaries, and native DLL integration decisions in Windows systems."
 page_keywords:
   - 32-bit / 64-bit
   - Interoperability

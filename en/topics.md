@@ -7,7 +7,7 @@ title: "Topics | KomuraSoft"
 page_name: "Topics"
 page_eyebrow: "Topics"
 schema_type: "CollectionPage"
-description: "A topic hub for COM, .NET, WPF / WinForms, 32-bit / 64-bit interoperability, and bug investigation themes, each connected to relevant articles and service pages."
+description: "Topic hub for exploring KomuraSoft articles and related services by technical problem area, from legacy COM assets to bug investigation."
 page_keywords:
   - Topics
   - COM
