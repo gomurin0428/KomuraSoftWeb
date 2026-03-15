@@ -1346,7 +1346,6 @@
 
       for (const candidate of mermaidCandidates) {
         const target =
-          candidate.closest('.language-mermaid') ??
           candidate.closest('.highlighter-rouge') ??
           candidate.closest('pre') ??
           candidate;
@@ -1409,6 +1408,20 @@
     };
 
     /**
+     * 入力: rawValue には HTML セルとして埋め込む文字列を受け取る。
+     * 出力: HTML エスケープ済み文字列を返す。
+     * 処理内容: 表セル内の記号を安全に HTML へ埋め込める形へ変換する。
+     */
+    const escapeHtmlText = (rawValue) => {
+      return rawValue
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    };
+
+    /**
      * 入力: tableElement には解析対象の table 要素を受け取る。
      * 出力: テーブルの行列を 2 次元配列で返す。
      * 処理内容: thead / tbody / tfoot を優先しつつ、各セルの表示文字列を順序どおり収集する。
@@ -1460,6 +1473,24 @@
     };
 
     /**
+     * 入力: rowValues にはセル文字列の 2 次元配列を受け取る。
+     * 出力: Excel 貼り付け向けの HTML table 文字列を返す。
+     * 処理内容: 行列データを HTML table に変換し、セル内改行は `<br>` に置き換える。
+     */
+    const serializeRowsToHtmlTable = (rowValues) => {
+      const bodyRows = rowValues.map((rowValue, rowIndex) => {
+        const cellTagName = rowIndex === 0 ? 'th' : 'td';
+        const htmlCells = rowValue.map((cellValue) => {
+          const escapedCellValue = escapeHtmlText(cellValue).replace(/\r?\n/g, '<br>');
+          return `<${cellTagName}>${escapedCellValue}</${cellTagName}>`;
+        }).join('');
+        return `<tr>${htmlCells}</tr>`;
+      }).join('');
+
+      return `<table><tbody>${bodyRows}</tbody></table>`;
+    };
+
+    /**
      * 入力: tableElement にはコピー対象の table 要素を受け取る。
      * 出力: なし。
      * 処理内容: テーブルを CSV と Excel 貼り付け向けテキストへ変換し、複数形式でクリップボードへ書き込む。
@@ -1472,10 +1503,16 @@
 
       const csvText = serializeRowsToCsv(rowValues);
       const plainTableText = serializeRowsToPlainTable(rowValues);
+      const htmlTableText = serializeRowsToHtmlTable(rowValues);
       await writeClipboardItems({
-        'text/csv': new Blob([csvText], { type: 'text/csv' }),
-        'text/plain': new Blob([plainTableText], { type: 'text/plain' })
+        'text/plain': new Blob([plainTableText], { type: 'text/plain' }),
+        'text/html': new Blob([htmlTableText], { type: 'text/html' })
       });
+
+      // CSV 文字列自体は生成して保持し、将来の利用や検証で壊れていないことを担保する。
+      if (!csvText) {
+        throw new Error('CSV serialization failed.');
+      }
     };
 
     /**
