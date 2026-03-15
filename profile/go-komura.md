@@ -25,6 +25,8 @@ related_pages:
     url: "/case-studies/"
   - title: "32bit / 64bit テーマ"
     url: "/topics/32bit-64bit/"
+  - title: "不具合調査 / 長期稼働テーマ"
+    url: "/topics/bug-investigation-long-run/"
 ---
 
 ## どんな案件で力を出しやすいか

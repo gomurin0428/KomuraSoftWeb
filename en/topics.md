@@ -79,6 +79,7 @@ related_pages:
     <div class="topic-hub-link-group">
       <p class="topic-hub-link-group-title">Related pages</p>
       <div class="topic-hub-links">
+        <a class="topic-hub-link topic-hub-link-secondary" href="/en/topics/generic-host-app-architecture/">Generic Host & App Architecture</a>
         <a class="topic-hub-link topic-hub-link-secondary" href="/en/services/windows-app-development/">Windows App Development</a>
         <a class="topic-hub-link topic-hub-link-secondary" href="/en/services/technical-consulting/">Technical Consulting & Design Review</a>
       </div>
@@ -104,6 +105,7 @@ related_pages:
     <div class="topic-hub-link-group">
       <p class="topic-hub-link-group-title">Related pages</p>
       <div class="topic-hub-links">
+        <a class="topic-hub-link topic-hub-link-secondary" href="/en/topics/ui-threading-timers/">UI Threading & Timers</a>
         <a class="topic-hub-link topic-hub-link-secondary" href="/en/services/windows-app-development/">Windows App Development</a>
         <a class="topic-hub-link topic-hub-link-secondary" href="/en/services/technical-consulting/">Technical Consulting & Design Review</a>
       </div>
@@ -155,6 +157,7 @@ related_pages:
     <div class="topic-hub-link-group">
       <p class="topic-hub-link-group-title">Related pages</p>
       <div class="topic-hub-links">
+        <a class="topic-hub-link topic-hub-link-secondary" href="/en/topics/bug-investigation-long-run/">Bug Investigation & Long-Run Failures</a>
         <a class="topic-hub-link topic-hub-link-secondary" href="/en/services/bug-investigation/">Bug Investigation & Root Cause Analysis</a>
         <a class="topic-hub-link topic-hub-link-secondary" href="/en/services/windows-app-development/">Windows App Development</a>
       </div>

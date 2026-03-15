@@ -14,6 +14,18 @@ ja:
       title: "32bit / 64bit テーマ"
       url: "/topics/32bit-64bit/"
       description: "32bit / 64bit 相互運用、C++/CLI 境界、ネイティブ DLL 連携の論点をまとめて確認できるテーマページです。"
+    - id: generic-host-app-architecture
+      title: "Generic Host / アプリ設計テーマ"
+      url: "/topics/generic-host-app-architecture/"
+      description: "Generic Host、BackgroundService、DI、設定、ログ、起動と停止の設計をまとめて辿れるテーマページです。"
+    - id: ui-threading-timers
+      title: "UI スレッド / 定期処理テーマ"
+      url: "/topics/ui-threading-timers/"
+      description: "WPF / WinForms、UI スレッド、async/await、Dispatcher、タイマーの使い分けをまとめて見られるテーマページです。"
+    - id: bug-investigation-long-run
+      title: "不具合調査 / 長期稼働テーマ"
+      url: "/topics/bug-investigation-long-run/"
+      description: "再現しにくい障害、通信停止、長期稼働後のクラッシュ、異常系テスト基盤をまとめて辿れるテーマページです。"
   rules:
     - match_tags:
         - COM
@@ -31,11 +43,34 @@ ja:
         - C++/CLI
         - ネイティブ連携
         - Native AOT
+      topic_ids:
+        - bitness-interop
+    - match_tags:
+        - Generic Host
+        - Worker
+        - BackgroundService
+      topic_ids:
+        - generic-host-app-architecture
+    - match_tags:
+        - WPF
+        - WinForms
+        - UI
+        - スレッド
+        - async/await
+        - タイマー
+      topic_ids:
+        - ui-threading-timers
+    - match_tags:
+        - 不具合調査
         - TCP
         - ネットワーク
         - 産業用カメラ
+        - ハンドルリーク
+        - ログ設計
+        - Application Verifier
+        - 異常系テスト
       topic_ids:
-        - bitness-interop
+        - bug-investigation-long-run
 en:
   default_topic_ids:
     - topics-hub
@@ -52,6 +87,18 @@ en:
       title: "32-bit / 64-bit Interoperability"
       url: "/en/topics/32bit-64bit/"
       description: "Topic page for 32-bit / 64-bit interoperability, native boundaries, and related Windows design decisions."
+    - id: generic-host-app-architecture
+      title: "Generic Host & App Architecture"
+      url: "/en/topics/generic-host-app-architecture/"
+      description: "Topic page for Generic Host, BackgroundService, DI, configuration, logging, and app lifetime design."
+    - id: ui-threading-timers
+      title: "UI Threading & Timers"
+      url: "/en/topics/ui-threading-timers/"
+      description: "Topic page for WPF / WinForms UI threading, async flow, Dispatcher usage, and timer decisions."
+    - id: bug-investigation-long-run
+      title: "Bug Investigation & Long-Run Failures"
+      url: "/en/topics/bug-investigation-long-run/"
+      description: "Topic page for intermittent failures, communication diagnosis, long-run crashes, and failure-path test foundations."
   rules:
     - match_tags:
         - COM
@@ -69,8 +116,33 @@ en:
         - C++/CLI
         - Native Interop
         - Native AOT
+      topic_ids:
+        - bitness-interop
+    - match_tags:
+        - Generic Host
+        - Worker
+        - BackgroundService
+      topic_ids:
+        - generic-host-app-architecture
+    - match_tags:
+        - WPF
+        - WinForms
+        - UI
+        - Threading
+        - async/await
+        - Timer
+      topic_ids:
+        - ui-threading-timers
+    - match_tags:
+        - Bug Investigation
+        - Debugging
+        - Long-Running
         - TCP
         - Networking
         - Industrial Camera
+        - Handle Leak
+        - Logging Design
+        - Application Verifier
+        - Failure-Path Testing
       topic_ids:
-        - bitness-interop
+        - bug-investigation-long-run

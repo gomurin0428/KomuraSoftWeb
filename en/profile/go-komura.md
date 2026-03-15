@@ -25,6 +25,8 @@ related_pages:
     url: "/en/case-studies/"
   - title: "32-bit / 64-bit Topic"
     url: "/en/topics/32bit-64bit/"
+  - title: "Bug Investigation & Long-Run Failures"
+    url: "/en/topics/bug-investigation-long-run/"
 ---
 
 ## Where the experience is strongest

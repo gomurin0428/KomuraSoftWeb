@@ -79,6 +79,7 @@ related_pages:
     <div class="topic-hub-link-group">
       <p class="topic-hub-link-group-title">関連ページ</p>
       <div class="topic-hub-links">
+        <a class="topic-hub-link topic-hub-link-secondary" href="/topics/generic-host-app-architecture/">Generic Host / アプリ設計テーマ</a>
         <a class="topic-hub-link topic-hub-link-secondary" href="/services/windows-app-development/">Windowsアプリ開発</a>
         <a class="topic-hub-link topic-hub-link-secondary" href="/services/technical-consulting/">技術相談・設計レビュー</a>
       </div>
@@ -104,6 +105,7 @@ related_pages:
     <div class="topic-hub-link-group">
       <p class="topic-hub-link-group-title">関連ページ</p>
       <div class="topic-hub-links">
+        <a class="topic-hub-link topic-hub-link-secondary" href="/topics/ui-threading-timers/">UI スレッド / 定期処理テーマ</a>
         <a class="topic-hub-link topic-hub-link-secondary" href="/services/windows-app-development/">Windowsアプリ開発</a>
         <a class="topic-hub-link topic-hub-link-secondary" href="/services/technical-consulting/">技術相談・設計レビュー</a>
       </div>
@@ -155,6 +157,7 @@ related_pages:
     <div class="topic-hub-link-group">
       <p class="topic-hub-link-group-title">関連ページ</p>
       <div class="topic-hub-links">
+        <a class="topic-hub-link topic-hub-link-secondary" href="/topics/bug-investigation-long-run/">不具合調査 / 長期稼働テーマ</a>
         <a class="topic-hub-link topic-hub-link-secondary" href="/services/bug-investigation/">不具合調査・原因解析</a>
         <a class="topic-hub-link topic-hub-link-secondary" href="/services/windows-app-development/">Windowsアプリ開発</a>
       </div>
