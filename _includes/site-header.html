@@ -31,45 +31,47 @@
       <img src="/logo-ui.jpg" alt="KomuraSoft" class="brand-logo" style="width: 2.5rem; height: 2.5rem; max-width: 2.5rem; max-height: 2.5rem;">
       <span class="brand-name">KomuraSoft</span>
     </a>
-    <button type="button" class="mobile-menu-toggle" data-mobile-menu-toggle aria-expanded="false" aria-controls="site-nav-{{ header_lang }}" aria-label="{{ header_menu_label }}">
-      <span class="mobile-menu-toggle-bars" aria-hidden="true">
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
-      <span class="mobile-menu-toggle-text">{{ header_menu_label }}</span>
-    </button>
-    <nav class="site-nav" id="site-nav-{{ header_lang }}" aria-label="{{ header_nav_label }}">
-      <div class="nav-dropdown">
-        <button type="button" class="nav-dropdown-toggle nav-link nav-link--with-menu" aria-expanded="false">{{ header_services_label }}</button>
-        <div class="nav-dropdown-menu">
-          {% for item in service_links %}
-          <a class="nav-dropdown-item" href="{{ item.url }}">{{ item.title }}</a>
-          {% endfor %}
+    <details class="site-nav-shell">
+      <summary class="mobile-menu-toggle" aria-controls="site-nav-{{ header_lang }}" aria-label="{{ header_menu_label }}">
+        <span class="mobile-menu-toggle-bars" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+        <span class="mobile-menu-toggle-text">{{ header_menu_label }}</span>
+      </summary>
+      <nav class="site-nav" id="site-nav-{{ header_lang }}" aria-label="{{ header_nav_label }}">
+        <details class="nav-dropdown">
+          <summary class="nav-dropdown-toggle nav-link nav-link--with-menu">{{ header_services_label }}</summary>
+          <div class="nav-dropdown-menu">
+            {% for item in service_links %}
+            <a class="nav-dropdown-item" href="{{ item.url }}">{{ item.title }}</a>
+            {% endfor %}
+          </div>
+        </details>
+        {% for item in secondary_links %}
+        <a class="nav-link" href="{{ item.url }}">{{ item.title }}</a>
+        {% endfor %}
+        <details class="nav-dropdown">
+          <summary class="nav-dropdown-toggle nav-link nav-link--with-menu">{{ header_about_label }}</summary>
+          <div class="nav-dropdown-menu">
+            {% for item in about_links %}
+            <a class="nav-dropdown-item" href="{{ item.url }}">{{ item.title }}</a>
+            {% endfor %}
+          </div>
+        </details>
+        <a class="nav-link nav-link--contact" href="{{ contact_link.url }}">{{ contact_link.title }}</a>
+        <div class="mobile-nav-actions">
+          <div class="language-switch" role="group" aria-label="{{ header_lang_label }}">
+            <a class="language-button language-button-link" href="{{ header_ja_url }}"{% unless header_lang == "en" %} aria-current="page"{% endunless %}>{{ header_ja_label }}</a>
+            {% if header_lang == "en" or header_en_url %}
+            <a class="language-button language-button-link" href="{{ header_en_url }}"{% if header_lang == "en" %} aria-current="page"{% endif %}>English</a>
+            {% else %}
+            <span class="language-button is-disabled">English</span>
+            {% endif %}
+          </div>
         </div>
-      </div>
-      {% for item in secondary_links %}
-      <a class="nav-link" href="{{ item.url }}">{{ item.title }}</a>
-      {% endfor %}
-      <div class="nav-dropdown">
-        <button type="button" class="nav-dropdown-toggle nav-link nav-link--with-menu" aria-expanded="false">{{ header_about_label }}</button>
-        <div class="nav-dropdown-menu">
-          {% for item in about_links %}
-          <a class="nav-dropdown-item" href="{{ item.url }}">{{ item.title }}</a>
-          {% endfor %}
-        </div>
-      </div>
-      <a class="nav-link nav-link--contact" href="{{ contact_link.url }}">{{ contact_link.title }}</a>
-      <div class="mobile-nav-actions">
-        <div class="language-switch" role="group" aria-label="{{ header_lang_label }}">
-          <a class="language-button language-button-link" href="{{ header_ja_url }}"{% unless header_lang == "en" %} aria-current="page"{% endunless %}>{{ header_ja_label }}</a>
-          {% if header_lang == "en" or header_en_url %}
-          <a class="language-button language-button-link" href="{{ header_en_url }}"{% if header_lang == "en" %} aria-current="page"{% endif %}>English</a>
-          {% else %}
-          <span class="language-button is-disabled">English</span>
-          {% endif %}
-        </div>
-      </div>
-    </nav>
+      </nav>
+    </details>
   </div>
 </header>
