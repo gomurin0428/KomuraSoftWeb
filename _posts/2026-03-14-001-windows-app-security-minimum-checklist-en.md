@@ -345,59 +345,75 @@ Below is a simple pre-release checklist that works as a yes-or-no review sheet.
 
 ### 4.1. Privileges and execution model
 
-- [ ] Normal startup runs as `asInvoker`
-- [ ] Operations that require administrator rights are isolated into a separate EXE, service, or similar component
-- [ ] If a service is used, it is not running under a stronger account than necessary
-- [ ] Responsibilities are clearly split between `%ProgramFiles%` and user-data locations
+| Check item | Status | Notes |
+| --- | --- | --- |
+| Normal startup runs as `asInvoker` | □ |  |
+| Operations that require administrator rights are isolated into a separate EXE, service, or similar component | □ |  |
+| If a service is used, it is not running under a stronger account than necessary | □ |  |
+| Responsibilities are clearly split between `%ProgramFiles%` and user-data locations | □ |  |
 
 ### 4.2. Distribution and signing
 
-- [ ] EXEs, DLLs, MSI / MSIX packages, and updater binaries are signed
-- [ ] Timestamps are attached to signatures
-- [ ] Certificate expiry and renewal steps are included in the release flow
-- [ ] There is a defined integrity or tamper-detection method for distributed artifacts
+| Check item | Status | Notes |
+| --- | --- | --- |
+| EXEs, DLLs, MSI / MSIX packages, and updater binaries are signed | □ |  |
+| Timestamps are attached to signatures | □ |  |
+| Certificate expiry and renewal steps are included in the release flow | □ |  |
+| There is a defined integrity or tamper-detection method for distributed artifacts | □ |  |
 
 ### 4.3. Updating
 
-- [ ] Update retrieval uses HTTPS
-- [ ] Downloaded updates are verified by signature or hash
-- [ ] The update source URL is not trivially replaceable
-- [ ] There is a rollback or retry policy for update failures
+| Check item | Status | Notes |
+| --- | --- | --- |
+| Update retrieval uses HTTPS | □ |  |
+| Downloaded updates are verified by signature or hash | □ |  |
+| The update source URL is not trivially replaceable | □ |  |
+| There is a rollback or retry policy for update failures | □ |  |
 
 ### 4.4. Secrets
 
-- [ ] Passwords, API keys, and connection strings are not hard-coded in source
-- [ ] Secrets are not stored in plaintext config files
-- [ ] Secrets that must be stored locally are protected with DPAPI, Credential Locker, or an equivalent Windows mechanism
-- [ ] Where possible, the design leans on Windows authentication or user-provided credentials
+| Check item | Status | Notes |
+| --- | --- | --- |
+| Passwords, API keys, and connection strings are not hard-coded in source | □ |  |
+| Secrets are not stored in plaintext config files | □ |  |
+| Secrets that must be stored locally are protected with DPAPI, Credential Locker, or an equivalent Windows mechanism | □ |  |
+| Where possible, the design leans on Windows authentication or user-provided credentials | □ |  |
 
 ### 4.5. Transport security
 
-- [ ] Production traffic uses HTTPS
-- [ ] `DangerousAcceptAnyServerCertificateValidator` or `=> true` certificate bypasses are not present in release artifacts
-- [ ] Host-name validation and revocation checks are being considered
-- [ ] Development-only certificate assumptions are not leaking into production code or config
+| Check item | Status | Notes |
+| --- | --- | --- |
+| Production traffic uses HTTPS | □ |  |
+| `DangerousAcceptAnyServerCertificateValidator` or `=> true` certificate bypasses are not present in release artifacts | □ |  |
+| Host-name validation and revocation checks are being considered | □ |  |
+| Development-only certificate assumptions are not leaking into production code or config | □ |  |
 
 ### 4.6. Input and data access
 
-- [ ] SQL uses parameters
-- [ ] Command-line input, files, IPC, and URIs have limits and format validation
-- [ ] Path handling normalizes input and prevents root escape
-- [ ] Raw exception messages are not shown directly to end users
+| Check item | Status | Notes |
+| --- | --- | --- |
+| SQL uses parameters | □ |  |
+| Command-line input, files, IPC, and URIs have limits and format validation | □ |  |
+| Path handling normalizes input and prevents root escape | □ |  |
+| Raw exception messages are not shown directly to end users | □ |  |
 
 ### 4.7. DLLs and runtime environment
 
-- [ ] DLL load sources are explicit
-- [ ] Search order is controlled with `SetDefaultDllDirectories`, `AddDllDirectory`, or equivalent measures
-- [ ] DLL resolution does not depend on the current directory or `PATH`
-- [ ] The files required for dynamic loading at the destination environment are understood
+| Check item | Status | Notes |
+| --- | --- | --- |
+| DLL load sources are explicit | □ |  |
+| Search order is controlled with `SetDefaultDllDirectories`, `AddDllDirectory`, or equivalent measures | □ |  |
+| DLL resolution does not depend on the current directory or `PATH` | □ |  |
+| The files required for dynamic loading at the destination environment are understood | □ |  |
 
 ### 4.8. Logging and operations
 
-- [ ] Tokens, passwords, and PII are not written to logs
-- [ ] Internal diagnostics and user-facing messages are separated
-- [ ] Storage permissions for dumps, traces, and logs have been reviewed
-- [ ] SDK and dependency update status is checked as part of release preparation
+| Check item | Status | Notes |
+| --- | --- | --- |
+| Tokens, passwords, and PII are not written to logs | □ |  |
+| Internal diagnostics and user-facing messages are separated | □ |  |
+| Storage permissions for dumps, traces, and logs have been reviewed | □ |  |
+| SDK and dependency update status is checked as part of release preparation | □ |  |
 
 ## 5. Common false comforts
 
