@@ -1,5 +1,5 @@
----
-title: "How to Extract a Still Image from an MP4 at a Specific Time with Media Foundation - Seek with Source Reader and Save as PNG"
+﻿---
+title: "How to Extract a Still Image from an MP4 with Media Foundation - A Single .cpp File You Can Paste into a C++ Console App"
 date: 2026-03-15 10:00
 lang: en
 translation_key: media-foundation-extract-still-image-from-mp4-at-specific-time
@@ -10,7 +10,7 @@ tags:
   - Windows Development
   - WIC
 author: Go Komura
-description: "How to use the Media Foundation Source Reader to pull the frame nearest a target timestamp from an MP4 and save it as PNG, including seek accuracy, ReadSample behavior, stride, image orientation, and RGB32 alpha-byte pitfalls."
+description: "How to use the Media Foundation Source Reader to extract the frame nearest a target timestamp from an MP4 and save it as PNG, with a final one-file .cpp sample that is easy to paste into a Visual Studio C++ console app."
 consultation_services:
   - id: windows-app-development
     reason: "This topic connects directly to Windows application work that needs Media Foundation, Source Reader, WIC, and practical still-image extraction from video."
@@ -27,7 +27,7 @@ At a glance, it can feel as if `SetCurrentPosition` followed by one `ReadSample`
 For the broader shape of Media Foundation itself, the earlier article [What Media Foundation Is - Why It Starts to Feel Like COM and Windows Media APIs at the Same Time](https://comcomponent.com/en/blog/2026/03/09/002-media-foundation-why-it-feels-like-com/) is a useful companion.  
 This article goes one layer lower and focuses only on **pulling one still image from an MP4**.
 
-The target here is simple: use `IMFSourceReader` to extract **the frame nearest a requested timestamp** and save it as PNG from a native C++ desktop application.
+The target here is simple: use `IMFSourceReader` to extract **the frame nearest a requested timestamp** and save it as PNG from a native C++ desktop application. And at the end, instead of leaving the article as scattered fragments, there is a **single-file `.cpp` version** meant to be easy to paste into a Visual Studio console project.
 
 ## 1. Short version
 
@@ -170,204 +170,7 @@ The roles are cleanly split:
 
 That is usually the least confusing combination for this use case.
 
-## 6. Code excerpts
-
-The most important part is the post-seek comparison logic.
-
-```cpp
-HRESULT ReadNearestVideoSample(
-    IMFSourceReader* pReader,
-    LONGLONG targetHns,
-    IMFSample** ppSelectedSample,
-    LONGLONG* phnsSelected)
-{
-    if (pReader == nullptr || ppSelectedSample == nullptr || phnsSelected == nullptr)
-    {
-        return E_POINTER;
-    }
-
-    *ppSelectedSample = nullptr;
-    *phnsSelected = 0;
-
-    PROPVARIANT var;
-    PropVariantInit(&var);
-    var.vt = VT_I8;
-    var.hVal.QuadPart = targetHns;
-
-    HRESULT hr = pReader->SetCurrentPosition(GUID_NULL, var);
-    PropVariantClear(&var);
-    if (FAILED(hr))
-    {
-        return hr;
-    }
-
-    IMFSample* pPrevSample = nullptr;
-    LONGLONG prevTime = 0;
-
-    for (;;)
-    {
-        DWORD flags = 0;
-        LONGLONG sampleTime = 0;
-        IMFSample* pSample = nullptr;
-
-        hr = pReader->ReadSample(
-            MF_SOURCE_READER_FIRST_VIDEO_STREAM,
-            0,
-            nullptr,
-            &flags,
-            &sampleTime,
-            &pSample);
-
-        if (FAILED(hr))
-        {
-            SafeRelease(&pPrevSample);
-            return hr;
-        }
-
-        if (flags & MF_SOURCE_READERF_ENDOFSTREAM)
-        {
-            if (pPrevSample != nullptr)
-            {
-                *ppSelectedSample = pPrevSample;
-                *phnsSelected = prevTime;
-                return S_OK;
-            }
-
-            return MF_E_END_OF_STREAM;
-        }
-
-        if (pSample == nullptr)
-        {
-            continue;
-        }
-
-        if (sampleTime < targetHns)
-        {
-            SafeRelease(&pPrevSample);
-            pPrevSample = pSample;
-            prevTime = sampleTime;
-            continue;
-        }
-
-        if (pPrevSample == nullptr)
-        {
-            *ppSelectedSample = pSample;
-            *phnsSelected = sampleTime;
-            return S_OK;
-        }
-
-        const LONGLONG prevDelta = targetHns - prevTime;
-        const LONGLONG currDelta = sampleTime - targetHns;
-
-        if (prevDelta <= currDelta)
-        {
-            *ppSelectedSample = pPrevSample;
-            *phnsSelected = prevTime;
-            SafeRelease(&pSample);
-        }
-        else
-        {
-            *ppSelectedSample = pSample;
-            *phnsSelected = sampleTime;
-            SafeRelease(&pPrevSample);
-        }
-
-        return S_OK;
-    }
-}
-```
-
-Then the sample needs to be normalized before PNG writing.
-
-```cpp
-HRESULT CopySampleToTopDownBgra(
-    IMFSample* pSample,
-    IMFMediaType* pCurrentType,
-    std::vector<BYTE>& outPixels,
-    UINT32* pWidth,
-    UINT32* pHeight)
-{
-    if (pSample == nullptr || pCurrentType == nullptr || pWidth == nullptr || pHeight == nullptr)
-    {
-        return E_POINTER;
-    }
-
-    UINT32 width = 0;
-    UINT32 height = 0;
-    HRESULT hr = MFGetAttributeSize(pCurrentType, MF_MT_FRAME_SIZE, &width, &height);
-    if (FAILED(hr))
-    {
-        return hr;
-    }
-
-    LONG stride = static_cast<LONG>(4 * width);
-
-    IMFMediaBuffer* pBuffer = nullptr;
-    hr = pSample->ConvertToContiguousBuffer(&pBuffer);
-    if (FAILED(hr))
-    {
-        return hr;
-    }
-
-    BYTE* pData = nullptr;
-    DWORD maxLen = 0;
-    DWORD curLen = 0;
-    hr = pBuffer->Lock(&pData, &maxLen, &curLen);
-    if (FAILED(hr))
-    {
-        SafeRelease(&pBuffer);
-        return hr;
-    }
-
-    outPixels.resize(static_cast<size_t>(width) * static_cast<size_t>(height) * 4);
-
-    for (UINT32 y = 0; y < height; ++y)
-    {
-        const BYTE* pSrc = pData + static_cast<size_t>(y) * static_cast<size_t>(std::abs(stride));
-        BYTE* pDst = outPixels.data() + static_cast<size_t>(y) * static_cast<size_t>(width) * 4;
-
-        std::memcpy(pDst, pSrc, static_cast<size_t>(width) * 4);
-
-        for (UINT32 x = 0; x < width; ++x)
-        {
-            pDst[4 * x + 3] = 0xFF;
-        }
-    }
-
-    pBuffer->Unlock();
-    SafeRelease(&pBuffer);
-
-    *pWidth = width;
-    *pHeight = height;
-    return S_OK;
-}
-```
-
-The important points are:
-
-1. choose the frame by comparing both sides of the target time
-2. treat `HRESULT`, `flags`, and `pSample` as a set
-3. normalize stride/orientation and force opaque alpha before PNG writing
-
-For a single still-image extraction flow, `ConvertToContiguousBuffer` is usually practical enough. If you later need to extract many frames from one file, there is room to reduce copying further.
-
-## 7. Build notes
-
-This is intended for a native C++ desktop application on Windows 10 / 11.
-
-- Unicode build
-- x64 preferred
-- link `mfplat.lib`, `mfreadwrite.lib`, `mfuuid.lib`, `ole32.lib`, `propsys.lib`, `windowscodecs.lib`
-
-A command-line shape like this is enough:
-
-```text
-ExtractFrameFromMp4.exe C:\work\input.mp4 12.345 C:\work\frame.png
-```
-
-It is also useful to print the requested time and the actual chosen frame timestamp after saving.
-
-## 8. Practical checklist
+## 6. Practical checklist
 
 | Item | What to check | What tends to go wrong otherwise |
 | --- | --- | --- |
@@ -377,8 +180,28 @@ It is also useful to print the requested time and the actual chosen frame timest
 | Fourth byte of RGB32 | Force alpha to `0xFF` before PNG writing | The PNG can become transparent |
 | Time range | Keep `0 <= target < duration` | End-of-file behavior gets messy |
 | Repeated extraction | Reuse the reader and seek repeatedly | Recreating everything wastes time |
+| Copy cost | If extracting many frames, think about the cost of `ConvertToContiguousBuffer` | CPU and memory bandwidth get wasted |
+| Format changes | Treat midstream resolution changes as a separate design problem | Width/height assumptions can break |
 
-## 9. Summary
+## 7. Build and run notes
+
+The code at the end of the article is meant to be **easy to drop into a Visual Studio C++ console application as one `.cpp` file**.
+
+The most useful points to remember are:
+
+- `#pragma comment(lib, ...)` is already included, so additional linker setup is usually unnecessary
+- `wmain` is used, so command-line arguments stay in Unicode cleanly
+- if the default console template already expects `pch.h` or `stdafx.h`, the code tries to include it with `__has_include`
+- if the project still forces a custom precompiled-header setting, this one `.cpp` file can simply be set to "Not Using Precompiled Headers"
+- x64 is still the practical default
+
+The command-line shape is:
+
+```text
+ExtractFrameFromMp4.exe C:\work\input.mp4 12.345 C:\work\frame.png
+```
+
+## 8. Summary
 
 Extracting a still image from MP4 with Media Foundation is not hard, but it is also not quite as trivial as `seek -> read once -> save`.
 
@@ -392,15 +215,930 @@ The parts worth deciding explicitly are:
 
 Once those points are handled, the workflow becomes stable enough for thumbnails, monitoring snapshots, and evidence-style frame extraction.
 
-## 10. References
+## 9. References
 
 - Microsoft Learn: [Using the Source Reader to Process Media Data](https://learn.microsoft.com/en-us/windows/win32/medfound/processing-media-data-with-the-source-reader)
 - Microsoft Learn: [`IMFSourceReader::SetCurrentPosition`](https://learn.microsoft.com/en-us/windows/win32/api/mfreadwrite/nf-mfreadwrite-imfsourcereader-setcurrentposition)
 - Microsoft Learn: [`IMFSourceReader::ReadSample`](https://learn.microsoft.com/en-us/windows/win32/api/mfreadwrite/nf-mfreadwrite-imfsourcereader-readsample)
 - Microsoft Learn: [`IMFSourceReader::SetCurrentMediaType`](https://learn.microsoft.com/en-us/windows/win32/api/mfreadwrite/nf-mfreadwrite-imfsourcereader-setcurrentmediatype)
 - Microsoft Learn: [`IMF2DBuffer`](https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imf2dbuffer)
+- Microsoft Learn: [`IMF2DBuffer::Lock2D`](https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imf2dbuffer-lock2d)
 - Microsoft Learn: [Uncompressed Video Buffers](https://learn.microsoft.com/en-us/windows/win32/medfound/uncompressed-video-buffers)
 - Microsoft Learn: [Image Stride](https://learn.microsoft.com/en-us/windows/win32/medfound/image-stride)
 - Microsoft Learn: [MF_MT_FRAME_SIZE attribute](https://learn.microsoft.com/en-us/windows/win32/medfound/mf-mt-frame-size-attribute)
+- Microsoft Learn: [MF_MT_DEFAULT_STRIDE attribute](https://learn.microsoft.com/en-us/windows/win32/medfound/mf-mt-default-stride-attribute)
 - Microsoft Learn: [Native pixel formats overview (WIC)](https://learn.microsoft.com/en-us/windows/win32/wic/-wic-codec-native-pixel-formats)
 - Microsoft Learn: [Uncompressed RGB Video Subtypes](https://learn.microsoft.com/en-us/windows/win32/directshow/uncompressed-rgb-video-subtypes)
+
+## 10. Full `.cpp` code you can paste directly
+
+The final block below is meant to be copied directly into a Visual Studio C++ console app project. The command-line arguments are `input.mp4`, `seconds`, and `output.png`, in that order. The article effectively ends here, so **the last code block alone is meant to be enough to take away and run**.
+
+```cpp
+#define NOMINMAX
+#if defined(_MSC_VER)
+#  if __has_include("pch.h")
+#    include "pch.h"
+#  elif __has_include("stdafx.h")
+#    include "stdafx.h"
+#  endif
+#endif
+#include <windows.h>
+#include <mfapi.h>
+#include <mfidl.h>
+#include <mfreadwrite.h>
+#include <mferror.h>
+#include <mfobjects.h>
+#include <propvarutil.h>
+#include <wincodec.h>
+
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
+#include <cwchar>
+#include <cmath>
+#include <cstring>
+#include <limits>
+#include <vector>
+
+#pragma comment(lib, "mfplat.lib")
+#pragma comment(lib, "mfreadwrite.lib")
+#pragma comment(lib, "mfuuid.lib")
+#pragma comment(lib, "ole32.lib")
+#pragma comment(lib, "propsys.lib")
+#pragma comment(lib, "windowscodecs.lib")
+
+template <class T>
+void SafeRelease(T** pp)
+{
+    if (pp != nullptr && *pp != nullptr)
+    {
+        (*pp)->Release();
+        *pp = nullptr;
+    }
+}
+
+class MediaFoundationScope
+{
+public:
+    MediaFoundationScope() : m_comInitialized(false), m_mfStarted(false)
+    {
+    }
+
+    HRESULT Initialize()
+    {
+        HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+        if (hr == RPC_E_CHANGED_MODE)
+        {
+            return hr;
+        }
+
+        if (SUCCEEDED(hr))
+        {
+            m_comInitialized = true;
+        }
+
+        hr = MFStartup(MF_VERSION);
+        if (FAILED(hr))
+        {
+            if (m_comInitialized)
+            {
+                CoUninitialize();
+                m_comInitialized = false;
+            }
+            return hr;
+        }
+
+        m_mfStarted = true;
+        return S_OK;
+    }
+
+    ~MediaFoundationScope()
+    {
+        if (m_mfStarted)
+        {
+            MFShutdown();
+        }
+
+        if (m_comInitialized)
+        {
+            CoUninitialize();
+        }
+    }
+
+private:
+    bool m_comInitialized;
+    bool m_mfStarted;
+};
+
+HRESULT GetPresentationDuration(IMFSourceReader* pReader, LONGLONG* phnsDuration)
+{
+    if (pReader == nullptr || phnsDuration == nullptr)
+    {
+        return E_POINTER;
+    }
+
+    PROPVARIANT var;
+    PropVariantInit(&var);
+
+    HRESULT hr = pReader->GetPresentationAttribute(
+        MF_SOURCE_READER_MEDIASOURCE,
+        MF_PD_DURATION,
+        &var);
+
+    if (SUCCEEDED(hr))
+    {
+        hr = PropVariantToInt64(var, phnsDuration);
+    }
+
+    PropVariantClear(&var);
+    return hr;
+}
+
+HRESULT GetDefaultStride(IMFMediaType* pType, LONG* plStride)
+{
+    if (pType == nullptr || plStride == nullptr)
+    {
+        return E_POINTER;
+    }
+
+    LONG lStride = 0;
+    HRESULT hr = pType->GetUINT32(
+        MF_MT_DEFAULT_STRIDE,
+        reinterpret_cast<UINT32*>(&lStride));
+
+    if (FAILED(hr))
+    {
+        GUID subtype = GUID_NULL;
+        UINT32 width = 0;
+        UINT32 height = 0;
+
+        hr = pType->GetGUID(MF_MT_SUBTYPE, &subtype);
+        if (FAILED(hr))
+        {
+            return hr;
+        }
+
+        hr = MFGetAttributeSize(pType, MF_MT_FRAME_SIZE, &width, &height);
+        if (FAILED(hr))
+        {
+            return hr;
+        }
+
+        hr = MFGetStrideForBitmapInfoHeader(subtype.Data1, width, &lStride);
+        if (FAILED(hr))
+        {
+            return hr;
+        }
+
+        (void)pType->SetUINT32(MF_MT_DEFAULT_STRIDE, static_cast<UINT32>(lStride));
+    }
+
+    *plStride = lStride;
+    return S_OK;
+}
+
+class BufferLock
+{
+public:
+    explicit BufferLock(IMFMediaBuffer* pBuffer)
+        : m_pBuffer(pBuffer),
+          m_p2DBuffer(nullptr),
+          m_locked(false)
+    {
+        if (m_pBuffer != nullptr)
+        {
+            m_pBuffer->AddRef();
+            (void)m_pBuffer->QueryInterface(IID_PPV_ARGS(&m_p2DBuffer));
+        }
+    }
+
+    ~BufferLock()
+    {
+        UnlockBuffer();
+        SafeRelease(&m_p2DBuffer);
+        SafeRelease(&m_pBuffer);
+    }
+
+    HRESULT LockBuffer(
+        LONG defaultStride,
+        DWORD heightInPixels,
+        BYTE** ppScanLine0,
+        LONG* plStride)
+    {
+        if (ppScanLine0 == nullptr || plStride == nullptr)
+        {
+            return E_POINTER;
+        }
+
+        *ppScanLine0 = nullptr;
+        *plStride = 0;
+
+        HRESULT hr = S_OK;
+
+        if (m_p2DBuffer != nullptr)
+        {
+            hr = m_p2DBuffer->Lock2D(ppScanLine0, plStride);
+        }
+        else
+        {
+            BYTE* pData = nullptr;
+            hr = m_pBuffer->Lock(&pData, nullptr, nullptr);
+            if (SUCCEEDED(hr))
+            {
+                *plStride = defaultStride;
+
+                if (defaultStride < 0)
+                {
+                    const size_t strideAbs = static_cast<size_t>(-defaultStride);
+                    *ppScanLine0 = pData + strideAbs * (heightInPixels - 1);
+                }
+                else
+                {
+                    *ppScanLine0 = pData;
+                }
+            }
+        }
+
+        m_locked = SUCCEEDED(hr);
+        return hr;
+    }
+
+    void UnlockBuffer()
+    {
+        if (!m_locked)
+        {
+            return;
+        }
+
+        if (m_p2DBuffer != nullptr)
+        {
+            (void)m_p2DBuffer->Unlock2D();
+        }
+        else if (m_pBuffer != nullptr)
+        {
+            (void)m_pBuffer->Unlock();
+        }
+
+        m_locked = false;
+    }
+
+private:
+    IMFMediaBuffer* m_pBuffer;
+    IMF2DBuffer* m_p2DBuffer;
+    bool m_locked;
+};
+
+HRESULT CreateConfiguredSourceReader(PCWSTR inputPath, IMFSourceReader** ppReader)
+{
+    if (inputPath == nullptr || ppReader == nullptr)
+    {
+        return E_POINTER;
+    }
+
+    *ppReader = nullptr;
+
+    IMFAttributes* pAttributes = nullptr;
+    IMFSourceReader* pReader = nullptr;
+    IMFMediaType* pRequestedType = nullptr;
+
+    HRESULT hr = MFCreateAttributes(&pAttributes, 1);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pAttributes->SetUINT32(MF_SOURCE_READER_ENABLE_VIDEO_PROCESSING, TRUE);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = MFCreateSourceReaderFromURL(inputPath, pAttributes, &pReader);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pReader->SetStreamSelection(MF_SOURCE_READER_ALL_STREAMS, FALSE);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pReader->SetStreamSelection(MF_SOURCE_READER_FIRST_VIDEO_STREAM, TRUE);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = MFCreateMediaType(&pRequestedType);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pRequestedType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pRequestedType->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_RGB32);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pReader->SetCurrentMediaType(
+        MF_SOURCE_READER_FIRST_VIDEO_STREAM,
+        nullptr,
+        pRequestedType);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    *ppReader = pReader;
+    pReader = nullptr;
+
+done:
+    SafeRelease(&pRequestedType);
+    SafeRelease(&pReader);
+    SafeRelease(&pAttributes);
+    return hr;
+}
+
+HRESULT SeekSourceReader(IMFSourceReader* pReader, LONGLONG targetHns)
+{
+    if (pReader == nullptr)
+    {
+        return E_POINTER;
+    }
+
+    PROPVARIANT var;
+    PropVariantInit(&var);
+
+    HRESULT hr = InitPropVariantFromInt64(targetHns, &var);
+    if (SUCCEEDED(hr))
+    {
+        hr = pReader->SetCurrentPosition(GUID_NULL, var);
+    }
+
+    PropVariantClear(&var);
+    return hr;
+}
+
+HRESULT ReadNearestVideoSample(
+    IMFSourceReader* pReader,
+    LONGLONG targetHns,
+    IMFSample** ppSample,
+    LONGLONG* pChosenTimestampHns)
+{
+    if (pReader == nullptr || ppSample == nullptr)
+    {
+        return E_POINTER;
+    }
+
+    *ppSample = nullptr;
+    if (pChosenTimestampHns != nullptr)
+    {
+        *pChosenTimestampHns = 0;
+    }
+
+    IMFSample* pBefore = nullptr;
+    LONGLONG beforeTimestamp = 0;
+    bool hasBefore = false;
+
+    HRESULT hr = S_OK;
+
+    for (;;)
+    {
+        IMFSample* pCurrent = nullptr;
+        DWORD flags = 0;
+        LONGLONG currentTimestamp = 0;
+
+        hr = pReader->ReadSample(
+            MF_SOURCE_READER_FIRST_VIDEO_STREAM,
+            0,
+            nullptr,
+            &flags,
+            &currentTimestamp,
+            &pCurrent);
+
+        if (FAILED(hr))
+        {
+            SafeRelease(&pCurrent);
+            break;
+        }
+
+        if ((flags & MF_SOURCE_READERF_ENDOFSTREAM) != 0)
+        {
+            SafeRelease(&pCurrent);
+
+            if (hasBefore)
+            {
+                *ppSample = pBefore;
+                pBefore = nullptr;
+
+                if (pChosenTimestampHns != nullptr)
+                {
+                    *pChosenTimestampHns = beforeTimestamp;
+                }
+
+                hr = S_OK;
+            }
+            else
+            {
+                hr = MF_E_END_OF_STREAM;
+            }
+            break;
+        }
+
+        if ((flags & MF_SOURCE_READERF_STREAMTICK) != 0)
+        {
+            SafeRelease(&pCurrent);
+            continue;
+        }
+
+        if (pCurrent == nullptr)
+        {
+            continue;
+        }
+
+        if (currentTimestamp < targetHns)
+        {
+            SafeRelease(&pBefore);
+            pBefore = pCurrent;
+            pCurrent = nullptr;
+            beforeTimestamp = currentTimestamp;
+            hasBefore = true;
+            continue;
+        }
+
+        if (hasBefore)
+        {
+            const LONGLONG diffBefore = targetHns - beforeTimestamp;
+            const LONGLONG diffCurrent = currentTimestamp - targetHns;
+
+            if (diffBefore <= diffCurrent)
+            {
+                *ppSample = pBefore;
+                pBefore = nullptr;
+
+                if (pChosenTimestampHns != nullptr)
+                {
+                    *pChosenTimestampHns = beforeTimestamp;
+                }
+
+                SafeRelease(&pCurrent);
+            }
+            else
+            {
+                *ppSample = pCurrent;
+                pCurrent = nullptr;
+
+                if (pChosenTimestampHns != nullptr)
+                {
+                    *pChosenTimestampHns = currentTimestamp;
+                }
+            }
+        }
+        else
+        {
+            *ppSample = pCurrent;
+            pCurrent = nullptr;
+
+            if (pChosenTimestampHns != nullptr)
+            {
+                *pChosenTimestampHns = currentTimestamp;
+            }
+        }
+
+        hr = S_OK;
+        break;
+    }
+
+    SafeRelease(&pBefore);
+    return hr;
+}
+
+HRESULT CopySampleToTopDownBgra(
+    IMFSample* pSample,
+    IMFMediaType* pCurrentType,
+    std::vector<BYTE>& pixels,
+    UINT32* pWidth,
+    UINT32* pHeight,
+    UINT32* pStride)
+{
+    if (pSample == nullptr || pCurrentType == nullptr ||
+        pWidth == nullptr || pHeight == nullptr || pStride == nullptr)
+    {
+        return E_POINTER;
+    }
+
+    *pWidth = 0;
+    *pHeight = 0;
+    *pStride = 0;
+
+    IMFMediaBuffer* pBuffer = nullptr;
+    BYTE* pScanLine0 = nullptr;
+
+    GUID subtype = GUID_NULL;
+    UINT32 width = 0;
+    UINT32 height = 0;
+    LONG defaultStride = 0;
+    LONG actualStride = 0;
+
+    HRESULT hr = pCurrentType->GetGUID(MF_MT_SUBTYPE, &subtype);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    if (!IsEqualGUID(subtype, MFVideoFormat_RGB32))
+    {
+        hr = MF_E_INVALIDMEDIATYPE;
+        goto done;
+    }
+
+    hr = MFGetAttributeSize(pCurrentType, MF_MT_FRAME_SIZE, &width, &height);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    if (width == 0 || height == 0)
+    {
+        hr = E_UNEXPECTED;
+        goto done;
+    }
+
+    hr = GetDefaultStride(pCurrentType, &defaultStride);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pSample->ConvertToContiguousBuffer(&pBuffer);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    {
+        BufferLock lock(pBuffer);
+
+        hr = lock.LockBuffer(defaultStride, height, &pScanLine0, &actualStride);
+        if (FAILED(hr))
+        {
+            goto done;
+        }
+
+        if (width > (std::numeric_limits<UINT32>::max() / 4))
+        {
+            hr = E_INVALIDARG;
+            goto done;
+        }
+
+        const UINT32 destStride = width * 4;
+        const LONG actualStrideAbs = (actualStride < 0) ? -actualStride : actualStride;
+        if (actualStrideAbs < static_cast<LONG>(destStride))
+        {
+            hr = E_UNEXPECTED;
+            goto done;
+        }
+
+        pixels.resize(static_cast<size_t>(destStride) * height);
+
+        BYTE* pDestRow = pixels.data();
+        BYTE* pSrcRow = pScanLine0;
+
+        for (UINT32 y = 0; y < height; ++y)
+        {
+            std::memcpy(pDestRow, pSrcRow, destStride);
+
+            // MFVideoFormat_RGB32 の 4 byte 目は alpha と限らないので、
+            // PNG 保存前に不透明へ固定する。
+            for (UINT32 x = 0; x < width; ++x)
+            {
+                pDestRow[static_cast<size_t>(x) * 4 + 3] = 0xFF;
+            }
+
+            pDestRow += destStride;
+            pSrcRow += actualStride;
+        }
+
+        *pWidth = width;
+        *pHeight = height;
+        *pStride = destStride;
+    }
+
+    hr = S_OK;
+
+done:
+    SafeRelease(&pBuffer);
+    return hr;
+}
+
+HRESULT SaveBgraToPng(
+    PCWSTR outputPath,
+    const BYTE* pixels,
+    UINT32 width,
+    UINT32 height,
+    UINT32 stride)
+{
+    if (outputPath == nullptr || pixels == nullptr)
+    {
+        return E_POINTER;
+    }
+
+    if (width == 0 || height == 0 || stride < width * 4)
+    {
+        return E_INVALIDARG;
+    }
+
+    const size_t bufferSizeSizeT = static_cast<size_t>(stride) * height;
+    if (bufferSizeSizeT > static_cast<size_t>(std::numeric_limits<UINT>::max()))
+    {
+        return E_INVALIDARG;
+    }
+
+    const UINT bufferSize = static_cast<UINT>(bufferSizeSizeT);
+
+    IWICImagingFactory* pFactory = nullptr;
+    IWICStream* pStream = nullptr;
+    IWICBitmapEncoder* pEncoder = nullptr;
+    IWICBitmapFrameEncode* pFrame = nullptr;
+    IPropertyBag2* pProps = nullptr;
+
+    HRESULT hr = CoCreateInstance(
+        CLSID_WICImagingFactory,
+        nullptr,
+        CLSCTX_INPROC_SERVER,
+        IID_PPV_ARGS(&pFactory));
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pFactory->CreateStream(&pStream);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pStream->InitializeFromFilename(outputPath, GENERIC_WRITE);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pFactory->CreateEncoder(GUID_ContainerFormatPng, nullptr, &pEncoder);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pEncoder->Initialize(pStream, WICBitmapEncoderNoCache);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pEncoder->CreateNewFrame(&pFrame, &pProps);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pFrame->Initialize(pProps);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pFrame->SetSize(width, height);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    WICPixelFormatGUID pixelFormat = GUID_WICPixelFormat32bppBGRA;
+    hr = pFrame->SetPixelFormat(&pixelFormat);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    if (!IsEqualGUID(pixelFormat, GUID_WICPixelFormat32bppBGRA))
+    {
+        hr = WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT;
+        goto done;
+    }
+
+    hr = pFrame->WritePixels(
+        height,
+        stride,
+        bufferSize,
+        const_cast<BYTE*>(pixels));
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pFrame->Commit();
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pEncoder->Commit();
+
+done:
+    SafeRelease(&pProps);
+    SafeRelease(&pFrame);
+    SafeRelease(&pEncoder);
+    SafeRelease(&pStream);
+    SafeRelease(&pFactory);
+    return hr;
+}
+
+HRESULT ExtractFrameFromMp4ToPng(
+    PCWSTR inputPath,
+    LONGLONG targetHns,
+    PCWSTR outputPath,
+    LONGLONG* pActualTimestampHns)
+{
+    if (inputPath == nullptr || outputPath == nullptr)
+    {
+        return E_POINTER;
+    }
+
+    if (targetHns < 0)
+    {
+        return E_INVALIDARG;
+    }
+
+    MediaFoundationScope mf;
+    HRESULT hr = mf.Initialize();
+    if (FAILED(hr))
+    {
+        return hr;
+    }
+
+    IMFSourceReader* pReader = nullptr;
+    IMFMediaType* pCurrentType = nullptr;
+    IMFSample* pChosenSample = nullptr;
+
+    LONGLONG durationHns = 0;
+    UINT32 width = 0;
+    UINT32 height = 0;
+    UINT32 stride = 0;
+    std::vector<BYTE> pixels;
+
+    hr = CreateConfiguredSourceReader(inputPath, &pReader);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pReader->GetCurrentMediaType(
+        MF_SOURCE_READER_FIRST_VIDEO_STREAM,
+        &pCurrentType);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = GetPresentationDuration(pReader, &durationHns);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    if (targetHns >= durationHns)
+    {
+        hr = E_INVALIDARG;
+        goto done;
+    }
+
+    hr = SeekSourceReader(pReader, targetHns);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = ReadNearestVideoSample(
+        pReader,
+        targetHns,
+        &pChosenSample,
+        pActualTimestampHns);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = CopySampleToTopDownBgra(
+        pChosenSample,
+        pCurrentType,
+        pixels,
+        &width,
+        &height,
+        &stride);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = SaveBgraToPng(outputPath, pixels.data(), width, height, stride);
+
+done:
+    SafeRelease(&pChosenSample);
+    SafeRelease(&pCurrentType);
+    SafeRelease(&pReader);
+    return hr;
+}
+
+bool TryParseSeconds(PCWSTR text, LONGLONG* phns)
+{
+    if (text == nullptr || phns == nullptr)
+    {
+        return false;
+    }
+
+    wchar_t* end = nullptr;
+    errno = 0;
+
+    const double seconds = std::wcstod(text, &end);
+    if (end == text || *end != L'\0' || errno != 0)
+    {
+        return false;
+    }
+
+    if (!std::isfinite(seconds) || seconds < 0.0)
+    {
+        return false;
+    }
+
+    const long double hns =
+        static_cast<long double>(seconds) * 10000000.0L;
+
+    if (hns < 0.0L ||
+        hns > static_cast<long double>(std::numeric_limits<LONGLONG>::max()))
+    {
+        return false;
+    }
+
+    *phns = static_cast<LONGLONG>(std::llround(hns));
+    return true;
+}
+
+double HnsToSeconds(LONGLONG hns)
+{
+    return static_cast<double>(hns) / 10000000.0;
+}
+
+void PrintUsage()
+{
+    std::fwprintf(stderr, L"Usage:\n");
+    std::fwprintf(stderr, L"  ExtractFrameFromMp4.exe <input.mp4> <seconds> <output.png>\n");
+    std::fwprintf(stderr, L"\nExample:\n");
+    std::fwprintf(stderr, L"  ExtractFrameFromMp4.exe input.mp4 12.345 output.png\n");
+}
+
+int wmain(int argc, wchar_t* argv[])
+{
+    if (argc != 4)
+    {
+        PrintUsage();
+        return 1;
+    }
+
+    LONGLONG targetHns = 0;
+    if (!TryParseSeconds(argv[2], &targetHns))
+    {
+        std::fwprintf(stderr, L"Invalid seconds: %ls\n", argv[2]);
+        return 1;
+    }
+
+    LONGLONG actualHns = 0;
+    HRESULT hr = ExtractFrameFromMp4ToPng(
+        argv[1],
+        targetHns,
+        argv[3],
+        &actualHns);
+
+    if (FAILED(hr))
+    {
+        std::fwprintf(stderr, L"Failed. HRESULT = 0x%08lX\n", static_cast<unsigned long>(hr));
+        return 1;
+    }
+
+    std::wprintf(L"Saved: %ls\n", argv[3]);
+    std::wprintf(L"Requested: %.3f sec\n", HnsToSeconds(targetHns));
+    std::wprintf(L"Actual: %.3f sec\n", HnsToSeconds(actualHns));
+    return 0;
+}
+```
+

@@ -1,19 +1,14 @@
-﻿---
+---
 title: "Media Foundation で MP4 動画の指定時刻から静止画を取り出す方法 - .cpp にそのまま貼れる 1 ファイル完結版"
-date: 2026-03-15 10:00
-lang: ja
-translation_key: media-foundation-extract-still-image-from-mp4-at-specific-time
+slug: "003-media-foundation-extract-still-image-from-mp4-at-specific-time"
+date: "2026-03-15T10:00:00+09:00"
+author: "Go Komura"
 tags:
   - Media Foundation
   - C++
   - Windows開発
   - WIC
 description: "Media Foundation の Source Reader を使って、MP4 から指定時刻に最も近いフレームを取り出し、PNG として保存する方法を解説します。記事の最後に、Visual Studio の C++ コンソールアプリの .cpp にそのまま貼れる 1 ファイル完結コードを載せています。"
-consultation_services:
-  - id: windows-app-development
-    reason: "Media Foundation、Source Reader、WIC を使って動画から静止画を取り出す話なので、Windowsアプリ開発の実装テーマに近いです。"
-  - id: technical-consulting
-    reason: "seek 精度、バッファ形式、stride、画像の向きなどを実装前に整理したい場合は、技術相談・設計レビューとして方針整理から入れます。"
 ---
 
 MP4 から「12.3 秒地点の 1 枚」を取りたい、という要件はかなり普通にあります。サムネイル生成、検査ログ、監視映像の代表フレーム、装置ログの証跡などです。
@@ -24,6 +19,20 @@ Media Foundation の全体像そのものは、以前書いた [Media Foundation
 
 この記事では、`IMFSourceReader` を使って、MP4 から **指定時刻に最も近い静止画を 1 枚取り出し、PNG として保存する** ところまでを、実務で踏みやすい落とし穴込みで整理します。しかも最後には、**Visual Studio の C++ コンソールアプリプロジェクトの `.cpp` にそのまま貼り付けやすい 1 ファイル完結コード**を置いてあります。記事中の細切れコードはなしで、最後の 1 ブロックだけ持っていけば動く構成です。
 
+## 目次
+
+1. まず結論
+2. この記事の前提
+3. まず見る整理表
+4. 先に押さえる落とし穴
+5. 実装の流れ
+6. 実務でのチェックリスト
+7. ビルドと実行のメモ
+8. まとめ
+9. 参考資料
+10. `.cpp` にそのまま貼れるフルコード
+
+* * *
 
 ## 1. まず結論
 
@@ -1125,4 +1134,3 @@ int wmain(int argc, wchar_t* argv[])
     return 0;
 }
 ```
-
