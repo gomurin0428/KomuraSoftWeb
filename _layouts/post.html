@@ -1559,7 +1559,14 @@
         diagram.className = 'mermaid mermaid-render-target';
         diagram.textContent = mermaidSource;
         target.replaceWith(diagram);
-        attachCopyButtonToWrapper(wrapper, () => wrapper.dataset.copySource ?? '');
+        attachCopyButtonToWrapper(wrapper, async () => {
+          const copyText = wrapper.dataset.copySource ?? '';
+          if (!copyText) {
+            throw new Error('Copy source is empty.');
+          }
+
+          await writeTextToClipboard(copyText);
+        });
         diagrams.push(diagram);
       }
 
