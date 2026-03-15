@@ -707,6 +707,66 @@ HRESULT ReadNearestVideoSample(
     return hr;
 }
 
+HRESULT CopyContiguousBufferToTopDownBgra(
+    IMFMediaBuffer* pBuffer,
+    LONG defaultStride,
+    UINT32 width,
+    UINT32 height,
+    std::vector<BYTE>& pixels,
+    UINT32* pStride)
+{
+    if (pBuffer == nullptr || pStride == nullptr)
+    {
+        return E_POINTER;
+    }
+
+    BufferLock lock(pBuffer);
+
+    BYTE* pScanLine0 = nullptr;
+    LONG actualStride = 0;
+
+    HRESULT hr = lock.LockBuffer(defaultStride, height, &pScanLine0, &actualStride);
+    if (FAILED(hr))
+    {
+        return hr;
+    }
+
+    if (width > (std::numeric_limits<UINT32>::max() / 4))
+    {
+        return E_INVALIDARG;
+    }
+
+    const UINT32 destStride = width * 4;
+    const LONG actualStrideAbs = (actualStride < 0) ? -actualStride : actualStride;
+    if (actualStrideAbs < static_cast<LONG>(destStride))
+    {
+        return E_UNEXPECTED;
+    }
+
+    pixels.resize(static_cast<size_t>(destStride) * height);
+
+    BYTE* pDestRow = pixels.data();
+    BYTE* pSrcRow = pScanLine0;
+
+    for (UINT32 y = 0; y < height; ++y)
+    {
+        std::memcpy(pDestRow, pSrcRow, destStride);
+
+        // MFVideoFormat_RGB32 の 4 byte 目は alpha と限らないので、
+        // PNG 保存前に不透明へ固定する。
+        for (UINT32 x = 0; x < width; ++x)
+        {
+            pDestRow[static_cast<size_t>(x) * 4 + 3] = 0xFF;
+        }
+
+        pDestRow += destStride;
+        pSrcRow += actualStride;
+    }
+
+    *pStride = destStride;
+    return S_OK;
+}
+
 HRESULT CopySampleToTopDownBgra(
     IMFSample* pSample,
     IMFMediaType* pCurrentType,
@@ -726,13 +786,11 @@ HRESULT CopySampleToTopDownBgra(
     *pStride = 0;
 
     IMFMediaBuffer* pBuffer = nullptr;
-    BYTE* pScanLine0 = nullptr;
 
     GUID subtype = GUID_NULL;
     UINT32 width = 0;
     UINT32 height = 0;
     LONG defaultStride = 0;
-    LONG actualStride = 0;
 
     HRESULT hr = pCurrentType->GetGUID(MF_MT_SUBTYPE, &subtype);
     if (FAILED(hr))
@@ -770,53 +828,20 @@ HRESULT CopySampleToTopDownBgra(
         goto done;
     }
 
+    hr = CopyContiguousBufferToTopDownBgra(
+        pBuffer,
+        defaultStride,
+        width,
+        height,
+        pixels,
+        pStride);
+    if (FAILED(hr))
     {
-        BufferLock lock(pBuffer);
-
-        hr = lock.LockBuffer(defaultStride, height, &pScanLine0, &actualStride);
-        if (FAILED(hr))
-        {
-            goto done;
-        }
-
-        if (width > (std::numeric_limits<UINT32>::max() / 4))
-        {
-            hr = E_INVALIDARG;
-            goto done;
-        }
-
-        const UINT32 destStride = width * 4;
-        const LONG actualStrideAbs = (actualStride < 0) ? -actualStride : actualStride;
-        if (actualStrideAbs < static_cast<LONG>(destStride))
-        {
-            hr = E_UNEXPECTED;
-            goto done;
-        }
-
-        pixels.resize(static_cast<size_t>(destStride) * height);
-
-        BYTE* pDestRow = pixels.data();
-        BYTE* pSrcRow = pScanLine0;
-
-        for (UINT32 y = 0; y < height; ++y)
-        {
-            std::memcpy(pDestRow, pSrcRow, destStride);
-
-            // MFVideoFormat_RGB32 の 4 byte 目は alpha と限らないので、
-            // PNG 保存前に不透明へ固定する。
-            for (UINT32 x = 0; x < width; ++x)
-            {
-                pDestRow[static_cast<size_t>(x) * 4 + 3] = 0xFF;
-            }
-
-            pDestRow += destStride;
-            pSrcRow += actualStride;
-        }
-
-        *pWidth = width;
-        *pHeight = height;
-        *pStride = destStride;
+        goto done;
     }
+
+    *pWidth = width;
+    *pHeight = height;
 
     hr = S_OK;
 
