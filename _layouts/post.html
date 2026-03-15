@@ -486,6 +486,19 @@
     .blog-content .code-copy-button-label {
       white-space: nowrap;
     }
+    .blog-content .code-copy-block-mermaid .code-copy-button-group {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+    .blog-content .code-copy-block-mermaid .code-copy-button {
+      position: static;
+    }
     .blog-content ul, .blog-content ol {
       margin-bottom: 1rem;
       padding-left: 1.5rem;
@@ -914,6 +927,7 @@
     const mobileConsultNote = {{ ui.post.consult_cta_note | jsonify }};
     const articleConsultLabel = {{ ui.article_consult_label | jsonify }};
     const copyCodeLabel = {{ ui.post.copy_code_label | jsonify }};
+    const copySvgLabel = {{ ui.post.copy_svg_label | jsonify }};
     const copyTableLabel = {{ ui.post.copy_table_label | jsonify }};
     const copiedCodeLabel = {{ ui.post.copied_code_label | jsonify }};
     const copyFailedLabel = {{ ui.post.copy_failed_label | jsonify }};
@@ -1230,6 +1244,27 @@
     };
 
     /**
+     * 入力: mimeType には対応可否を調べる MIME type を受け取る。
+     * 出力: 対応していれば true、そうでなければ false を返す。
+     * 処理内容: ClipboardItem.supports の有無も考慮しつつ、対象 MIME type が書き込み可能かを判定する。
+     */
+    const isClipboardMimeTypeSupported = (mimeType) => {
+      if (
+        !navigator.clipboard ||
+        typeof navigator.clipboard.write !== 'function' ||
+        typeof window.ClipboardItem !== 'function'
+      ) {
+        return false;
+      }
+
+      if (typeof window.ClipboardItem.supports === 'function') {
+        return window.ClipboardItem.supports(mimeType);
+      }
+
+      return false;
+    };
+
+    /**
      * 入力: target にはラップ対象の要素、additionalClassName には必要な追加クラス名を受け取る。
      * 出力: コピー UI を保持するラッパー要素を返す。
      * 処理内容: 対象要素の親子関係を保ったまま、コピー UI 用の共通ラッパーを作成または再利用する。
@@ -1256,19 +1291,47 @@
     };
 
     /**
+     * 入力: wrapper には button group を追加したいラッパー要素を受け取る。
+     * 出力: button を並べるための group 要素を返す。
+     * 処理内容: Mermaid など複数 button を置くブロックで、共通のボタン配置コンテナを作成または再利用する。
+     */
+    const ensureCopyButtonGroup = (wrapper) => {
+      const existingGroup = Array.from(wrapper.children).find(
+        (child) => child instanceof HTMLElement && child.classList.contains('code-copy-button-group')
+      );
+      if (existingGroup) {
+        return existingGroup;
+      }
+
+      const buttonGroup = document.createElement('div');
+      buttonGroup.className = 'code-copy-button-group';
+      wrapper.append(buttonGroup);
+      return buttonGroup;
+    };
+
+    /**
      * 入力: wrapper には button の親ラッパー、getCopyText にはコピー文字列を返す関数を受け取る。
      * 出力: なし。
      * 処理内容: 既存 button の重複を防ぎつつ、コピー操作と状態遷移をラッパーへ登録する。
      */
-    const attachCopyButtonToWrapper = (wrapper, copyAction, idleLabel = copyCodeLabel) => {
-      const existingButton = Array.from(wrapper.children).find(
-        (child) => child instanceof HTMLElement && child.classList.contains('code-copy-button')
+    const attachCopyButtonToWrapper = (wrapper, copyAction, idleLabel = copyCodeLabel, options = {}) => {
+      const {
+        allowMultipleButtons = false,
+        buttonKey = idleLabel
+      } = options;
+      const buttonContainer = allowMultipleButtons ? ensureCopyButtonGroup(wrapper) : wrapper;
+      const existingButton = Array.from(buttonContainer.children).find(
+        (child) =>
+          child instanceof HTMLElement &&
+          child.classList.contains('code-copy-button') &&
+          child.dataset.buttonKey === buttonKey
       );
       if (existingButton) {
         return;
       }
 
       const button = createCopyButton(idleLabel);
+      button.dataset.buttonKey = buttonKey;
       button.addEventListener('click', async () => {
         try {
           await copyAction();
@@ -1281,7 +1344,7 @@
         scheduleCopyButtonReset(button);
       });
 
-      wrapper.append(button);
+      buttonContainer.append(button);
     };
 
     /**
@@ -1516,6 +1579,27 @@
     };
 
     /**
+     * 入力: svgElement にはクリップボードへ書き込みたい SVG 要素を受け取る。
+     * 出力: なし。
+     * 処理内容: SVG 要素をシリアライズし、`image/svg+xml` としてクリップボードへ書き込む。
+     */
+    const writeSvgToClipboard = async (svgElement) => {
+      if (!(svgElement instanceof SVGSVGElement)) {
+        throw new Error('SVG element is not available.');
+      }
+
+      const serializer = new XMLSerializer();
+      const svgMarkup = serializer.serializeToString(svgElement);
+      if (!svgMarkup) {
+        throw new Error('SVG serialization failed.');
+      }
+
+      await writeClipboardItems({
+        'image/svg+xml': new Blob([svgMarkup], { type: 'image/svg+xml' })
+      });
+    };
+
+    /**
      * 入力: なし。
      * 出力: なし。
      * 処理内容: 記事内の table を走査し、CSV / Excel 貼り付け向けコピー button を追加する。
@@ -1566,7 +1650,21 @@
           }
 
           await writeTextToClipboard(copyText);
+        }, copyCodeLabel, {
+          allowMultipleButtons: true,
+          buttonKey: 'copy-code'
         });
+
+        if (isClipboardMimeTypeSupported('image/svg+xml')) {
+          attachCopyButtonToWrapper(wrapper, async () => {
+            const svgElement = diagram.querySelector('svg');
+            await writeSvgToClipboard(svgElement);
+          }, copySvgLabel, {
+            allowMultipleButtons: true,
+            buttonKey: 'copy-svg'
+          });
+        }
+
         diagrams.push(diagram);
       }
 
