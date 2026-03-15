@@ -898,6 +898,7 @@ HRESULT SaveBgraToPng(
     IWICBitmapEncoder* pEncoder = nullptr;
     IWICBitmapFrameEncode* pFrame = nullptr;
     IPropertyBag2* pProps = nullptr;
+    WICPixelFormatGUID pixelFormat = GUID_WICPixelFormat32bppBGRA;
 
     HRESULT hr = CoCreateInstance(
         CLSID_WICImagingFactory,
@@ -951,7 +952,6 @@ HRESULT SaveBgraToPng(
         goto done;
     }
 
-    WICPixelFormatGUID pixelFormat = GUID_WICPixelFormat32bppBGRA;
     hr = pFrame->SetPixelFormat(&pixelFormat);
     if (FAILED(hr))
     {
