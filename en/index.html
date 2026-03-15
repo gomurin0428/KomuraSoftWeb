@@ -318,10 +318,12 @@ permalink: /en/
         <p class="section-description">Start from the service that best matches your current situation.</p>
         <div class="primary-service-grid">
           {% for item in service_links %}
-          <a class="primary-service-card" href="{{ item.url }}">
-            <span class="primary-service-card-title">{{ item.title }}</span>
-            <span class="primary-service-card-body">{{ item.summary }}</span>
-          </a>
+          <article class="primary-service-card">
+            <h3 class="primary-service-card-title">
+              <a class="primary-service-card-link" href="{{ item.url }}">{{ item.title }}</a>
+            </h3>
+            <p class="primary-service-card-body">{{ item.summary }}</p>
+          </article>
           {% endfor %}
         </div>
       </section>
