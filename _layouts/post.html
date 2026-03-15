@@ -934,6 +934,7 @@
     const articleConsultLabel = {{ ui.article_consult_label | jsonify }};
     const copyCodeLabel = {{ ui.post.copy_code_label | jsonify }};
     const copySvgLabel = {{ ui.post.copy_svg_label | jsonify }};
+    const copyPngLabel = {{ ui.post.copy_png_label | jsonify }};
     const copyTableLabel = {{ ui.post.copy_table_label | jsonify }};
     const copiedCodeLabel = {{ ui.post.copied_code_label | jsonify }};
     const copyFailedLabel = {{ ui.post.copy_failed_label | jsonify }};
@@ -1606,6 +1607,105 @@
     };
 
     /**
+     * 入力: imageUrl には読み込み対象の画像 URL を受け取る。
+     * 出力: 読み込み済みの Image 要素を返す。
+     * 処理内容: Blob URL などを非同期で画像として読み込み、canvas 描画に使える状態へする。
+     */
+    const loadImageElement = (imageUrl) => new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(new Error('PNG conversion image load failed.'));
+      image.src = imageUrl;
+    });
+
+    /**
+     * 入力: svgElement には PNG 化したい SVG 要素を受け取る。
+     * 出力: PNG の Blob を返す。
+     * 処理内容: SVG をシリアライズして canvas に描き、`image/png` Blob へ変換する。
+     */
+    const renderSvgElementToPngBlob = async (svgElement) => {
+      if (!(svgElement instanceof SVGSVGElement)) {
+        throw new Error('SVG element is not available.');
+      }
+
+      const viewBox = svgElement.viewBox.baseVal;
+      const fallbackRect = svgElement.getBoundingClientRect();
+      const width = Math.max(
+        1,
+        Math.ceil(
+          viewBox && viewBox.width > 0
+            ? viewBox.width
+            : fallbackRect.width
+        )
+      );
+      const height = Math.max(
+        1,
+        Math.ceil(
+          viewBox && viewBox.height > 0
+            ? viewBox.height
+            : fallbackRect.height
+        )
+      );
+
+      const clonedSvg = svgElement.cloneNode(true);
+      clonedSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      clonedSvg.setAttribute('width', String(width));
+      clonedSvg.setAttribute('height', String(height));
+      clonedSvg.removeAttribute('style');
+
+      const serializer = new XMLSerializer();
+      const svgMarkup = serializer.serializeToString(clonedSvg);
+      if (!svgMarkup) {
+        throw new Error('PNG conversion SVG serialization failed.');
+      }
+
+      const svgBlob = new Blob([svgMarkup], { type: 'image/svg+xml;charset=utf-8' });
+      const objectUrl = URL.createObjectURL(svgBlob);
+
+      try {
+        const image = await loadImageElement(objectUrl);
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+
+        const context = canvas.getContext('2d');
+        if (context === null) {
+          throw new Error('Canvas 2D context is not available.');
+        }
+
+        context.clearRect(0, 0, width, height);
+        context.drawImage(image, 0, 0, width, height);
+
+        const pngBlob = await new Promise((resolve, reject) => {
+          canvas.toBlob((blob) => {
+            if (blob === null) {
+              reject(new Error('Canvas PNG conversion failed.'));
+              return;
+            }
+
+            resolve(blob);
+          }, 'image/png');
+        });
+
+        return pngBlob;
+      } finally {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+
+    /**
+     * 入力: svgElement には PNG としてクリップボードへ書き込みたい SVG 要素を受け取る。
+     * 出力: なし。
+     * 処理内容: SVG を PNG へ変換し、`image/png` としてクリップボードへ書き込む。
+     */
+    const writePngToClipboard = async (svgElement) => {
+      const pngBlob = await renderSvgElementToPngBlob(svgElement);
+      await writeClipboardItems({
+        'image/png': pngBlob
+      });
+    };
+
+    /**
      * 入力: なし。
      * 出力: なし。
      * 処理内容: 記事内の table を走査し、CSV / Excel 貼り付け向けコピー button を追加する。
@@ -1668,6 +1768,16 @@
           }, copySvgLabel, {
             allowMultipleButtons: true,
             buttonKey: 'copy-svg'
+          });
+        }
+
+        if (isClipboardMimeTypeSupported('image/png')) {
+          attachCopyButtonToWrapper(wrapper, async () => {
+            const svgElement = diagram.querySelector('svg');
+            await writePngToClipboard(svgElement);
+          }, copyPngLabel, {
+            allowMultipleButtons: true,
+            buttonKey: 'copy-png'
           });
         }
 
