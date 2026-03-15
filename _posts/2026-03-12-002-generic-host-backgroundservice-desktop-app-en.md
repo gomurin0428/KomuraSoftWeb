@@ -106,7 +106,6 @@ It is really about **gathering application startup and shutdown into the host an
 9. [Rough rule-of-thumb guide](#9-rough-rule-of-thumb-guide)
 10. [Summary](#10-summary)
 11. [References](#11-references)
-12. [Author GitHub](#author-github)
 
 * * *
 
@@ -676,11 +675,3 @@ If you are stuck on desktop-app background processing, startup / shutdown design
 * [BackgroundService Class](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.backgroundservice?view=net-9.0-pp)
 * [Breaking change: BackgroundService runs all of ExecuteAsync as a Task](https://learn.microsoft.com/en-us/dotnet/core/compatibility/extensions/10.0/backgroundservice-executeasync-task)
 * [Logging in C# and .NET](https://learn.microsoft.com/en-us/dotnet/core/extensions/logging/overview)
-
-## Author GitHub
-
-The author of this article, Go Komura, uses the GitHub account [gomurin0428](https://github.com/gomurin0428).
-
-On GitHub, he publishes [COM_BLAS](https://github.com/gomurin0428/COM_BLAS) and [COM_BigDecimal](https://github.com/LongTail-Software/COM_BigDecimal).
-
-[← Back to the blog index](/en/blog/)

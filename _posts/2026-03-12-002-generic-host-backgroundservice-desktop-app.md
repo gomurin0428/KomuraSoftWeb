@@ -705,11 +705,3 @@ Windows ツールや常駐系アプリで、BackgroundService 化、起動 / 停
 * [BackgroundService クラス](https://learn.microsoft.com/ja-jp/dotnet/api/microsoft.extensions.hosting.backgroundservice?view=net-9.0-pp)
 * [破壊的変更: BackgroundService は、すべての ExecuteAsync をタスクとして実行します](https://learn.microsoft.com/ja-jp/dotnet/core/compatibility/extensions/10.0/backgroundservice-executeasync-task)
 * [Logging in C# - .NET](https://learn.microsoft.com/en-us/dotnet/core/extensions/logging/overview)
-
-## Author GitHub
-
-この記事の著者 Go Komura の GitHub アカウントは [gomurin0428](https://github.com/gomurin0428) です。
-
-GitHub では [COM_BLAS](https://github.com/gomurin0428/COM_BLAS) と [COM_BigDecimal](https://github.com/LongTail-Software/COM_BigDecimal) を公開しています。
-
-[← ブログ一覧に戻る](/blog/)

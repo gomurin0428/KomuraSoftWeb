@@ -52,7 +52,6 @@ Some proper names and a few log items are generalized, but the underlying thinki
 6. [Rough rule-of-thumb guide](#6-rough-rule-of-thumb-guide)
 7. [Summary](#7-summary)
 8. [References](#8-references)
-9. [Author GitHub](#author-github)
 
 * * *
 
@@ -481,13 +480,3 @@ Part 2: [When an Industrial Camera Control App Suddenly Crashes After a Month (P
 - [GetProcessHandleCount function](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesshandlecount)
 - [Process.HandleCount Property](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.process.handlecount?view=net-8.0)
 - [Part 2: What Application Verifier Is and How to Build Failure-Path Test Infrastructure](/en/blog/2026/03/11/003-application-verifier-abnormal-test-foundation-part2/)
-
-## Author GitHub
-
-The author of this article, Go Komura, uses the GitHub account [gomurin0428](https://github.com/gomurin0428).
-
-On GitHub, he publishes [COM_BLAS](https://github.com/gomurin0428/COM_BLAS) and [COM_BigDecimal](https://github.com/gomurin0428/COM_BigDecimal).
-
-[← Back to the blog index](/en/blog/)
-
-[Contact us](https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform?usp=dialog)

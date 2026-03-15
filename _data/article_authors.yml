@@ -1,0 +1,36 @@
+ja:
+  default:
+    name: "小村 豪"
+    profile_url: "/profile/go-komura/"
+    role: "KomuraSoft 代表"
+    description: "Windows ソフト開発、技術相談、不具合調査を中心に、既存資産が残る案件や原因が見えにくい障害調査に強みがあります。"
+    same_as:
+      - "https://github.com/gomurin0428"
+      - "https://x.com/komurasoft"
+    links:
+      - label: "GitHub"
+        url: "https://github.com/gomurin0428"
+      - label: "X"
+        url: "https://x.com/komurasoft"
+      - label: "COM_BLAS"
+        url: "https://github.com/gomurin0428/COM_BLAS"
+      - label: "COM_BigDecimal"
+        url: "https://github.com/LongTail-Software/COM_BigDecimal"
+en:
+  default:
+    name: "Go Komura"
+    profile_url: "/en/profile/go-komura/"
+    role: "Representative of KomuraSoft"
+    description: "Focused on Windows software development, technical consulting, and investigations into failures that are difficult to reproduce."
+    same_as:
+      - "https://github.com/gomurin0428"
+      - "https://x.com/komurasoft"
+    links:
+      - label: "GitHub"
+        url: "https://github.com/gomurin0428"
+      - label: "X"
+        url: "https://x.com/komurasoft"
+      - label: "COM_BLAS"
+        url: "https://github.com/gomurin0428/COM_BLAS"
+      - label: "COM_BigDecimal"
+        url: "https://github.com/LongTail-Software/COM_BigDecimal"

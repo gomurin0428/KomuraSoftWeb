@@ -1,0 +1,76 @@
+ja:
+  default_topic_ids:
+    - topics-hub
+  topics:
+    - id: topics-hub
+      title: "技術トピック"
+      url: "/topics/"
+      description: "技術記事と関連サービスを課題別にたどれる一覧ページです。近いテーマから調査や相談の入口を探せます。"
+    - id: activex-migration
+      title: "ActiveX / 移行テーマ"
+      url: "/topics/activex-migration/"
+      description: "COM / ActiveX / OCX を残すか置き換えるか迷うときに、保守・移行の考え方をまとめて追えるテーマページです。"
+    - id: bitness-interop
+      title: "32bit / 64bit テーマ"
+      url: "/topics/32bit-64bit/"
+      description: "32bit / 64bit 相互運用、C++/CLI 境界、ネイティブ DLL 連携の論点をまとめて確認できるテーマページです。"
+  rules:
+    - match_tags:
+        - COM
+        - ActiveX
+        - OCX
+        - OLE
+        - STA
+        - MTA
+        - レガシー技術
+      topic_ids:
+        - activex-migration
+    - match_tags:
+        - 32bit
+        - 64bit
+        - C++/CLI
+        - ネイティブ連携
+        - Native AOT
+        - TCP
+        - ネットワーク
+        - 産業用カメラ
+      topic_ids:
+        - bitness-interop
+en:
+  default_topic_ids:
+    - topics-hub
+  topics:
+    - id: topics-hub
+      title: "Topics"
+      url: "/en/topics/"
+      description: "Topic hub for following KomuraSoft articles and related services by technical problem area."
+    - id: activex-migration
+      title: "ActiveX Migration"
+      url: "/en/topics/activex-migration/"
+      description: "Topic page for staged decisions around keeping, wrapping, or replacing COM / ActiveX / OCX assets."
+    - id: bitness-interop
+      title: "32-bit / 64-bit Interoperability"
+      url: "/en/topics/32bit-64bit/"
+      description: "Topic page for 32-bit / 64-bit interoperability, native boundaries, and related Windows design decisions."
+  rules:
+    - match_tags:
+        - COM
+        - ActiveX
+        - OCX
+        - OLE
+        - STA
+        - MTA
+        - Legacy Technology
+      topic_ids:
+        - activex-migration
+    - match_tags:
+        - 32-bit
+        - 64-bit
+        - C++/CLI
+        - Native Interop
+        - Native AOT
+        - TCP
+        - Networking
+        - Industrial Camera
+      topic_ids:
+        - bitness-interop
