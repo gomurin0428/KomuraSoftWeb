@@ -617,6 +617,8 @@ HRESULT ReadNearestVideoSample(
         IMFSample* pCurrent = nullptr;
         DWORD flags = 0;
         LONGLONG currentTimestamp = 0;
+        LONGLONG diffBefore = 0;
+        LONGLONG diffCurrent = 0;
 
         hr = pReader->ReadSample(
             MF_SOURCE_READER_FIRST_VIDEO_STREAM,
@@ -678,8 +680,8 @@ HRESULT ReadNearestVideoSample(
 
         if (hasBefore)
         {
-            const LONGLONG diffBefore = targetHns - beforeTimestamp;
-            const LONGLONG diffCurrent = currentTimestamp - targetHns;
+            diffBefore = targetHns - beforeTimestamp;
+            diffCurrent = currentTimestamp - targetHns;
 
             if (diffBefore <= diffCurrent)
             {
