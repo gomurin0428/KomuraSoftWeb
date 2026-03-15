@@ -232,7 +232,7 @@ Once those points are handled, the workflow becomes stable enough for thumbnails
 
 ## 10. Full `.cpp` code you can paste directly
 
-The final block below is meant to be copied directly into a Visual Studio C++ console app project. The command-line arguments are `input.mp4`, `seconds`, and `output.png`, in that order. The article effectively ends here, so **the last code block alone is meant to be enough to take away and run**.
+The final block below is intended for direct use in a Visual Studio C++ console app project. The command-line arguments are `input.mp4`, `seconds`, and `output.png`, in that order. The code is kept as a single self-contained `.cpp` so it is easy to paste into a project.
 
 ```cpp
 #define NOMINMAX
