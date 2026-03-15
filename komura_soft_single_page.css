@@ -504,35 +504,34 @@ p + p {
     linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 250, 255, 0.92));
   box-shadow: 0 10px 24px rgba(20, 32, 51, 0.08);
   transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  text-decoration: none;
 }
 
-.primary-service-card:hover {
+.primary-service-card:hover,
+.primary-service-card:focus-visible {
   transform: translateY(-4px);
   border-color: var(--color-accent);
   box-shadow: 0 16px 32px rgba(20, 32, 51, 0.12);
 }
 
+.primary-service-card:focus-visible {
+  outline: 3px solid rgba(47, 111, 221, 0.28);
+  outline-offset: 2px;
+}
+
 .primary-service-card-title {
-  margin: 0;
   font-size: 1.05rem;
   font-weight: 700;
   line-height: 1.5;
   color: var(--color-text);
 }
 
-.primary-service-card-link {
-  color: var(--color-text);
-  text-decoration: none;
-}
-
-.primary-service-card-link:hover,
-.primary-service-card-link:focus-visible {
+.primary-service-card:hover .primary-service-card-title,
+.primary-service-card:focus-visible .primary-service-card-title {
   color: var(--color-accent-light);
-  text-decoration: underline;
 }
 
 .primary-service-card-body {
-  margin: 0;
   font-size: 0.92rem;
   line-height: 1.75;
   color: var(--color-text-muted);

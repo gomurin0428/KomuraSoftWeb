@@ -317,12 +317,10 @@ lang: ja
         <p class="section-description">状況に近い入口から、そのまま各サービスページへ進めます。</p>
         <div class="primary-service-grid">
           {% for item in service_links %}
-          <article class="primary-service-card">
-            <h3 class="primary-service-card-title">
-              <a class="primary-service-card-link" href="{{ item.url }}">{{ item.title }}</a>
-            </h3>
-            <p class="primary-service-card-body">{{ item.summary }}</p>
-          </article>
+          <a class="primary-service-card" href="{{ item.url }}">
+            <span class="primary-service-card-title">{{ item.title }}</span>
+            <span class="primary-service-card-body">{{ item.summary }}</span>
+          </a>
           {% endfor %}
         </div>
       </section>
