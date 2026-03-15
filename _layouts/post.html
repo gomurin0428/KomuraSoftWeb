@@ -385,7 +385,8 @@
     }
     .blog-content .code-copy-block > .highlighter-rouge,
     .blog-content .code-copy-block > pre,
-    .blog-content .code-copy-block > .mermaid {
+    .blog-content .code-copy-block > .mermaid,
+    .blog-content .code-copy-block > .mermaid-render-target {
       margin-bottom: 0;
     }
     .blog-content pre {
@@ -403,16 +404,18 @@
       background: none;
       padding: 0;
     }
-    .blog-content .code-copy-block-mermaid > .mermaid {
+    .blog-content .code-copy-block-mermaid > .mermaid-render-target {
       background: var(--color-surface);
       border-radius: 0.5rem;
       padding: 3.75rem 1rem 1rem;
     }
-    .blog-content .mermaid {
+    .blog-content .mermaid,
+    .blog-content .mermaid-render-target {
       margin-bottom: 1rem;
       overflow-x: auto;
     }
-    .blog-content .mermaid svg {
+    .blog-content .mermaid svg,
+    .blog-content .mermaid-render-target svg {
       display: block;
       max-width: 100%;
       height: auto;
@@ -1221,12 +1224,11 @@
     };
 
     /**
-     * 入力: target にはコピー対象を含む要素、getCopyText にはコピー文字列を返す関数、additionalClassName には追加クラス名を受け取る。
+     * 入力: wrapper には button の親ラッパー、getCopyText にはコピー文字列を返す関数を受け取る。
      * 出力: なし。
-     * 処理内容: 対象ブロックへコピー button を注入し、成功時と失敗時の状態遷移もまとめて設定する。
+     * 処理内容: 既存 button の重複を防ぎつつ、コピー操作と状態遷移をラッパーへ登録する。
      */
-    const registerCopyButton = (target, getCopyText, additionalClassName = '') => {
-      const wrapper = ensureCodeCopyWrapper(target, additionalClassName);
+    const attachCopyButtonToWrapper = (wrapper, getCopyText) => {
       const existingButton = Array.from(wrapper.children).find(
         (child) => child instanceof HTMLElement && child.classList.contains('code-copy-button')
       );
@@ -1256,6 +1258,16 @@
     };
 
     /**
+     * 入力: target にはコピー対象を含む要素、getCopyText にはコピー文字列を返す関数、additionalClassName には追加クラス名を受け取る。
+     * 出力: なし。
+     * 処理内容: 対象ブロックへコピー button を注入し、成功時と失敗時の状態遷移もまとめて設定する。
+     */
+    const registerCopyButton = (target, getCopyText, additionalClassName = '') => {
+      const wrapper = ensureCodeCopyWrapper(target, additionalClassName);
+      attachCopyButtonToWrapper(wrapper, getCopyText);
+    };
+
+    /**
      * 入力: なし。
      * 出力: なし。
      * 処理内容: 通常のブロックコードを走査し、インラインコードを除外したうえでコピー button を追加する。
@@ -1271,7 +1283,11 @@
           continue;
         }
 
-        if (blockRoot.classList.contains('language-mermaid')) {
+        const hasMermaidSource =
+          blockRoot.classList.contains('language-mermaid') ||
+          preElement.matches('.language-mermaid') ||
+          preElement.querySelector('code[data-lang="mermaid"], code.lang-mermaid, code.language-mermaid') !== null;
+        if (hasMermaidSource) {
           continue;
         }
 
@@ -1328,12 +1344,13 @@
         }
 
         const wrapper = ensureCodeCopyWrapper(target, 'code-copy-block-mermaid');
+        wrapper.dataset.copySource = mermaidSource;
+
         const diagram = document.createElement('div');
-        diagram.className = 'mermaid';
-        diagram.dataset.copySource = mermaidSource;
+        diagram.className = 'mermaid mermaid-render-target';
         diagram.textContent = mermaidSource;
         target.replaceWith(diagram);
-        registerCopyButton(diagram, () => diagram.dataset.copySource ?? '', 'code-copy-block-mermaid');
+        attachCopyButtonToWrapper(wrapper, () => wrapper.dataset.copySource ?? '');
         diagrams.push(diagram);
       }
 
