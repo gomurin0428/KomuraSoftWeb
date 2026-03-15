@@ -9,7 +9,10 @@
 {% assign article_author_profile = site.data.article_authors[lang].default %}
 {% assign article_consulting_services = site.data.article_consulting_services[lang] %}
 {% assign article_related_topics = site.data.article_related_topics[lang] %}
+{% assign article_related_case_studies = site.data.article_related_case_studies[lang] %}
 {% assign matched_topic_ids = "|" %}
+{% assign article_case_study_mapping = article_related_case_studies.mappings | where: "translation_key", page.translation_key | first %}
+{% assign matched_case_study_id = article_case_study_mapping.case_study_id %}
 {% if page.tags %}
   {% for topic_rule in article_related_topics.rules %}
     {% assign topic_rule_matched = false %}
@@ -52,6 +55,24 @@
   {% endfor %}
 {% endcapture %}
 {% assign has_article_topic_cards = article_topic_cards | strip %}
+{% capture article_case_study_cards %}
+  {% if matched_case_study_id %}
+    {% for case_study in article_related_case_studies.case_studies %}
+      {% if case_study.id == matched_case_study_id %}
+      <article class="article-topic-card">
+        <h3 class="article-topic-card-title">
+          <a href="{{ case_study.url }}">{{ case_study.title }}</a>
+        </h3>
+        <p class="article-topic-card-text">{{ case_study.description }}</p>
+        <div class="article-consult-cta-actions">
+          <a class="article-consult-cta-button article-consult-cta-button-secondary" href="{{ case_study.url }}">{{ ui.post.case_study_links_button }}</a>
+        </div>
+      </article>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endcapture %}
+{% assign has_article_case_study_cards = article_case_study_cards | strip %}
 {% capture article_service_cards %}
   {% if page.consultation_services %}
     {% for consultation_service in page.consultation_services %}
@@ -701,6 +722,15 @@
               <p class="article-topic-links-intro">{{ ui.post.topic_links_intro }}</p>
               <div class="article-topic-links-grid">
                 {{ article_topic_cards }}
+              </div>
+            </section>
+            {% endif %}
+            {% if has_article_case_study_cards != "" %}
+            <section class="article-topic-links" aria-labelledby="article-case-study-links-title">
+              <h2 id="article-case-study-links-title" class="article-topic-links-title">{{ ui.post.case_study_links_title }}</h2>
+              <p class="article-topic-links-intro">{{ ui.post.case_study_links_intro }}</p>
+              <div class="article-topic-links-grid">
+                {{ article_case_study_cards }}
               </div>
             </section>
             {% endif %}

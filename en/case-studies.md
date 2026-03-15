@@ -14,10 +14,10 @@ page_keywords:
   - Long-Run Failures
   - Communication Issues
 related_pages:
-  - title: "Company"
-    url: "/en/company/"
-  - title: "Go Komura Profile"
-    url: "/en/profile/go-komura/"
+  - title: "Bug Investigation & Root Cause Analysis"
+    url: "/en/services/bug-investigation/"
+  - title: "Windows App Development"
+    url: "/en/services/windows-app-development/"
   - title: "Topics"
     url: "/en/topics/"
 related_articles:
@@ -31,26 +31,37 @@ related_articles:
 
 ## What these case studies focus on
 
-KomuraSoft case studies lean less toward ordinary bug fixing and more toward difficult investigation work:
-field-only failures, communication problems that come and go, issues that appear only after long uptime, and the test infrastructure needed to make those problems traceable.
+KomuraSoft case studies lean less toward ordinary bug fixing and more toward investigation work that is hard to see from logs alone.
 
-Typical examples include:
-
-- isolating the real cause behind multi-second communication stalls
-- tracing crashes that appear only after weeks of operation
-- building abnormal-case test foundations that expose leaks and failure paths earlier
-
-## Case study 1: Breaking down where communication stall time really comes from
-
-In an industrial camera control system, a rare multi-second stop in communication was separated into retransmission wait behavior and OS-side communication conditions.
-That made it possible to judge that the RFC1323 timestamp setting was materially involved in the stall profile.
-
-## Case study 2: Turning a long-run crash into a leak investigation
-
-For a crash that appeared only after about one month of continuous operation, the work centered on narrowing the observation points and making the logging useful enough to turn the issue into a handle-leak investigation.
-This is a good example of investigation work where the key step is deciding what can be observed reliably.
-
-## Case study 3: Building the failure-path foundation first
-
-Using Application Verifier, we built a foundation that made unexpected failure paths easier to trace.
-That kind of work is less about a one-off patch and more about making future investigations cheaper and more reliable.
+<div class="case-studies-card">
+  <p class="case-studies-note">Each page reorganizes the case as symptom, constraints, observation, narrowing, and improvement, with the deeper technical article kept as a supporting link.</p>
+  <div class="case-study-list">
+    <article class="case-study-item">
+      <h2 class="case-study-title"><a href="/en/case-studies/industrial-camera-tcp-stall/">Case Study 1: How We Isolated Multi-Second Communication Stalls</a></h2>
+      <p class="case-study-body">A case where a rare communication pause was separated into retransmission wait behavior and OS-side conditions, making the effective improvement point clearer.</p>
+      <p class="case-study-body">Technical background: <a href="/en/blog/2026/03/11/001-tcp-retransmission-rfc1323-industrial-camera/">When Industrial Camera TCP Traffic Stops for Several Seconds</a></p>
+      <div class="section-related-links-list">
+        <a class="section-related-link" href="/en/services/bug-investigation/">Bug Investigation & Root Cause Analysis</a>
+        <a class="section-related-link" href="/en/services/windows-app-development/">Windows App Development</a>
+      </div>
+    </article>
+    <article class="case-study-item">
+      <h2 class="case-study-title"><a href="/en/case-studies/long-run-crash-handle-leak/">Case Study 2: How We Traced a Long-Run Crash to a Handle Leak</a></h2>
+      <p class="case-study-body">A case where a month-scale crash was narrowed into a handle-leak investigation by strengthening observation points and operational logging.</p>
+      <p class="case-study-body">Technical background: <a href="/en/blog/2026/03/11/002-handle-leak-industrial-camera-long-run-crash-part1/">When an Industrial Camera Control App Suddenly Crashes After a Month (Part 1)</a></p>
+      <div class="section-related-links-list">
+        <a class="section-related-link" href="/en/services/bug-investigation/">Bug Investigation & Root Cause Analysis</a>
+        <a class="section-related-link" href="/en/services/windows-app-development/">Windows App Development</a>
+      </div>
+    </article>
+    <article class="case-study-item">
+      <h2 class="case-study-title"><a href="/en/case-studies/application-verifier-failure-path-testing/">Case Study 3: Failure-Path Test Infrastructure with Application Verifier</a></h2>
+      <p class="case-study-body">A case focused on building the failure-path foundation first so that later incidents become easier and cheaper to investigate.</p>
+      <p class="case-study-body">Technical background: <a href="/en/blog/2026/03/11/003-application-verifier-abnormal-test-foundation-part2/">What Application Verifier Is and How to Build Failure-Path Test Infrastructure</a></p>
+      <div class="section-related-links-list">
+        <a class="section-related-link" href="/en/services/bug-investigation/">Bug Investigation & Root Cause Analysis</a>
+        <a class="section-related-link" href="/en/services/technical-consulting/">Technical Consulting & Design Review</a>
+      </div>
+    </article>
+  </div>
+</div>

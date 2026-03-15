@@ -1,0 +1,42 @@
+ja:
+  case_studies:
+    - id: industrial-camera-tcp-stall
+      title: "産業用カメラ通信の数秒停止を切り分けた事例"
+      url: "/case-studies/industrial-camera-tcp-stall/"
+      description: "数秒だけ止まる通信異常を、再送待ち時間と OS 側の条件に分けて切り分けた事例ページです。"
+    - id: long-run-crash-handle-leak
+      title: "長期稼働後クラッシュをハンドルリークまで追った事例"
+      url: "/case-studies/long-run-crash-handle-leak/"
+      description: "一か月単位でしか出ないクラッシュを、観測点の整理とログ増強でリーク調査へ絞り込んだ事例ページです。"
+    - id: application-verifier-failure-path-testing
+      title: "Application Verifier を使った異常系テスト基盤の事例"
+      url: "/case-studies/application-verifier-failure-path-testing/"
+      description: "異常系テスト基盤を先に整え、次回の障害でも追いやすい状態へ寄せた事例ページです。"
+  mappings:
+    - translation_key: tcp-retransmission-rfc1323-industrial-camera
+      case_study_id: industrial-camera-tcp-stall
+    - translation_key: handle-leak-industrial-camera-long-run-crash-part1
+      case_study_id: long-run-crash-handle-leak
+    - translation_key: application-verifier-abnormal-test-foundation-part2
+      case_study_id: application-verifier-failure-path-testing
+en:
+  case_studies:
+    - id: industrial-camera-tcp-stall
+      title: "How We Isolated Multi-Second Communication Stalls"
+      url: "/en/case-studies/industrial-camera-tcp-stall/"
+      description: "Case-study page for separating a rare communication stall into retransmission wait behavior and OS-side conditions."
+    - id: long-run-crash-handle-leak
+      title: "How We Traced a Long-Run Crash to a Handle Leak"
+      url: "/en/case-studies/long-run-crash-handle-leak/"
+      description: "Case-study page for turning a month-scale crash into a handle-leak investigation through better observation points and logging."
+    - id: application-verifier-failure-path-testing
+      title: "Failure-Path Test Infrastructure with Application Verifier"
+      url: "/en/case-studies/application-verifier-failure-path-testing/"
+      description: "Case-study page for building a failure-path testing foundation that makes future investigation easier."
+  mappings:
+    - translation_key: tcp-retransmission-rfc1323-industrial-camera
+      case_study_id: industrial-camera-tcp-stall
+    - translation_key: handle-leak-industrial-camera-long-run-crash-part1
+      case_study_id: long-run-crash-handle-leak
+    - translation_key: application-verifier-abnormal-test-foundation-part2
+      case_study_id: application-verifier-failure-path-testing

@@ -14,10 +14,10 @@ page_keywords:
   - 長期稼働障害
   - 通信異常
 related_pages:
-  - title: "会社情報"
-    url: "/company/"
-  - title: "代表略歴"
-    url: "/profile/go-komura/"
+  - title: "不具合調査・原因解析"
+    url: "/services/bug-investigation/"
+  - title: "Windowsアプリ開発"
+    url: "/services/windows-app-development/"
   - title: "技術トピック"
     url: "/topics/"
 related_articles:
@@ -33,23 +33,35 @@ related_articles:
 
 KomuraSoft の技術事例は、単純なバグ修正よりも、現場で見えにくい障害の切り分けや、再発防止のための基盤整備に寄っています。
 
-たとえば、次のような種類の案件です。
-
-- 数秒だけ止まる通信異常の原因切り分け
-- 一か月単位の長期稼働後にだけ出るクラッシュ調査
-- メモリリークやハンドルリークを追いやすくする異常系テスト基盤の整備
-
-## 事例 1: 通信停止の待ち時間を要因分解して短縮
-
-産業用カメラ制御で、まれに数秒単位の停止が出る問題に対して、再送待ち時間と OS の通信条件を切り分けました。
-結果として、RFC1323 タイムスタンプ設定がボトルネックに効く構造だと判断できました。
-
-## 事例 2: 長期稼働後クラッシュをリークに結び付けた調査
-
-一か月程度の連続運転後にだけ落ちる障害について、再現条件の整理と観測ログの増強を進め、ハンドルリークを中心とした調査に絞り込みました。
-「見えにくい障害でも、どの観測が有効か」を整える仕事に近い事例です。
-
-## 事例 3: 異常系テスト基盤を先に作って再発防止へつなげた例
-
-Application Verifier を使って、unexpected な失敗経路でも痕跡を追いやすい基盤を整えました。
-単発の修正だけでなく、次回の障害で調べやすくするための仕込みまで含めて扱っています。
+<div class="case-studies-card">
+  <p class="case-studies-note">各事例は、症状、制約、観測、切り分け、改善までを 1 ページで追えるように整理しています。詳しい技術背景は元記事へ戻れます。</p>
+  <div class="case-study-list">
+    <article class="case-study-item">
+      <h2 class="case-study-title"><a href="/case-studies/industrial-camera-tcp-stall/">事例 1: 産業用カメラ通信の数秒停止を切り分けた事例</a></h2>
+      <p class="case-study-body">数秒だけ止まる通信異常について、再送待ち時間と OS 側の通信条件を切り分け、どこに手を入れると改善に効くかを整理したケースです。</p>
+      <p class="case-study-body">詳しい技術背景: <a href="/blog/2026/03/11/001-tcp-retransmission-rfc1323-industrial-camera/">TCP 再送で産業用カメラ通信が数秒止まるとき</a></p>
+      <div class="section-related-links-list">
+        <a class="section-related-link" href="/services/bug-investigation/">不具合調査・原因解析</a>
+        <a class="section-related-link" href="/services/windows-app-development/">Windowsアプリ開発</a>
+      </div>
+    </article>
+    <article class="case-study-item">
+      <h2 class="case-study-title"><a href="/case-studies/long-run-crash-handle-leak/">事例 2: 長期稼働後クラッシュをハンドルリークまで追った事例</a></h2>
+      <p class="case-study-body">一か月単位の連続運転後にだけ落ちる障害を、観測ログの増強と再現圧縮でハンドルリーク調査へ絞り込んだケースです。</p>
+      <p class="case-study-body">詳しい技術背景: <a href="/blog/2026/03/11/002-handle-leak-industrial-camera-long-run-crash-part1/">産業用カメラ制御アプリが1か月後に突然落ちるとき（前編）</a></p>
+      <div class="section-related-links-list">
+        <a class="section-related-link" href="/services/bug-investigation/">不具合調査・原因解析</a>
+        <a class="section-related-link" href="/services/windows-app-development/">Windowsアプリ開発</a>
+      </div>
+    </article>
+    <article class="case-study-item">
+      <h2 class="case-study-title"><a href="/case-studies/application-verifier-failure-path-testing/">事例 3: Application Verifier を使った異常系テスト基盤の事例</a></h2>
+      <p class="case-study-body">単発の修正だけで終わらせず、異常系テスト基盤を先に整えて次回以降も追いやすくしたケースです。</p>
+      <p class="case-study-body">詳しい技術背景: <a href="/blog/2026/03/11/003-application-verifier-abnormal-test-foundation-part2/">Application Verifier を使った異常系テスト基盤の作り方</a></p>
+      <div class="section-related-links-list">
+        <a class="section-related-link" href="/services/bug-investigation/">不具合調査・原因解析</a>
+        <a class="section-related-link" href="/services/technical-consulting/">技術相談・設計レビュー</a>
+      </div>
+    </article>
+  </div>
+</div>
