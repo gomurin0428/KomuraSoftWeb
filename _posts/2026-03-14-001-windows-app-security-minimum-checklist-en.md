@@ -19,6 +19,8 @@ consultation_services:
     reason: "If the first need is to review an existing application's security posture, privilege boundaries, or updater design before a rebuild, this fits technical consulting and design review."
 ---
 
+[Download the Excel checklist](/assets/downloads/2026-03-14-windows-app-security-minimum-checklist.xlsx)
+
 When people say "Windows application security," the conversation often jumps straight to large themes.  
 Zero trust, EDR, SBOM, certificate operations, vulnerability management. All of that matters, but in day-to-day delivery there is a simpler problem first: basic things that should not be left loose.
 

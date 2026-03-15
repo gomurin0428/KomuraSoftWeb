@@ -1,5 +1,5 @@
 ---
-title: "Windowsアプリ開発における最低限のセキュリティを守るためのチェックシート"
+title: "Windowsアプリ開発における最低限のセキュリティを守るためのチェックリスト"
 date: 2026-03-14 15:00
 lang: ja
 translation_key: windows-app-security-minimum-checklist
@@ -9,13 +9,15 @@ tags:
   - 設計
   - C# / .NET
   - Win32
-description: "WPF / WinForms / WinUI / C++ / C# の Windows アプリ開発で、最低限外したくないセキュリティ項目をチェックシート形式で整理します。"
+description: "WPF / WinForms / WinUI / C++ / C# の Windows アプリ開発で、最低限外したくないセキュリティ項目をチェックリスト形式で整理します。"
 consultation_services:
   - id: windows-app-development
     reason: "権限設計、配布方式、更新方式、ログ設計まで含めて Windows アプリ全体を見直す話なので、Windowsアプリ開発 と相性がよいテーマです。"
   - id: technical-consulting
     reason: "既存アプリのセキュリティ見直しや権限境界の整理、アップデータ方針の再設計から入りたい場合は、技術相談・設計レビューとして整理できます。"
 ---
+
+[Excel 版チェックリストをダウンロード](/assets/downloads/2026-03-14-windows-app-security-minimum-checklist.xlsx)
 
 Windows アプリのセキュリティというと、話が急に大きくなりやすいです。  
 ゼロトラスト、EDR、SBOM、証明書運用、脆弱性管理。どれも大事ですが、実務ではその前に外したくない最低限がかなりあります。
@@ -69,7 +71,7 @@ Windows アプリ開発では、全部を一気に完璧にするより、まず
 
 つまり、「組織全体の巨大なセキュリティ施策」ではなく、**Windows アプリ開発者がリリース前に自力で外しにくい基本線**を扱います。
 
-## 3. まず見るチェックシート
+## 3. まず見るチェックリスト
 
 細かい議論の前に、まず全体を見渡せる表を置きます。  
 ここだけでも、見直す場所の当たりは付きます。
