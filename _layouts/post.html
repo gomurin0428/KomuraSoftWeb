@@ -404,6 +404,17 @@
       background: none;
       padding: 0;
     }
+    .blog-content .table-copy-block {
+      margin-bottom: 1.5rem;
+    }
+    .blog-content .table-copy-scroll {
+      overflow-x: auto;
+      padding-top: 3.75rem;
+      border-radius: 0.5rem;
+    }
+    .blog-content .table-copy-scroll table {
+      margin-bottom: 0;
+    }
     .blog-content .code-copy-block-mermaid > .mermaid-render-target {
       background: var(--color-surface);
       border-radius: 0.5rem;
@@ -903,6 +914,7 @@
     const mobileConsultNote = {{ ui.post.consult_cta_note | jsonify }};
     const articleConsultLabel = {{ ui.article_consult_label | jsonify }};
     const copyCodeLabel = {{ ui.post.copy_code_label | jsonify }};
+    const copyTableLabel = {{ ui.post.copy_table_label | jsonify }};
     const copiedCodeLabel = {{ ui.post.copied_code_label | jsonify }};
     const copyFailedLabel = {{ ui.post.copy_failed_label | jsonify }};
     const copyStateResetDelayMs = 2000;
@@ -1114,8 +1126,8 @@
      * 出力: コピー状態の見た目情報を保持したオブジェクトを返す。
      * 処理内容: ボタン状態ごとのラベルとアイコンを一元管理する。
      */
-    const getCopyButtonPresentation = () => ({
-      idle: { label: copyCodeLabel, icon: copyButtonIcons.default },
+    const getCopyButtonPresentation = (idleLabel) => ({
+      idle: { label: idleLabel, icon: copyButtonIcons.default },
       copied: { label: copiedCodeLabel, icon: copyButtonIcons.copied },
       failed: { label: copyFailedLabel, icon: copyButtonIcons.failed }
     });
@@ -1126,7 +1138,8 @@
      * 処理内容: ボタンのラベル、アイコン、属性を現在のコピー状態に合わせて更新する。
      */
     const setCopyButtonState = (button, state) => {
-      const presentation = getCopyButtonPresentation()[state] ?? getCopyButtonPresentation().idle;
+      const idleLabel = button.dataset.idleLabel ?? copyCodeLabel;
+      const presentation = getCopyButtonPresentation(idleLabel)[state] ?? getCopyButtonPresentation(idleLabel).idle;
       const iconElement = button.querySelector('.code-copy-button-icon');
       const labelElement = button.querySelector('.code-copy-button-label');
 
@@ -1167,10 +1180,11 @@
      * 出力: 初期化済みのコピー用 button 要素を返す。
      * 処理内容: アイコンとラベルを持つコピー操作ボタンを生成する。
      */
-    const createCopyButton = () => {
+    const createCopyButton = (idleLabel = copyCodeLabel) => {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'code-copy-button';
+      button.dataset.idleLabel = idleLabel;
 
       const icon = document.createElement('span');
       icon.className = 'code-copy-button-icon';
@@ -1195,6 +1209,24 @@
       }
 
       await navigator.clipboard.writeText(text);
+    };
+
+    /**
+     * 入力: clipboardItems には MIME type ごとの Blob を格納したオブジェクトを受け取る。
+     * 出力: なし。
+     * 処理内容: ClipboardItem と Clipboard API の両方を検証し、複数形式をまとめてクリップボードへ書き込む。
+     */
+    const writeClipboardItems = async (clipboardItems) => {
+      if (
+        !navigator.clipboard ||
+        typeof navigator.clipboard.write !== 'function' ||
+        typeof window.ClipboardItem !== 'function'
+      ) {
+        throw new Error('ClipboardItem API is not available.');
+      }
+
+      const clipboardItem = new window.ClipboardItem(clipboardItems);
+      await navigator.clipboard.write([clipboardItem]);
     };
 
     /**
@@ -1228,7 +1260,7 @@
      * 出力: なし。
      * 処理内容: 既存 button の重複を防ぎつつ、コピー操作と状態遷移をラッパーへ登録する。
      */
-    const attachCopyButtonToWrapper = (wrapper, getCopyText) => {
+    const attachCopyButtonToWrapper = (wrapper, copyAction, idleLabel = copyCodeLabel) => {
       const existingButton = Array.from(wrapper.children).find(
         (child) => child instanceof HTMLElement && child.classList.contains('code-copy-button')
       );
@@ -1236,15 +1268,10 @@
         return;
       }
 
-      const button = createCopyButton();
+      const button = createCopyButton(idleLabel);
       button.addEventListener('click', async () => {
         try {
-          const copyText = getCopyText();
-          if (!copyText) {
-            throw new Error('Copy source is empty.');
-          }
-
-          await writeTextToClipboard(copyText);
+          await copyAction();
           setCopyButtonState(button, 'copied');
         } catch (error) {
           console.error('Copy failed.', error);
@@ -1262,9 +1289,16 @@
      * 出力: なし。
      * 処理内容: 対象ブロックへコピー button を注入し、成功時と失敗時の状態遷移もまとめて設定する。
      */
-    const registerCopyButton = (target, getCopyText, additionalClassName = '') => {
+    const registerCopyButton = (target, getCopyText, additionalClassName = '', idleLabel = copyCodeLabel) => {
       const wrapper = ensureCodeCopyWrapper(target, additionalClassName);
-      attachCopyButtonToWrapper(wrapper, getCopyText);
+      attachCopyButtonToWrapper(wrapper, async () => {
+        const copyText = getCopyText();
+        if (!copyText) {
+          throw new Error('Copy source is empty.');
+        }
+
+        await writeTextToClipboard(copyText);
+      }, idleLabel);
     };
 
     /**
@@ -1326,6 +1360,144 @@
       }
 
       return targets;
+    };
+
+    /**
+     * 入力: targetTable にはコピー対象の table 要素を受け取る。
+     * 出力: 表コピー UI を保持するラッパー要素を返す。
+     * 処理内容: 表本体をスクロールコンテナへ移しつつ、表専用のコピーラッパーを作成または再利用する。
+     */
+    const ensureTableCopyWrapper = (targetTable) => {
+      const existingWrapper = targetTable.closest('.table-copy-block');
+      if (existingWrapper) {
+        return existingWrapper;
+      }
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'code-copy-block table-copy-block';
+
+      const scrollContainer = document.createElement('div');
+      scrollContainer.className = 'table-copy-scroll';
+
+      targetTable.before(wrapper);
+      wrapper.append(scrollContainer);
+      scrollContainer.append(targetTable);
+      return wrapper;
+    };
+
+    /**
+     * 入力: rawValue には CSV セルとして出力したい文字列を受け取る。
+     * 出力: RFC 4180 相当でエスケープ済みの CSV セル文字列を返す。
+     * 処理内容: ダブルクォート、カンマ、改行を含む値を安全に CSV へ埋め込める形へ変換する。
+     */
+    const escapeCsvCell = (rawValue) => {
+      const normalizedValue = rawValue.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      if (!/[",\n]/.test(normalizedValue)) {
+        return normalizedValue;
+      }
+
+      return `"${normalizedValue.replace(/"/g, '""')}"`;
+    };
+
+    /**
+     * 入力: cellElement には table 内の th / td 要素を受け取る。
+     * 出力: 表示用に整えたセル文字列を返す。
+     * 処理内容: 装飾を落として見えている文字列を取得し、改行表現だけを正規化する。
+     */
+    const getTableCellText = (cellElement) => {
+      return cellElement.innerText.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
+    };
+
+    /**
+     * 入力: tableElement には解析対象の table 要素を受け取る。
+     * 出力: テーブルの行列を 2 次元配列で返す。
+     * 処理内容: thead / tbody / tfoot を優先しつつ、各セルの表示文字列を順序どおり収集する。
+     */
+    const collectTableRows = (tableElement) => {
+      const sectionRows = [];
+      const sections = [tableElement.tHead, ...Array.from(tableElement.tBodies), tableElement.tFoot].filter(Boolean);
+
+      if (sections.length > 0) {
+        for (const section of sections) {
+          sectionRows.push(...Array.from(section.rows));
+        }
+      } else {
+        sectionRows.push(...Array.from(tableElement.rows));
+      }
+
+      return sectionRows.map((rowElement) => {
+        const cells = Array.from(rowElement.cells);
+        for (const cellElement of cells) {
+          if (cellElement.colSpan > 1 || cellElement.rowSpan > 1) {
+            throw new Error('Table spans are not supported.');
+          }
+        }
+
+        return cells.map((cellElement) => getTableCellText(cellElement));
+      });
+    };
+
+    /**
+     * 入力: rowValues にはセル文字列の 2 次元配列を受け取る。
+     * 出力: CSV テキストを返す。
+     * 処理内容: 各セルへ CSV エスケープを適用し、行単位で結合して CSV を生成する。
+     */
+    const serializeRowsToCsv = (rowValues) => {
+      return rowValues
+        .map((rowValue) => rowValue.map((cellValue) => escapeCsvCell(cellValue)).join(','))
+        .join('\r\n');
+    };
+
+    /**
+     * 入力: rowValues にはセル文字列の 2 次元配列を受け取る。
+     * 出力: Excel 貼り付け向けのタブ区切りテキストを返す。
+     * 処理内容: タブと改行で列・行が壊れないよう、セル内の制御文字を貼り付け向けに整形する。
+     */
+    const serializeRowsToPlainTable = (rowValues) => {
+      return rowValues
+        .map((rowValue) => rowValue.map((cellValue) => cellValue.replace(/\t/g, '    ').replace(/\r?\n/g, ' ')).join('\t'))
+        .join('\r\n');
+    };
+
+    /**
+     * 入力: tableElement にはコピー対象の table 要素を受け取る。
+     * 出力: なし。
+     * 処理内容: テーブルを CSV と Excel 貼り付け向けテキストへ変換し、複数形式でクリップボードへ書き込む。
+     */
+    const writeTableToClipboard = async (tableElement) => {
+      const rowValues = collectTableRows(tableElement);
+      if (rowValues.length === 0) {
+        throw new Error('Table is empty.');
+      }
+
+      const csvText = serializeRowsToCsv(rowValues);
+      const plainTableText = serializeRowsToPlainTable(rowValues);
+      await writeClipboardItems({
+        'text/csv': new Blob([csvText], { type: 'text/csv' }),
+        'text/plain': new Blob([plainTableText], { type: 'text/plain' })
+      });
+    };
+
+    /**
+     * 入力: なし。
+     * 出力: なし。
+     * 処理内容: 記事内の table を走査し、CSV / Excel 貼り付け向けコピー button を追加する。
+     */
+    const setupTableCopyButtons = () => {
+      for (const tableElement of document.querySelectorAll('.blog-content table')) {
+        if (!(tableElement instanceof HTMLTableElement) || tableElement.closest('.table-copy-scroll')) {
+          continue;
+        }
+
+        if (tableElement.parentElement?.closest('table')) {
+          continue;
+        }
+
+        const wrapper = ensureTableCopyWrapper(tableElement);
+        attachCopyButtonToWrapper(wrapper, async () => {
+          await writeTableToClipboard(tableElement);
+        }, copyTableLabel);
+      }
     };
 
     /**
@@ -1425,6 +1597,7 @@
     insertArticleConsultCta();
     const mermaidDiagrams = setupMermaidBlocks();
     setupStandardCodeCopyButtons();
+    setupTableCopyButtons();
 
     if (mermaidDiagrams.length > 0) {
       await mermaid.run({ querySelector: '.blog-content .mermaid' });
