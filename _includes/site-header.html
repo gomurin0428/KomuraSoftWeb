@@ -1,5 +1,9 @@
 {% assign header_lang = include.lang | default: page.lang | default: "ja" %}
-{% assign header_links = site.data.homepage_links[header_lang] %}
+{% assign service_links = site.data.service_pages[header_lang] %}
+{% assign navigation_groups = site.data.site_navigation[header_lang] %}
+{% assign secondary_links = navigation_groups.secondary_links %}
+{% assign about_links = navigation_groups.about_links %}
+{% assign contact_link = navigation_groups.contact_link %}
 {% if header_lang == "en" %}
   {% assign header_home_url = include.home_url | default: "/en/" %}
   {% assign header_ja_url = include.ja_url | default: "/" %}
@@ -7,6 +11,8 @@
   {% assign header_nav_label = "Primary navigation" %}
   {% assign header_lang_label = "Language selection" %}
   {% assign header_menu_label = "Menu" %}
+  {% assign header_services_label = "Services" %}
+  {% assign header_about_label = "About" %}
   {% assign header_ja_label = "Japanese" %}
 {% else %}
   {% assign header_home_url = include.home_url | default: "/" %}
@@ -15,6 +21,8 @@
   {% assign header_nav_label = "主要ナビゲーション" %}
   {% assign header_lang_label = "表示言語の選択" %}
   {% assign header_menu_label = "メニュー" %}
+  {% assign header_services_label = "サービス" %}
+  {% assign header_about_label = "About" %}
   {% assign header_ja_label = "日本語" %}
 {% endif %}
 <header class="site-header">
@@ -32,9 +40,26 @@
       <span class="mobile-menu-toggle-text">{{ header_menu_label }}</span>
     </button>
     <nav class="site-nav" id="site-nav-{{ header_lang }}" aria-label="{{ header_nav_label }}">
-      {% for item in header_links %}
+      <div class="nav-dropdown">
+        <button type="button" class="nav-dropdown-toggle nav-link nav-link--with-menu" aria-expanded="false">{{ header_services_label }}</button>
+        <div class="nav-dropdown-menu">
+          {% for item in service_links %}
+          <a class="nav-dropdown-item" href="{{ item.url }}">{{ item.title }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      {% for item in secondary_links %}
       <a class="nav-link" href="{{ item.url }}">{{ item.title }}</a>
       {% endfor %}
+      <div class="nav-dropdown">
+        <button type="button" class="nav-dropdown-toggle nav-link nav-link--with-menu" aria-expanded="false">{{ header_about_label }}</button>
+        <div class="nav-dropdown-menu">
+          {% for item in about_links %}
+          <a class="nav-dropdown-item" href="{{ item.url }}">{{ item.title }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      <a class="nav-link nav-link--contact" href="{{ contact_link.url }}">{{ contact_link.title }}</a>
       <div class="mobile-nav-actions">
         <div class="language-switch" role="group" aria-label="{{ header_lang_label }}">
           <a class="language-button language-button-link" href="{{ header_ja_url }}"{% unless header_lang == "en" %} aria-current="page"{% endunless %}>{{ header_ja_label }}</a>

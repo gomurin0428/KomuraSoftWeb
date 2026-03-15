@@ -1,10 +1,4 @@
 ja:
-  - title: "Windowsアプリ開発"
-    url: "/services/windows-app-development/"
-  - title: "不具合調査・原因解析"
-    url: "/services/bug-investigation/"
-  - title: "技術相談・設計レビュー"
-    url: "/services/technical-consulting/"
   - title: "開発できる Windows ソフトの例"
     url: "/windows-software-examples/"
   - title: "技術トピック"
@@ -20,12 +14,6 @@ ja:
   - title: "ブログ"
     url: "/blog/"
 en:
-  - title: "Windows App Development"
-    url: "/en/services/windows-app-development/"
-  - title: "Bug Investigation & Root Cause Analysis"
-    url: "/en/services/bug-investigation/"
-  - title: "Technical Consulting & Design Review"
-    url: "/en/services/technical-consulting/"
   - title: "Examples of Windows Software We Can Build"
     url: "/en/windows-software-examples/"
   - title: "Topics"

@@ -1,6 +1,7 @@
 ---
 lang: ja
 ---
+{% assign service_links = site.data.service_pages[page.lang] %}
 {% assign homepage_links = site.data.homepage_links[page.lang] %}
 <!DOCTYPE html>
 <html lang="ja">
@@ -16,7 +17,7 @@ lang: ja
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/jpeg" href="logo-ui.jpg">
   <title>KomuraSoft | Windows受託開発と技術相談</title>
-  <meta id="meta-description" name="description" content="Windows ソフトの受託開発、既存システム改修、技術相談、不具合調査を行う KomuraSoft の案内ページです。対応領域と相談の入口をまとめています。">
+  <meta id="meta-description" name="description" content="Windowsアプリ開発、既存Windowsソフトの改修・保守、既存資産活用・移行支援、技術相談、不具合調査を行う KomuraSoft の案内ページです。5つのサービス入口をまとめています。">
   <link rel="canonical" href="https://comcomponent.com/">
   <link rel="alternate" hreflang="ja" href="https://comcomponent.com/">
   <link rel="alternate" hreflang="en" href="https://comcomponent.com/en/">
@@ -27,7 +28,7 @@ lang: ja
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta id="meta-og-title" property="og:title" content="KomuraSoft | Windows受託開発と技術相談">
-  <meta id="meta-og-description" property="og:description" content="Windows ソフトの受託開発、既存システム改修、技術相談、不具合調査を行う KomuraSoft の案内ページです。対応領域と相談の入口をまとめています。">
+  <meta id="meta-og-description" property="og:description" content="Windowsアプリ開発、既存Windowsソフトの改修・保守、既存資産活用・移行支援、技術相談、不具合調査を行う KomuraSoft の案内ページです。5つのサービス入口をまとめています。">
   <meta property="og:url" content="https://comcomponent.com/">
   <meta property="og:site_name" content="KomuraSoft">
   <meta property="og:locale" content="ja_JP">
@@ -40,7 +41,7 @@ lang: ja
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta id="meta-twitter-title" name="twitter:title" content="KomuraSoft | Windows受託開発と技術相談">
-  <meta id="meta-twitter-description" name="twitter:description" content="Windows ソフトの受託開発、既存システム改修、技術相談、不具合調査を行う KomuraSoft の案内ページです。対応領域と相談の入口をまとめています。">
+  <meta id="meta-twitter-description" name="twitter:description" content="Windowsアプリ開発、既存Windowsソフトの改修・保守、既存資産活用・移行支援、技術相談、不具合調査を行う KomuraSoft の案内ページです。5つのサービス入口をまとめています。">
   <meta name="twitter:image" content="https://comcomponent.com/logo-og.jpg">
   <meta name="twitter:image:alt" content="KomuraSoft logo">
   <meta name="twitter:site" content="@komurasoft">
@@ -64,7 +65,7 @@ lang: ja
     "url": "https://comcomponent.com/",
     "logo": "https://comcomponent.com/logo-og.jpg",
     "image": "https://comcomponent.com/logo-og.jpg",
-    "description": "Windows ソフトの受託開発、既存システム改修、技術相談、不具合調査を行う KomuraSoft の案内ページ",
+    "description": "Windowsアプリ開発、既存Windowsソフトの改修・保守、既存資産活用・移行支援、技術相談、不具合調査を行う KomuraSoft の案内ページ",
     "founder": {
       "@type": "Person",
       "name": "小村 豪"
@@ -147,7 +148,7 @@ lang: ja
     "@type": "WebPage",
     "name": "KomuraSoft | Windows受託開発と技術相談",
     "url": "https://comcomponent.com/",
-    "description": "Windows ソフトの受託開発、既存システム改修、技術相談、不具合調査を行う KomuraSoft の案内ページです。対応領域と相談の入口をまとめています。",
+    "description": "Windowsアプリ開発、既存Windowsソフトの改修・保守、既存資産活用・移行支援、技術相談、不具合調査を行う KomuraSoft の案内ページです。5つのサービス入口をまとめています。",
     "inLanguage": "ja-JP",
     "isPartOf": {
       "@type": "WebSite",
@@ -196,19 +197,27 @@ lang: ja
       "url": "https://comcomponent.com/"
     },
     "areaServed": "JP",
-    "description": "Windows ソフトの新規開発、既存システム改修、技術相談、不具合調査をまとめて支援するサービス案内です。",
+    "description": "Windowsアプリ開発、既存Windowsソフトの改修・保守、既存資産活用・移行支援、技術相談、不具合調査をまとめて案内するトップページです。",
     "offers": [
       {
         "@type": "Offer",
-        "name": "Windows アプリ開発"
+        "name": "Windowsアプリ開発"
       },
       {
         "@type": "Offer",
-        "name": "既存システムの改修・保守"
+        "name": "不具合調査・原因解析"
       },
       {
         "@type": "Offer",
-        "name": "技術コンサルティング"
+        "name": "技術相談・設計レビュー"
+      },
+      {
+        "@type": "Offer",
+        "name": "既存Windowsソフトの改修・保守"
+      },
+      {
+        "@type": "Offer",
+        "name": "既存資産活用・移行支援"
       }
     ],
     "hasOfferCatalog": {
@@ -303,9 +312,21 @@ lang: ja
           </div>
         </div>
       </section>
+      <section class="section section--service-rail" id="service">
+        <h2 class="section-title">5つのサービス</h2>
+        <p class="section-description">状況に近い入口から、そのまま各サービスページへ進めます。</p>
+        <div class="primary-service-grid">
+          {% for item in service_links %}
+          <a class="primary-service-card" href="{{ item.url }}">
+            <span class="primary-service-card-title">{{ item.title }}</span>
+            <span class="primary-service-card-body">{{ item.summary }}</span>
+          </a>
+          {% endfor %}
+        </div>
+      </section>
       <section class="section" id="detail-pages">
-        <h2 class="section-title">詳しく見る</h2>
-        <p class="section-description">詳しい内容は、下の入口から必要なページへ進めます。</p>
+        <h2 class="section-title">その他のページ</h2>
+        <p class="section-description">サービス以外の情報は、下の入口から確認できます。</p>
         <div class="section-related-links-list">
           {% for item in homepage_links %}
           <a class="section-related-link" href="{{ item.url }}">{{ item.title }}</a>
