@@ -26,23 +26,6 @@ exclude:
   - README.md
   - CNAME
   - docs
-  - 2026-03-11-tcp-retransmission-rfc1323-industrial-camera.md
-  - 001-handle-leak-industrial-camera-long-run-crash-part1.md
-  - 002-application-verifier-abnormal-test-foundation-part2.md
-  - 003-media-foundation-extract-still-image-from-mp4-at-specific-time-cpp-pasteable.md
-  - 003-media-foundation-extract-still-image-from-mp4-at-specific-time.md
-  - 004-media-foundation-yuv-to-rgb-conversion-patterns.md
-  - wpf-winforms-ui-thread-async-await-one-sheet.md
-  - activex-ocx-keep-wrap-replace-decision-table.md
-  - generic-host-backgroundservice-desktop-app.md
-  - csharp-native-aot-native-dll-from-c-cpp.md
-  - dotnet-framework-to-dotnet-premigration-checklist.md
-  - dotnet-generic-host-what-is.md
-  - dotnet-native-aot-what-is.md
-  - periodictimer-system-threading-timer-dispatchertimer-guide.md
-  - windows-app-security-minimum-checklist.md
-  - windows-nic-advanced-properties-guide.md
-  - what-is-com-activex-ocx.md
 
 # Permalink for posts
 permalink: /blog/:year/:month/:day/:title/
