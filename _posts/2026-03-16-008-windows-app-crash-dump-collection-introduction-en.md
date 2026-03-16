@@ -410,13 +410,13 @@ That order keeps the solution practical and avoids making the first step heavier
 
 ## 12. References
 
-- [Collecting User-Mode Dumps - Win32 apps | Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/wer/collecting-user-mode-dumps)
-- [ProcDump v11.1 - Sysinternals | Microsoft Learn](https://learn.microsoft.com/en-us/sysinternals/downloads/procdump)
-- [MiniDumpWriteDump function - Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/api/minidumpapiset/nf-minidumpapiset-minidumpwritedump)
-- [User-mode dump files - Microsoft Learn](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/user-mode-dump-files)
-- [Analyzing a user-mode dump file - Microsoft Learn](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/analyzing-a-user-mode-dump-file)
-- [Install WinDbg - Microsoft Learn](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/)
-- [Symbol path for Windows debuggers - Microsoft Learn](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/symbol-path)
-- [!analyze (WinDbg) - Microsoft Learn](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/-analyze)
-- [Troubleshoot processes by using Task Manager - Microsoft Learn](https://learn.microsoft.com/en-us/troubleshoot/windows-server/support-tools/support-tools-task-manager)
-- [Enabling Postmortem Debugging - Microsoft Learn](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/enabling-postmortem-debugging)
+- Microsoft Learn: [Collecting User-Mode Dumps - Win32 apps](https://learn.microsoft.com/en-us/windows/win32/wer/collecting-user-mode-dumps)
+- Microsoft Learn: [ProcDump v11.1 - Sysinternals](https://learn.microsoft.com/en-us/sysinternals/downloads/procdump)
+- Microsoft Learn: [MiniDumpWriteDump function](https://learn.microsoft.com/en-us/windows/win32/api/minidumpapiset/nf-minidumpapiset-minidumpwritedump)
+- Microsoft Learn: [User-mode dump files](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/user-mode-dump-files)
+- Microsoft Learn: [Analyzing a user-mode dump file](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/analyzing-a-user-mode-dump-file)
+- Microsoft Learn: [Install WinDbg](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/)
+- Microsoft Learn: [Symbol path for Windows debuggers](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/symbol-path)
+- Microsoft Learn: [!analyze (WinDbg)](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/-analyze)
+- Microsoft Learn: [Troubleshoot processes by using Task Manager](https://learn.microsoft.com/en-us/troubleshoot/windows-server/support-tools/support-tools-task-manager)
+- Microsoft Learn: [Enabling Postmortem Debugging](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/enabling-postmortem-debugging)

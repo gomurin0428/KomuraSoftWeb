@@ -356,13 +356,13 @@ first chance exception は便利ですが、ふつうに多いです。
 
 ## 12. 参考資料
 
-- [ユーザーモード ダンプの収集 - Win32 apps | Microsoft Learn](https://learn.microsoft.com/ja-jp/windows/win32/wer/collecting-user-mode-dumps)
-- [ProcDump v11.1 - Sysinternals | Microsoft Learn](https://learn.microsoft.com/en-us/sysinternals/downloads/procdump)
-- [MiniDumpWriteDump function (minidumpapiset.h) - Win32 | Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/api/minidumpapiset/nf-minidumpapiset-minidumpwritedump)
-- [User-mode dump files - Windows drivers | Microsoft Learn](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/user-mode-dump-files)
-- [ユーザー モード ダンプ ファイルの分析 - Windows drivers | Microsoft Learn](https://learn.microsoft.com/ja-jp/windows-hardware/drivers/debugger/analyzing-a-user-mode-dump-file)
-- [Windows デバッガーをインストールする - Windows drivers | Microsoft Learn](https://learn.microsoft.com/ja-jp/windows-hardware/drivers/debugger/)
-- [Symbol path for Windows debuggers - Windows drivers | Microsoft Learn](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/symbol-path)
-- [!analyze (WinDbg) - Windows drivers | Microsoft Learn](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/-analyze)
-- [Troubleshoot processes by using Task Manager - Windows Server | Microsoft Learn](https://learn.microsoft.com/en-us/troubleshoot/windows-server/support-tools/support-tools-task-manager)
-- [Enabling Postmortem Debugging - Windows drivers | Microsoft Learn](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/enabling-postmortem-debugging)
+- Microsoft Learn: [ユーザーモード ダンプの収集 - Win32 apps](https://learn.microsoft.com/ja-jp/windows/win32/wer/collecting-user-mode-dumps)
+- Microsoft Learn: [ProcDump v11.1 - Sysinternals](https://learn.microsoft.com/en-us/sysinternals/downloads/procdump)
+- Microsoft Learn: [MiniDumpWriteDump function (minidumpapiset.h) - Win32](https://learn.microsoft.com/en-us/windows/win32/api/minidumpapiset/nf-minidumpapiset-minidumpwritedump)
+- Microsoft Learn: [User-mode dump files - Windows drivers](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/user-mode-dump-files)
+- Microsoft Learn: [ユーザー モード ダンプ ファイルの分析 - Windows drivers](https://learn.microsoft.com/ja-jp/windows-hardware/drivers/debugger/analyzing-a-user-mode-dump-file)
+- Microsoft Learn: [Windows デバッガーをインストールする - Windows drivers](https://learn.microsoft.com/ja-jp/windows-hardware/drivers/debugger/)
+- Microsoft Learn: [Symbol path for Windows debuggers - Windows drivers](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/symbol-path)
+- Microsoft Learn: [!analyze (WinDbg) - Windows drivers](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/-analyze)
+- Microsoft Learn: [Troubleshoot processes by using Task Manager - Windows Server](https://learn.microsoft.com/en-us/troubleshoot/windows-server/support-tools/support-tools-task-manager)
+- Microsoft Learn: [Enabling Postmortem Debugging - Windows drivers](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/enabling-postmortem-debugging)
