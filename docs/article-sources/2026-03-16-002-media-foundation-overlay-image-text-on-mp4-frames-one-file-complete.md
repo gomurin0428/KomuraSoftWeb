@@ -1,21 +1,7 @@
----
-title: "Media Foundation で MP4 動画の各フレームに画像と文字を焼き込む方法 - .cpp にそのまま貼れる 1 ファイル完結版"
-date: 2026-03-16 10:00
-lang: ja
-translation_key: media-foundation-overlay-image-text-on-mp4-frames
-tags:
-  - Media Foundation
-  - C++
-  - Windows開発
-  - GDI+
-  - H.264
-description: "Media Foundation で MP4 動画の各フレームへ画像と文字を焼き込み、もう一度 MP4 として書き出す 1 ファイル完結の C++ サンプルを通して、Source Reader、GDI+、NV12 変換、Sink Writer の流れを整理します。"
-consultation_services:
-  - id: windows-app-development
-    reason: "Media Foundation、GDI+、動画入出力、色変換をまたぐ実装は Windows アプリ開発そのものに直結するので、Windowsアプリ開発 と相性がよいテーマです。"
-  - id: technical-consulting
-    reason: "1 ファイル完結の実装でどこまでやるか、GDI+ と Direct2D のどちらに寄せるか、音声 remux や GPU 最適化をどこで足すかまで含めて判断したい場合は技術相談・設計レビューとして進めやすいです。"
----
+# Media Foundation で MP4 動画の各フレームに画像と文字を焼き込む方法 - .cpp にそのまま貼れる 1 ファイル完結版
+
+2026年03月16日 10:00 · 小村 豪 · Media Foundation, C++, Windows開発, GDI+, H.264
+
 ロゴ透かし、検査結果、装置番号、作業者名、タイムスタンプ。  
 こういう情報を **MP4 動画の全フレームへ焼き込んだ新しい MP4 を作りたい**、という要件はかなり普通にあります。
 
