@@ -19,6 +19,7 @@ future: true
 
 include:
   - .well-known
+  - _redirects
 
 # Exclude from build
 exclude:

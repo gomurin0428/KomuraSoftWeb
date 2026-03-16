@@ -1,0 +1,98 @@
+---
+layout: null
+permalink: /404.html
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found | KomuraSoft</title>
+  <meta name="robots" content="noindex,follow">
+  <link rel="icon" type="image/jpeg" href="/logo-ui.jpg">
+  <link rel="stylesheet" href="/komura_soft_single_page.css">
+  <style>
+    .not-found-shell {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 5rem 1rem 6rem;
+    }
+
+    .not-found-card {
+      border: 1px solid var(--color-border);
+      border-radius: calc(var(--radius-lg) + 0.25rem);
+      background: var(--color-surface);
+      box-shadow: var(--shadow-sm);
+      padding: 2rem;
+    }
+
+    .not-found-eyebrow {
+      margin: 0;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-accent-light);
+    }
+
+    .not-found-title {
+      margin: 0.85rem 0 0;
+      font-size: clamp(2rem, 3vw + 1rem, 3rem);
+      line-height: 1.15;
+      color: var(--color-text);
+    }
+
+    .not-found-text {
+      margin: 1rem 0 0;
+      line-height: 1.8;
+      color: var(--color-text-muted);
+    }
+
+    .not-found-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .not-found-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2.75rem;
+      padding: 0.65rem 1rem;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      color: var(--color-accent-light);
+      font-weight: 700;
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.96);
+    }
+
+    .not-found-link:hover,
+    .not-found-link:focus-visible {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="not-found-shell">
+      <section class="not-found-card">
+        <p class="not-found-eyebrow">404 Error</p>
+        <h1 class="not-found-title">Page not found</h1>
+        <p class="not-found-text">The page you requested does not exist or has moved to a different URL.</p>
+        <p class="not-found-text">Use one of the links below to continue browsing the site.</p>
+        <div class="not-found-actions">
+          <a class="not-found-link" href="/">Home</a>
+          <a class="not-found-link" href="/blog/">Blog</a>
+          <a class="not-found-link" href="/en/">English</a>
+          <a class="not-found-link" href="{{ site.contact_url }}">Contact</a>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
