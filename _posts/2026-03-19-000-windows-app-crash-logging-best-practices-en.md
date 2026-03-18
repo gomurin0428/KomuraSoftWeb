@@ -28,9 +28,9 @@ This becomes especially expensive in cases like:
 
 - it only crashes in customer environments
 - it crashes only after long runs
-- it is a WPF app, WinForms app, resident process, or Windows service with low reproducibility
+- it is a WPF app, WinForms app, Windows service, or resident application with low reproducibility
 - COM, P/Invoke, native DLLs, or vendor SDKs are involved
-- you have "the exception message," but not the lead-up that explains it
+- you have "the exception message," but not the context immediately before the crash
 
 The honest statement up front is important:
 
@@ -40,331 +40,693 @@ Once you include stack corruption, heap corruption, fast-fail paths, forced term
 
 What works much better in practice is a design that does **not rely on the crashing process alone**.
 
-The cleanest model is to think in three layers:
+In other words, think in three layers:
 
 1. ordinary time-series logs during normal operation
-2. a minimal final crash marker at crash time
+2. a minimal final crash marker at the moment of failure
 3. crash evidence captured by the OS or by another process
 
-This article organizes that approach for Windows desktop apps, resident tools, Windows services, and device-integration utilities.
+This article organizes that approach for Windows desktop apps, resident tools, Windows services, and device-integration utilities, with the goal of **not losing diagnosability even when the program dies because of a real programming error**.
 
 ## 1. The short answer
 
-- The most important rule is: **do not bet everything on one in-process "last log" handler**
-- The safest practical baseline is usually: **normal logs + final crash marker + WER LocalDumps**
-- If the process runs for a long time, controls equipment, hosts plugins, or mixes in native SDKs, add a **watchdog / launcher / service-side supervisor**
-- In crash handlers, keep the work minimal. Do not compress, upload, resolve DI services, open UI, or build heavyweight JSON there
-- At crash time, write something short **locally only**. Do upload, compression, and user-facing recovery on next start or from another healthy process
-- Using WinForms `ThreadException` or WPF `DispatcherUnhandledException` to keep a program limping forward after a programming error is usually dangerous
-- In both .NET and native code, suspicious corruption-style failures are usually safer to **record and terminate** than to "recover"
-- If you collect dumps, keep the matching PDBs and deployed binaries too, or the dump will not help much later
+Here are the conclusions first.
 
-In short:
+- The single most important rule is: **do not bet everything on one in-process "last log" handler.**
+- The safest baseline in real work is usually: **normal logs + final crash marker + WER LocalDumps**.
+- If the application runs for a long time, controls equipment, loads plugins, or mixes in native SDKs, adding a **watchdog / launcher / service** makes the design much stronger.
+- In crash handlers, the rule is: **do not do heavy work**. No compression, no HTTP upload, no DI resolution, no UI dialogs, no complicated JSON generation.
+- At crash time, leave only a short local record. Push compression, upload, and notification to **the next launch or another healthy process**.
+- Using WinForms `ThreadException` or WPF `DispatcherUnhandledException` to keep the app limping forward after a programming error is usually dangerous.
+- In both .NET and native code, suspicious corruption-style failures are usually safer if the design says **record and terminate** rather than **recover and continue**.
+- If you collect dumps, you also need to preserve the matching **PDBs and deployed binaries**, or the dump becomes much less useful later.
 
-**do not try to do everything at the instant of failure. Split responsibilities across before-crash, at-crash, and after-restart phases.**
+The practical best practice is:
 
-## 2. Why in-process logic alone cannot make this "guaranteed"
+**do not try to do everything at the instant of failure. Split the job across before-crash, at-crash, and after-restart stages.**
 
-This point matters because the whole architecture becomes clearer once you stop pretending the crashing process is a trustworthy place.
+## 2. Why in-process logic alone can never be "guaranteed"
+
+If this point stays fuzzy, the architecture also stays fuzzy.
 
 ### 2.1 The crashing thread context itself may already be damaged
 
-Top-level exception handlers often execute in the context of the failing thread.
+Unhandled-exception hooks and top-level exception filters may execute in the context of the failing thread itself.
 
-At that point, common problems include:
+At that point, problems like these are very normal:
 
-- the stack is already in questionable shape
-- heap corruption makes new allocation risky
-- held locks make waiting dangerous
-- the logger depends on objects that may already be half-broken
+- the stack is already unsafe
+- heap corruption makes additional allocation unsafe
+- waiting may deadlock because the fault happened while a lock was held
+- the logger depends on objects that may already be corrupted
 
-That is why the last-chance handler should be treated not as a place where "anything is still possible," but as a place where **very little is truly safe**.
+So the last-chance handler should be treated not as a place where "anything is still possible," but as a place where **very little is genuinely safe**.
 
-### 2.2 Fast-fail and corruption-style termination paths are designed to do very little
+### 2.2 Fast-fail and corruption-style failures are designed around minimal in-process work
 
-Some failures are intentionally designed to terminate quickly with very little in-process recovery behavior.
+When memory corruption or a similarly fatal state is involved, it is often safer **not** to expect normal exception handling behavior.
 
-That is why it is natural to think like this:
+Especially on the native side, `__fastfail`-style exits and corruption-suspicious failures are deliberately designed around the idea of:
 
-- in-process final logging is lucky if it works
-- primary crash evidence should come from the OS or another process
+**terminate immediately with as little additional work as possible**
 
-### 2.3 .NET unhandled-exception events are also not a safe recovery stage
+That naturally leads to this mental model:
 
-Things like `.NET` `AppDomain.UnhandledException` are useful, but they are much safer as:
+- if the last in-process log line is written, that is lucky
+- the primary crash evidence should come from the OS or from another process
 
-- **last notification hooks**
+### 2.3 .NET unhandled-exception events are not a place for heavy recovery logic either
 
-than as:
+`.NET` `AppDomain.UnhandledException` is useful, but it is much safer to treat it as a place for **short final recording only**.
 
-- **full recovery points**
+For example:
 
-Heavy logic there tends to create half-broken continuation paths, which are often worse than a clean stop with good evidence.
+- it may still be affected by locks held at the crash point
+- it is not a universal safe place for every corruption-style failure
+- forcing a continuation policy there tends to keep the program alive in a half-broken state
 
-## 3. Recommended architecture - split crash-time and after-restart work
+So:
 
-The cleanest structure is to separate:
+**"unhandled exception event" means "last notification point," not "safe recovery point."**
 
-- what you do at crash time
-- what you do after restart or from a healthy supervisor
+## 3. Recommended architecture - split crash-time work and after-restart work
+
+The cleanest model is to separate:
+
+- what you try to do while the process is failing
+- what you do only after restart or from another healthy process
 
 | Phase | Goal | Where it runs | What it should do |
 | --- | --- | --- | --- |
-| Normal operation | preserve context over time | inside the app | structured logs, heartbeat, boundary events |
-| Crash time | leave minimal evidence | inside the app + OS | final crash marker, WER dump |
-| Right after exit | detect abnormal termination | another process | record exit code, decide restart, notify if needed |
+| Normal operation | preserve time-series context | inside the app | structured logs, heartbeat, boundary events |
+| Crash time | leave minimum evidence | app + OS | final crash marker, WER dump |
+| Right after exit | detect unexpected termination | another process | record exit code, decide restart, notify if needed |
 | After restart | do heavier follow-up | a healthy new process | compress, upload, notify user, rotate old logs |
 
-This split tends to make the design calmer very quickly.
+Once you split the work that way, the design becomes much more stable.
 
 ### 3.1 Minimal baseline
 
-For a smaller business tool or internal WPF / WinForms app, this is often enough:
+For a smaller business tool or internal WPF / WinForms application, the following is often enough:
 
-- ordinary append-only local logs
+- ordinary logs in a local append-only file
 - one dedicated final crash marker file
 - WER LocalDumps
-- on next launch, a clear "the app terminated unexpectedly last time" path
+- on the next launch, "the previous run ended abnormally; diagnostic information is available"
 
 ### 3.2 Stronger baseline
 
-If you have requirements like these:
+If your requirements look more like this:
 
-- 24/7 running
-- device control or monitoring
-- a lot of COM / P/Invoke / native SDK involvement
-- plugin or child-process hosting
-- "stays down until a human comes" is unacceptable
+- 24/7 operation
+- device control, monitoring, or resident operation
+- heavy use of COM / P/Invoke / native SDKs
+- child processes, plugins, or script execution
+- "it must not stay down in customer environments"
 
 then it is usually worth separating:
 
-- worker process
-- launcher / watchdog / service process
+- the worker process for the main work
+- a launcher / watchdog / service for supervision, exit recording, and restart
 - WER LocalDumps on the worker side
-- evidence collection by the supervisor or at next restart
+- crash-evidence collection either at the next launch or from the watchdog side
+
+That is a much more production-oriented shape.
 
 ## 4. Best practices for normal logs
 
-Trying to win with only the last line at crash time is usually a losing strategy.  
-What really carries investigations is the **ordinary log trail before the crash**.
+If you try to win with only the final line at crash time, you usually lose.  
+What really pays off is the **ordinary log trail immediately before the crash**.
 
-### 4.1 Log for correlation, not for literary beauty
+### 4.1 Log for later correlation, not for literary beauty
 
-At minimum, normal logs should usually carry:
+At minimum, ordinary logs should include:
 
 - UTC timestamp
 - elapsed time since process start
 - PID / TID
-- app name, version, build number, commit or build identity
+- app name, version, build number, and commit/build identity
 - session ID
 - operation ID / job ID / correlation ID
-- screen / module / worker name
-- the last important external action
-- exception type or error code when available
-- a safe summary of key input parameters
+- module / screen / worker name
+- the external side effect immediately before the event
+  - file write
+  - DB update
+  - device command send
+  - network request
+- exception type, HRESULT / Win32 error / exception code
+- a safe summary of the important input parameters
+- target IDs or object IDs as long as they do not expose secrets
 
-JSON Lines or structured key-value logs are often much easier to correlate later than long human-style prose entries.
+The most practical formats are usually:
 
-### 4.2 Flush important boundary events deliberately
+- JSON Lines
+- or a one-event-per-line key=value style
 
-Not every log line needs synchronous disk behavior.
+Long prose is less useful than making it possible to **correlate three different evidence files later**.
 
-But if **everything** is only buffered asynchronously, the most valuable last segment can disappear with the crash.
+### 4.2 Flush critical boundary events deliberately
 
-A practical split is:
+Making every log entry fully synchronous is often too expensive.  
+But pushing **everything** through an async buffer means the final interesting segment can vanish with the crash.
 
-- fine-grained informational noise can stay buffered
-- warnings and higher severity flush earlier
-- critical boundary events are written more deliberately
+So a practical split is:
 
-Examples of useful boundary events:
+- small informational events may stay buffered
+- `Warning` and above should flush earlier
+- critical boundary events should be written **synchronously**
 
-- process start
-- config loaded
-- worker started
-- external command sent
-- transaction committed
-- recovery started
-- fatal path entered
+Typical critical boundary events include:
 
-### 4.3 Keep normal logs and the final crash marker separate
+- `ProcessStart`
+- `ConfigLoaded`
+- `WorkerStarted`
+- `ExternalCommandSent`
+- `TransactionCommitted`
+- `RecoveryStarted`
+- `FatalPathEntered`
 
-This matters a lot.
+The idea is simple:
 
-If you push everything into one rolling log, you can lose clarity because:
+**important business and system boundaries should be dropped onto disk deliberately.**
 
-- rotation was in progress
-- the async queue still held the final records
-- the logger itself died mid-write
-- the last entry was truncated halfway through
+### 4.3 Keep the normal log and the final crash marker separate
 
-A much safer pattern is to keep at least:
+This is more important than it first looks.
 
-- one ordinary session log
-- one dedicated final crash marker file
+If you try to put everything into one rolling log, problems like these appear:
 
-That makes the "last known crash breadcrumb" explicit.
+- rotation happened at the wrong time
+- the async queue still held the final events
+- the logger itself died right after the exception
+- the final line was truncated halfway through
 
-### 4.4 Use local disk first, not network paths
+So it is much safer to keep at least two separate artifacts:
 
-At crash time, relying on UNC paths, NAS, cloud endpoints, or HTTP uploads is risky.
+- `app-<session>.jsonl`  
+  the ordinary time-series log
+- `fatal-last.log` or `fatal-<session>.log`  
+  a file dedicated only to the final crash marker
 
-Crashes are the worst time to discover:
+Just making **"where the last line should go"** explicit helps a lot in practice.
 
+### 4.4 Keep the crash-time destination local, not network-based
+
+Depending on a UNC path, NAS, HTTP endpoint, or cloud API at crash time is risky because all of these can get involved:
+
+- transient network loss
 - DNS delay
-- temporary network loss
-- credential issues
-- UI-thread blocking
-- service-account permission trouble
+- expired credentials
+- UI-thread waiting
+- service-account permission issues
 
-Crash-time evidence should go to a **local fixed path first**.  
-Upload or forwarding belongs later.
+At crash time, write to a **local fixed path first**.  
+Send or upload the evidence only **after restart or from another process**.
+
+### 4.5 Put a session identity into the filename
+
+A date is not enough when the app may restart several times in one day.
+
+A practical naming style is something like:
+
+```text
+Logs\
+  MyApp_20260318_101530_pid1234_session-4f1c.jsonl
+  MyApp_fatal_20260318_101533_pid1234_session-4f1c.log
+  MyApp_watchdog_20260318.jsonl
+```
+
+Being able to answer **"which launch instance does this belong to?"** makes investigation dramatically faster.
 
 ## 5. Best practices for the final crash marker
 
-This is not where you build a full-featured logger.
+This is **not** the place to build a full-featured logger.
 
-This is where you try to **leave one short, stable breadcrumb**.
+This is the place to write **one short line, once, as reliably as possible**.
 
-### 5.1 The goal is not full diagnosis; it is a fixed entry point
+### 5.1 The purpose is not full diagnosis; it is a stable entry point
 
-The final crash marker should usually contain a small, stable set:
+The final crash marker should contain a tightly chosen set of information:
 
-- UTC time
+- UTC time of failure
 - PID / TID
 - session ID
-- version / build identity
-- which hook caught it
-- exception type or exception code if available
-- a short message if it is safe
-- the correlation ID or last operation ID
+- version / build number
+- which hook you came from
+  - `AppDomain.UnhandledException`
+  - `Application.ThreadException`
+  - `DispatcherUnhandledException`
+  - `SetUnhandledExceptionFilter`
+  - `_set_invalid_parameter_handler`
+  - `set_terminate`
+- exception type or exception code
+- a short message if it is safe to emit one
+- the last operation ID
 - the ordinary log filename
-- the dump directory or expected dump location
+- the expected dump folder
 
-This marker is not the whole answer.
-It is the entrance to the answer.
+That is enough.
 
-### 5.2 Keep the handler brutally small
+### 5.2 Things you should not do in a crash handler
 
-At crash time, the rule is:
+These are very likely to become traps:
 
-**less logic, not more**
+- resolve a logger from a DI container
+- use async / await
+- fire off tasks
+- wait on locks
+- build complex JSON
+- touch COM objects
+- show UI dialogs
+- compress files
+- send HTTP / SMTP / Slack / Teams notifications
+- analyze the dump in-process
+- swallow the exception and continue
 
-Avoid things like:
+A crash handler is **not just the continuation of ordinary control flow**.  
+Bias it toward "do a minimum local write and stop."
 
-- compression
-- HTTP upload
-- dependency injection
-- UI dialogs
-- complex serialization
-- long lock chains
+### 5.3 What the crash handler should do
 
-If it feels architecturally elegant but operationally heavy, it probably does not belong in the crash path.
+The sequence should stay brutally simple:
 
-## 6. WER LocalDumps should do the heavy crash-evidence work
+1. prevent re-entry
+2. write one short record
+3. flush it
+4. terminate
 
-On Windows, WER LocalDumps are one of the strongest practical tools because the dump is produced by the OS-side mechanism, not by your half-broken process trying to save itself heroically.
+If possible, use:
 
-That is why a very practical baseline is:
+- a folder created ahead of time
+- a path already validated for existence
+- a location whose ACLs have already been checked
 
-- app writes ordinary logs during normal operation
-- app writes a tiny final crash marker if possible
-- WER LocalDumps captures the real crash dump
+Unlike ordinary logs, the fatal marker is so low-volume that it is reasonable to flush it aggressively.
 
-This is often much more dependable than trying to build a rich in-process crash exporter.
+### 5.4 Do not try to keep the process alive
 
-## 7. When a watchdog or supervisor helps
+For unexpected exceptions caused by programmer mistakes, it is usually safer to treat the final handler as a **recording device**, not a **recovery device**.
 
-A second process is especially useful when:
+Especially if the failure happened:
 
-- long uptime matters
-- restart behavior matters
-- a crash must be detected immediately
-- one process dying must not leave the whole system silent
+- midway through shared-state updates
+- on the UI thread
+- in a monitoring or parent loop
+- as `AccessViolationException`
+- as `StackOverflowException`
+- across native boundaries
+- through CRT invalid-parameter / purecall / terminate paths
 
-A watchdog or launcher can help with things like:
+The instinct not to crash is understandable, but a half-broken process is often worse operationally and diagnostically than a cleanly terminated one.
 
-- recording exit code
-- recognizing unexpected exit vs normal stop
-- deciding whether to restart
-- leaving a supervisor-side log entry
-- noticing repeated crash loops
+## 6. Framework-specific cautions
 
-That gives you evidence from a context that is still healthy when the worker dies.
+### 6.1 .NET in general: `AppDomain.CurrentDomain.UnhandledException`
 
-## 8. Dangerous anti-patterns
+This is useful as a **last notification** point.
 
-### 8.1 Trying to fully recover after obvious programmer-error crashes
+But the safer usage pattern is still:
 
-For many application bugs, especially around native boundaries, "keep running anyway" often creates a more dangerous half-corrupted state than a clean stop.
+- write the final crash marker
+- optionally record one minimum message to Windows Event Log
+- do not continue
+- do not perform waiting or retry loops there
 
-### 8.2 Doing heavy work inside the crash hook
+Treat it as the last notification, not as a place where the process becomes healthy again.
 
-This is the most common mistake:
+### 6.2 WinForms: `Application.ThreadException`
 
-- uploading
-- zipping
-- resolving services
-- opening dialogs
-- doing complex JSON generation
+This one is tricky because it can make the app appear to continue on the UI thread.
 
-All of those belong later.
+That can be acceptable for explicitly handled, expected UI-side error cases, but it is usually a bad foundation for **unexpected programmer-error crashes**.
 
-### 8.3 Depending on one magical final handler
+If investigation quality matters more than the illusion of survival, it is usually safer to:
 
-If the architecture says:
+- record the minimum evidence
+- or bias toward `UnhandledExceptionMode.ThrowException`
+- then terminate and keep the logs and dump
 
-"this one handler will always save us"
+### 6.3 WPF: `Application.DispatcherUnhandledException`
 
-then the architecture is already too fragile.
+WPF has the same temptation:
 
-### 8.4 Keeping dumps without symbol discipline
+- it targets UI-thread exceptions
+- `Handled = true` makes apparent continuation possible
+- but state can easily diverge between the screen and the application internals
 
-Crash dumps are only as useful as your ability to read them later.
+So in WPF too, it is often safer to use it as a **recording entry point**, not a life-support mechanism.
 
-That means keeping:
+### 6.4 Do not make `TaskScheduler.UnobservedTaskException` your primary path
 
-- the matching binaries
-- the matching PDBs
-- clear build identity
+This is not your "final crash line" route.
 
-at the same time.
+It is useful for discovering task-exception observation mistakes, especially during development, but it is weak as a primary crash-evidence mechanism.
 
-## 9. A simple operational checklist
+Use it to surface design mistakes, not as the main crash-recording backbone.
 
-- Are ordinary logs structured and correlated?
-- Is there a separate final crash marker path?
-- Are important boundary events flushed intentionally?
-- Is crash-time output local-first?
-- Is WER LocalDumps configured?
-- Are PDBs and deployed binaries preserved alongside build identity?
-- If uptime matters, is there a watchdog or launcher?
-- Are upload, compression, and user messaging moved out of the crash hook?
-- Are repeated crash loops detectable?
+### 6.5 Native Win32 / C++: do not over-trust `SetUnhandledExceptionFilter`
 
-If the answer to those is mostly yes, the crash architecture is already much stronger than average.
+In native code, it is very tempting to expect too much from `SetUnhandledExceptionFilter`.
 
-## 10. Wrap-up
+But it still runs in the context of the faulting thread, and can be affected by:
 
-The real best practice is not:
+- invalid stack
+- deep recursion
+- already-broken heap state
+- locks held at the crash point
 
-**make one in-process crash handler do everything**
+So it is best treated as:
 
-It is:
+**a best-effort final notification hook, not a universal recovery mechanism**
 
-**split evidence collection across before-crash, at-crash, and after-restart stages**
+### 6.6 Native C++ should also cover CRT / C++ runtime termination routes
 
-The most practical baseline is often:
+If you only look at unhandled SEH, you miss important termination paths.
 
-- structured normal logs
-- one small final crash marker
-- WER LocalDumps
-- optional watchdog / launcher supervision when uptime matters
+In practice, you also want to think about things like:
 
-That structure is much less glamorous than heroic recovery logic, but it is also much more likely to leave the evidence you will actually need.
+- `_set_invalid_parameter_handler`
+- `_set_purecall_handler`
+- `set_terminate`
 
-In Windows application work, the winning move is usually not "recover from everything."
+These represent **runtime-level termination paths** from the C or C++ runtime side.
 
-It is:
+The safe pattern is still:
 
-**record what matters, terminate safely, and make the next healthy context responsible for the heavy follow-up.**
+- write a minimal crash marker there too
+- avoid heavy work
+- terminate
+- let WER / dumps carry the main evidence
+
+## 7. Use WER LocalDumps as the foundation
+
+This is one of the strongest practical choices on Windows.
+
+### 7.1 First recommendation: WER LocalDumps
+
+In terms of **leaving meaningful evidence after a crash with decent reliability**, WER LocalDumps is usually the best first tool.
+
+The reasons are simple:
+
+- the OS can leave the dump
+- it is easy to introduce without extra tooling
+- it can be configured per application
+- it moves the main crash artifact outside the failing process
+
+And unlike plain logs, dumps can answer questions such as:
+
+- which thread failed
+- what the stack looked like
+- where the module boundary was
+- whether the likely issue is managed, native, COM, or SDK-related
+
+### 7.2 Typical configuration
+
+For example, to store dumps for `MyApp.exe` under `C:\CrashDumps\MyApp`:
+
+```bat
+reg add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\MyApp.exe" /f
+reg add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\MyApp.exe" /v DumpFolder /t REG_EXPAND_SZ /d "C:\CrashDumps\MyApp" /f
+reg add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\MyApp.exe" /v DumpCount /t REG_DWORD /d 10 /f
+reg add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\MyApp.exe" /v DumpType /t REG_DWORD /d 2 /f
+```
+
+A reasonable starting view is:
+
+| Value | First recommendation |
+| --- | --- |
+| `DumpFolder` | a dedicated folder |
+| `DumpCount` | 5 to 10 |
+| `DumpType` | `2` on dev machines, `1` or `2` in the field depending on size and sensitivity constraints |
+
+### 7.3 Always verify the dump folder ACLs
+
+Just like logs, dumps are useless if the process cannot write to the configured folder.
+
+This matters especially for:
+
+- Windows services
+- privilege-separated child processes
+- restricted accounts on field machines
+- UAC-related layouts
+
+So the dump destination should be:
+
+- created ahead of time
+- write-tested
+- bounded by retention count
+- operationally reachable for whoever actually needs to retrieve it
+
+### 7.4 If you want to attach log files to WER reports
+
+If you use Microsoft WER report flow or your own WER-based operations, `WerRegisterFile` can help register current log files as related report artifacts.
+
+But this should be treated as an **additional path**, not a replacement for local persistence.
+
+The practical priority order is usually:
+
+1. local ordinary log
+2. local fatal marker
+3. local dump
+4. optional WER-side related-file registration
+
+### 7.5 Keep version and symbol discipline with the dumps
+
+If you collect dumps but later discover that you do not have:
+
+- the matching EXE / DLL
+- the matching PDB
+- the build identity
+
+then the dump gets much weaker.
+
+At minimum, preserve:
+
+- deployed binaries
+- matching PDBs
+- version
+- build timestamp
+- commit/build identity
+- installer or package identity
+
+Dump collection and symbol retention need to be treated as one operational unit.
+
+## 8. How to think about `MiniDumpWriteDump` and custom crash reporters
+
+There are real cases where custom work makes sense:
+
+- you want a "save diagnostics" UI path
+- you want to bundle logs and config files
+- you have multiple child processes
+- you want custom masking before upload
+
+But the most important rule remains:
+
+**do not make the crashing process carry too much of the dump work either.**
+
+### 8.1 Prefer out-of-process dump creation over self-dump
+
+`MiniDumpWriteDump` is powerful, but it is usually safer when called from **another process** instead of from the crashing process itself.
+
+A common shape is:
+
+- the worker detects a fatal path if possible
+- it notifies a helper through an event, named pipe, or another simple mechanism
+- the helper creates the dump for the worker
+- the helper bundles the tail of the log and config files
+- the helper queues the evidence for later upload
+
+That way, the helper is still healthy even if the worker is not.
+
+### 8.2 If you absolutely must stay in-process, bias toward a dedicated dump thread
+
+If a separate process is impossible, a dedicated dump thread can still be better than arbitrary fault-thread logic.
+
+But even then, the result stays *best effort*.  
+Custom dump logic does not magically turn crash handling into a guaranteed path.
+
+### 8.3 Move heavy work to next start or to the helper side
+
+Things custom reporters often tempt people to do at crash time include:
+
+- zip compression
+- symbol-aware summarization
+- server upload
+- screenshot capture
+- database queries for more context
+
+All of that is usually safer **after restart or from the helper side**, not at crash time.
+
+## 9. What changes when you add a watchdog process
+
+For long-running systems, a watchdog or supervisor helps a lot.
+
+### 9.1 What the watchdog can record
+
+A watchdog / launcher / parent service can preserve things like:
+
+- child-process start time
+- startup arguments
+- PID
+- monitored version
+- last heartbeat time
+- exit time
+- exit code
+- restart count
+- whether a dump exists
+- whether a restart happened
+
+Just that already tells you far more clearly:
+
+- whether it was really a crash
+- whether the OS was shutting down
+- whether the user closed it
+- whether it was killed after a hang
+- whether it entered a restart loop
+
+### 9.2 When it is especially worth it
+
+It is especially attractive when you have:
+
+- a worker wrapping vendor SDKs
+- image processing, video processing, or device I/O
+- a monitoring or polling parent loop
+- script or plugin execution
+- COM / ActiveX legacy hosting
+- 32-bit / 64-bit bridges or other interop-heavy boundaries
+
+Putting the dangerous part into a dedicated worker makes both crash evidence and restart policy much easier to design.
+
+## 10. Common anti-patterns
+
+### 10.1 `catch (Exception)` -> log -> continue
+
+This is common, and dangerous.
+
+It often leads to:
+
+- partial changes left behind
+- corrupted shared state
+- secondary failures
+- blurred root cause
+
+You get one more log line, but often at the cost of a much longer incident.
+
+### 10.2 Trusting only the async logger queue
+
+Async logging itself is not bad.
+
+The problem is when the fatal path also just enqueues and returns.  
+If the worker dies immediately, the queue dies with it.
+
+The fatal path should have a direct-write escape route.
+
+### 10.3 Uploading from the crash handler
+
+This is tempting, but risky because it drags in:
+
+- DNS
+- TLS
+- proxies
+- authentication
+- timeouts
+- retry waits
+
+Do the sending **after restart** instead.
+
+### 10.4 Dumps exist, but they do not correlate with the normal logs
+
+This is common too.
+
+- dump filename has no session identity
+- the normal log has no PID or session
+- the watchdog log has no PID
+- build numbers do not line up
+
+The result is that the three evidence streams look like different stories.
+
+### 10.5 Using WinForms / WPF unhandled-exception events as life support
+
+At first this feels attractive, because the app appears to "stop crashing."
+
+But in reality it often creates zombie states like:
+
+- the screen still exists
+- the worker logic is dead
+- the UI still exposes active buttons
+- nobody knows whether the save actually happened
+
+### 10.6 Ignoring native runtime termination paths
+
+If you only think about `SetUnhandledExceptionFilter`, you can miss:
+
+- invalid parameter
+- purecall
+- terminate
+- fast fail
+
+Native C++ designs are stronger when they recognize CRT / C++ runtime termination routes explicitly too.
+
+## 11. Minimum implementation checklist
+
+If you satisfy the following, the design is already quite practical.
+
+- [ ] ordinary logs are one event per line
+- [ ] every log carries UTC, PID, TID, version, and session
+- [ ] `ProcessStart` and `ProcessExit` are recorded
+- [ ] important boundary events are flushed synchronously
+- [ ] there is a dedicated final crash marker file
+- [ ] the fatal path does not rely only on the async logger
+- [ ] WER LocalDumps is configured per application
+- [ ] the dump-folder ACL has been verified
+- [ ] PDBs and deployed binaries are preserved
+- [ ] the next launch can detect the previous abnormal termination
+- [ ] compression / upload / notification happens after restart or from another process
+- [ ] native C++ also covers invalid parameter / purecall / terminate routes
+- [ ] you have deliberately crashed the app in test and confirmed that the evidence really remains
+
+That last line matters especially:
+
+**the design is not real until you have tested that the evidence is actually left behind.**
+
+## 12. How far to test
+
+Recommended test cases include:
+
+| Test | What to confirm |
+| --- | --- |
+| managed unhandled exception | ordinary log, fatal marker, and dump all appear |
+| UI-thread exception | WinForms / WPF event paths behave as expected |
+| worker-thread exception | it reaches the intended top-level path and the watchdog detects the exit |
+| native exception | WER dump is actually collected |
+| invalid parameter / terminate | runtime-side termination still leaves the expected minimum evidence |
+| forced kill | even if in-process logging fails, the watchdog records unexpected exit |
+| restart | next-launch notification, collection, and upload behavior work |
+
+The key is to confirm:
+
+**under this failure condition, these exact files remain**
+
+not just:
+
+"it should probably log something."
+
+## 13. Wrap-up
+
+If you want enough evidence to investigate programmer-error crashes in Windows apps later, the core idea is actually quite simple:
+
+- **do not trust only the crashing process**
+- **split evidence between ordinary logs, a final crash marker, and OS / other-process evidence**
+- **keep crash-time work short and local**
+- **move heavy work to the next start or another process**
+- **use WER LocalDumps as the foundation**
+- **bias toward record-and-terminate rather than continue-and-hope**
+
+In other words:
+
+**instead of trying to make the last single log line heroic, build a design that remains diagnosable even if that last line is missing.**
+
+You still want the last line, so keep a short final crash marker in its own file.  
+But let the main crash evidence live in **WER dumps plus the ordinary logs leading up to the failure**.
+
+That is a much more stable pattern in real Windows application work.
