@@ -36,6 +36,7 @@ related_pages:
 
 KomuraSoft provides Windows software contract development and technical consultation.
 That includes new implementation, staged modernization, boundary design for older structures, and investigations into failures that are difficult to reproduce.
+Based in Sumida City, Tokyo, we support clients across Tokyo and nationwide through online collaboration.
 
 The strongest fit is usually in Windows projects that are a little old and a little complicated, such as:
 
@@ -51,7 +52,8 @@ The strongest fit is usually in Windows projects that are a little old and a lit
 - Representative: Go Komura
 - Type: Sole proprietorship
 - Main business: Contract software development, technical consulting, design review, and defect investigation
-- Address: Mitsuhashi Building 3F, 1-3-3 Kita-Aoyama, Minato-ku, Tokyo 107-0061, Japan
+- Public mailing address: Mitsuhashi Building 3F, 1-3-3 Kita-Aoyama, Minato-ku, Tokyo 107-0061, Japan
+- Base: Sumida City, Tokyo
 - Contact channel: Contact form
 
 ## Common starting points
