@@ -73,20 +73,12 @@
         return;
       }
 
-      event.preventDefault();
-
       if (opensInNewTab) {
-        var openedWindow = window.open('', '_blank', 'noopener');
-        sendConversionWithCallback(function () {
-          if (openedWindow) {
-            openedWindow.location = anchor.href;
-            return;
-          }
-
-          window.location = anchor.href;
-        });
+        sendConversionWithCallback(function () {});
         return;
       }
+
+      event.preventDefault();
 
       gtag_report_conversion(anchor.href);
     });
