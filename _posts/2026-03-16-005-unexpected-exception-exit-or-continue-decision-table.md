@@ -1,5 +1,5 @@
 ---
-title: "想定していない例外が起きたとき、アプリを終了させるべきか継続すべきか - まず見る判断表"
+title: "想定していない例外が起きたときのチェックリスト - アプリを終了させるべきか継続すべきか、まず見る判断表"
 date: 2026-03-16 10:00
 lang: ja
 translation_key: unexpected-exception-exit-or-continue-decision-table
@@ -16,6 +16,8 @@ consultation_services:
   - id: bug-investigation
     reason: "想定外例外のあとに継続すべきか終了すべきか、状態破壊や外部副作用まで含めて切り分ける流れは、不具合調査・原因解析として進めやすいです。"
 ---
+
+[日英シート付きの Excel チェックリストをダウンロード](/assets/downloads/2026-03-16-unexpected-exception-exit-or-continue-checklist.xlsx)
 
 想定していない例外の話になると、つい「落とすか、catch して続けるか」の二択で考えがちです。  
 ただ、実務ではこの二択の置き方が少し乱暴です。

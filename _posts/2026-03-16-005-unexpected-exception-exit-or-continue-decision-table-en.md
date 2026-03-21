@@ -1,5 +1,5 @@
 ---
-title: "Unexpected Exception: Should the App Exit or Continue? A Practical Decision Table"
+title: "Checklist for Unexpected Exceptions - Should the App Exit or Continue? A Practical Decision Table"
 date: 2026-03-16 10:00
 lang: en
 translation_key: unexpected-exception-exit-or-continue-decision-table
@@ -18,6 +18,8 @@ consultation_services:
   - id: bug-investigation
     reason: "When an unexpected exception occurs and the hard question is whether the process can still be trusted, the investigation naturally turns into state-corruption analysis, side-effect analysis, and root-cause work."
 ---
+
+[Download the Excel checklist with Japanese and English sheets](/assets/downloads/2026-03-16-unexpected-exception-exit-or-continue-checklist.xlsx)
 
 When an unexpected exception appears, the conversation often collapses too quickly into a shallow binary:
 
