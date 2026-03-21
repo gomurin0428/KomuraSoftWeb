@@ -6,81 +6,9 @@
   gtag('js', new Date());
 
   gtag('config', 'AW-17889204549');
-
-  function gtag_report_conversion(url) {
-    var callback = function () {
-      if (typeof(url) != 'undefined') {
-        window.location = url;
-      }
-    };
-    gtag('event', 'conversion', {
-        'send_to': 'AW-17889204549/9tmOCKzg2OgbEMWyntJC',
-        'value': 1.0,
-        'currency': 'JPY',
-        'event_callback': callback
-    });
-    return false;
-  }
-
-  (function () {
-    var contactDestinations = [
-      {{ "/contact/" | absolute_url | jsonify }},
-      {{ "/en/contact/" | absolute_url | jsonify }},
-      {{ site.contact_url | jsonify }}
-    ];
-
-    function normalizeUrl(url) {
-      var parsedUrl = new URL(url, window.location.href);
-      return parsedUrl.origin + parsedUrl.pathname + parsedUrl.search;
-    }
-
-    function isTrackedContactUrl(url) {
-      var normalizedUrl = normalizeUrl(url);
-      return contactDestinations.some(function (destination) {
-        return normalizeUrl(destination) === normalizedUrl;
-      });
-    }
-
-    function sendConversionWithCallback(callback) {
-      gtag('event', 'conversion', {
-        'send_to': 'AW-17889204549/9tmOCKzg2OgbEMWyntJC',
-        'value': 1.0,
-        'currency': 'JPY',
-        'event_callback': callback
-      });
-    }
-
-    document.addEventListener('click', function (event) {
-      var anchor = event.target.closest('a[href]');
-      if (!(anchor instanceof HTMLAnchorElement)) {
-        return;
-      }
-
-      if (!isTrackedContactUrl(anchor.href)) {
-        return;
-      }
-
-      if (typeof window.gtag !== 'function') {
-        return;
-      }
-
-      var opensInNewTab = anchor.target === '_blank';
-      var hasModifierKey = event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
-      var isPrimaryPlainClick = event.button === 0 && !hasModifierKey;
-
-      if (!isPrimaryPlainClick) {
-        sendConversionWithCallback(function () {});
-        return;
-      }
-
-      if (opensInNewTab) {
-        sendConversionWithCallback(function () {});
-        return;
-      }
-
-      event.preventDefault();
-
-      gtag_report_conversion(anchor.href);
-    });
-  })();
+  gtag('event', 'conversion', {
+    'send_to': 'AW-17889204549/9tmOCKzg2OgbEMWyntJC',
+    'value': 1.0,
+    'currency': 'JPY'
+  });
 </script>
