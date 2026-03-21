@@ -18,6 +18,8 @@ consultation_services:
     reason: "移行スコープ、段階移行の切り方、Windows 専用前提をどこまで許容するかを着手前に整理したい場合は、技術相談・設計レビューとして進めやすいテーマです。"
 ---
 
+[日英シート付きの Excel チェックリストをダウンロード](/assets/downloads/2026-03-15-dotnet-framework-to-dotnet-premigration-checklist.xlsx)
+
 `.csproj` の `TargetFramework` を `net10.0` に変えて、NuGet を何個か更新して、ビルドが通ったら終わり。
 
 ……という移行なら、だいぶ平和です。実際にはそうならないことのほうが多いです。

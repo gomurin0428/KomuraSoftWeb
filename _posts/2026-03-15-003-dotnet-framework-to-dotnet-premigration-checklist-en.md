@@ -20,6 +20,8 @@ consultation_services:
     reason: "If the main need is to decide migration scope, staging strategy, and how much Windows-only behavior to keep for now, this fits technical consulting and design review well."
 ---
 
+[Download the Excel checklist with Japanese and English sheets](/assets/downloads/2026-03-15-dotnet-framework-to-dotnet-premigration-checklist.xlsx)
+
 Changing `TargetFramework` to `net10.0`, updating a few NuGet packages, and calling the migration done would be a very calm story.
 
 In real projects, it is usually not that calm.
