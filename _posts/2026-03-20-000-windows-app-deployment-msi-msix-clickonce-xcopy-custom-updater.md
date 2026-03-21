@@ -19,7 +19,7 @@ consultation_services:
     reason: "MSI / MSIX / ClickOnce / xcopy / 独自 updater は、インストーラの好みではなく更新責任と OS 統合の設計なので、要件の切り分けから見直すと判断しやすくなります。"
 ---
 
-[日英シート付きの Excel 判断ワークシートをダウンロード](/assets/downloads/2026-03-20-windows-app-deployment-msi-msix-clickonce-xcopy-custom-updater.xlsx)
+[日英シート付きの Excel 判断ブックをダウンロード](/assets/downloads/2026-03-20-windows-app-deployment-msi-msix-clickonce-xcopy-custom-updater.xlsx)
 
 Windows アプリの配布方式を決める場面では、つい「どれが新しいか」「どれが簡単か」で話を始めがちです。  
 ただ、実務で本当に効くのは別の軸です。

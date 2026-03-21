@@ -21,7 +21,7 @@ consultation_services:
     reason: "Deployment choices such as MSI, MSIX, ClickOnce, xcopy, and custom updaters are really decisions about OS coupling and update ownership, so requirement review usually pays off early."
 ---
 
-[Download the Excel decision worksheet with Japanese and English sheets](/assets/downloads/2026-03-20-windows-app-deployment-msi-msix-clickonce-xcopy-custom-updater.xlsx)
+[Download the Excel decision workbook with Japanese and English sheets](/assets/downloads/2026-03-20-windows-app-deployment-msi-msix-clickonce-xcopy-custom-updater.xlsx)
 
 When teams discuss how to distribute a Windows application, the conversation often starts in the wrong place. People naturally ask which option is newer, which one feels simpler, or which one sounds more modern.
 
