@@ -1,5 +1,5 @@
 ---
-title: "Windows アプリで子プロセスを安全に扱う方法 - Job Object、終了伝播、標準入出力、watchdog のベストプラクティス"
+title: "Windows アプリで子プロセスを安全に扱うためのチェックリスト - Job Object、終了伝播、標準入出力、watchdog のベストプラクティス"
 date: 2026-03-20 10:00
 lang: ja
 translation_key: windows-app-safe-child-process-handling-job-object-exit-propagation-stdio-watchdog
@@ -18,6 +18,8 @@ consultation_services:
   - id: bug-investigation
     reason: "親が落ちたあとに子だけ残る、stdout が詰まる、watchdog ごと落ちるといった再現しにくい運用障害は、プロセス管理設計の見直しで改善しやすいです。"
 ---
+
+[日英シート付きの Excel チェックリストをダウンロード](/assets/downloads/2026-03-20-windows-app-safe-child-process-handling-job-object-exit-propagation-stdio-watchdog-checklist.xlsx)
 
 変換ツール、アップデータ、解析ワーカー、外部 CLI、PowerShell、ffmpeg、社内ユーティリティ。  
 Windows アプリは、思っている以上に簡単に子プロセスへ依存します。

@@ -1,5 +1,5 @@
 ---
-title: "How to Handle Child Processes Safely in Windows Apps - Job Objects, Exit Propagation, stdio, and Watchdog Design"
+title: "Checklist for Safe Child-Process Handling in Windows Apps - Job Objects, Exit Propagation, stdio, and Watchdog Design"
 date: 2026-03-20 10:00
 lang: en
 translation_key: windows-app-safe-child-process-handling-job-object-exit-propagation-stdio-watchdog
@@ -20,6 +20,8 @@ consultation_services:
   - id: bug-investigation
     reason: "Problems such as orphaned child processes, blocked stdout pipes, or watchdogs dying with the process they monitor are exactly the kind of operational failures that benefit from structured investigation and redesign."
 ---
+
+[Download the Excel checklist with Japanese and English sheets](/assets/downloads/2026-03-20-windows-app-safe-child-process-handling-job-object-exit-propagation-stdio-watchdog-checklist.xlsx)
 
 Conversion tools, updaters, analysis workers, external CLI tools, PowerShell, ffmpeg, internal utilities.  
 Windows applications depend on child processes more often than many teams expect.
