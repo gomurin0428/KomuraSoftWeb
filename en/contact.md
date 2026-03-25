@@ -9,18 +9,19 @@ page_eyebrow: "Contact"
 schema_type: "ContactPage"
 main_entity_type: "Organization"
 main_entity_name: "KomuraSoft"
-main_entity_description: "Contact page for KomuraSoft covering website development, SEO, Windows development, and technical consultation."
-description: "Contact KomuraSoft about website development, SEO, existing-site improvement, Windows development, maintenance, bug investigation, or technical consulting."
+main_entity_description: "Contact page for KomuraSoft covering website development, SEO, Google Ads, Windows development, and technical consultation."
+description: "Contact KomuraSoft about website development, SEO, Google Ads, existing-site improvement, Windows development, maintenance, bug investigation, or technical consulting."
 page_keywords:
   - Contact
   - Website Development
   - SEO
+  - Google Ads
   - Technical Consultation
   - Windows Development
 related_pages:
   - title: "Company"
     url: "/en/company/"
-  - title: "Website Development and SEO"
+  - title: "Website Development, SEO, and Google Ads"
     url: "/en/services/website-development-seo/"
   - title: "Windows Development"
     url: "/en/services/windows-development/"
@@ -31,14 +32,16 @@ faq:
     a: "Yes. You do not need a fully fixed specification. A short explanation of what is happening now is enough to start."
   - q: "Can we ask only for investigation or only for sorting out the direction?"
     a: "Yes. Root-cause analysis, planning, and page-structure review are all valid reasons to contact us."
+  - q: "Can we ask only for a Google Ads review?"
+    a: "Yes. We can review Google Ads on its own, but we will also look at the landing page and inquiry flow when needed."
 ---
 
-Contact us about website development, SEO, existing-site improvement, Windows contract development, maintenance, bug investigation, or technical consulting. It is fine if the requirements are not fully organized yet.
+Contact us about website development, SEO, Google Ads, existing-site improvement, Windows contract development, maintenance, bug investigation, or technical consulting. It is fine if the requirements are not fully organized yet.
 
 ## What you can contact us about
 
 - website development
-- SEO and inquiry-flow improvement
+- SEO, Google Ads, and inquiry-flow improvement
 - existing-site improvement
 - Windows software contract development
 - changes and maintenance for existing systems
@@ -47,7 +50,7 @@ Contact us about website development, SEO, existing-site improvement, Windows co
 
 ## It is okay if the situation is not fully organized
 
-If all you can explain today is what is not working, that is enough. We can help sort out whether the first step should be website work, stronger service pages, SEO review, or a Windows-side technical consultation.
+If all you can explain today is what is not working, that is enough. We can help sort out whether the first step should be website work, stronger service pages, SEO review, Google Ads, or a Windows-side technical consultation.
 
 ## Helpful information to include
 
@@ -57,6 +60,11 @@ If all you can explain today is what is not working, that is enough. We can help
 - what you want to improve
 - where inquiry flow is weak
 - CMS in use
+- Google Ads running status
+- rough monthly ad budget
+- target conversion
+- current GA4, Search Console, and Google Ads situation
+- reference landing pages
 - reference sites
 
 ### For Windows-related inquiries

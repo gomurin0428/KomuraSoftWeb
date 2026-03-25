@@ -1,7 +1,7 @@
 ja:
   - title: "ホームページ制作の詳細を見る"
     url: "/services/website-development/"
-  - title: "SEO対策・問い合わせ導線改善の詳細を見る"
+  - title: "SEO対策・Google広告運用・問い合わせ導線改善の詳細を見る"
     url: "/services/seo-lead-optimization/"
   - title: "Windows開発の対応内容を見る"
     url: "/services/windows-development/"
@@ -22,7 +22,7 @@ ja:
 en:
   - title: "View Website Development"
     url: "/en/services/website-development/"
-  - title: "View SEO & Inquiry Flow Improvement"
+  - title: "View SEO, Google Ads, and Inquiry Flow Improvement"
     url: "/en/services/seo-lead-optimization/"
   - title: "View Windows Development"
     url: "/en/services/windows-development/"

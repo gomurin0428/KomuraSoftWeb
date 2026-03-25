@@ -38,6 +38,10 @@ ja:
         - 既存サイト改善
         - サービスページ設計
         - 内部リンク
+        - Google広告
+        - Google広告運用
+        - 検索集客
+        - デジタル広告
       topic_ids:
         - web-topics
     - match_tags:
@@ -124,6 +128,9 @@ en:
         - Existing Site Improvement
         - Service Pages
         - Internal Links
+        - Google Ads
+        - Search Acquisition
+        - Digital Advertising
       topic_ids:
         - web-topics
     - match_tags:
