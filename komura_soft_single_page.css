@@ -431,14 +431,16 @@ main {
 }
 
 .button--secondary {
-  border: 1px solid var(--color-border);
-  color: var(--color-text);
-  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(20, 32, 51, 0.12);
+  color: #fff;
+  background: linear-gradient(135deg, #173a74 0%, #2f6fdd 100%);
+  box-shadow: 0 0 34px rgba(47, 111, 221, 0.2);
 }
 
 .button--secondary:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent-light);
+  transform: translateY(-2px);
+  border-color: rgba(20, 32, 51, 0.18);
+  box-shadow: 0 0 48px rgba(47, 111, 221, 0.28);
 }
 
 h1,
