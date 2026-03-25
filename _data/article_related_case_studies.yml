@@ -1,18 +1,30 @@
 ja:
   case_studies:
+    - id: site-redesign-dual-pillars
+      title: "自社サイトを二本柱へ再設計した事例"
+      url: "/case-studies/site-redesign-dual-pillars/"
+      description: "Windows 受託開発中心の見せ方から、ホームページ制作・SEO対策も伝わる構成へ自社サイトを再設計した事例です。"
     - id: industrial-camera-tcp-stall
-      title: "産業用カメラ通信の数秒停止を切り分けた事例"
+      title: "産業用カメラ通信停止を切り分けた事例"
       url: "/case-studies/industrial-camera-tcp-stall/"
-      description: "数秒だけ止まる通信異常を、再送待ち時間と OS 側の条件に分けて切り分けた事例ページです。"
+      description: "数秒単位の通信停止を再送待ちと OS 側条件へ分解して切り分けた事例です。"
     - id: long-run-crash-handle-leak
-      title: "長期稼働後クラッシュをハンドルリークまで追った事例"
+      title: "長期稼働クラッシュをハンドルリークまで絞った事例"
       url: "/case-studies/long-run-crash-handle-leak/"
-      description: "一か月単位でしか出ないクラッシュを、観測点の整理とログ増強でリーク調査へ絞り込んだ事例ページです。"
+      description: "月単位のクラッシュを観測強化とログ設計でハンドルリーク調査へ絞り込んだ事例です。"
     - id: application-verifier-failure-path-testing
-      title: "Application Verifier を使った異常系テスト基盤の事例"
+      title: "Application Verifier で失敗パス検証基盤を作った事例"
       url: "/case-studies/application-verifier-failure-path-testing/"
-      description: "異常系テスト基盤を先に整え、次回の障害でも追いやすい状態へ寄せた事例ページです。"
+      description: "後続の障害調査をしやすくするため、先に失敗パス検証基盤を作った事例です。"
   mappings:
+    - translation_key: website-development-why-unclear-business-message
+      case_study_id: site-redesign-dual-pillars
+    - translation_key: inquiry-flow-fix-first-three-places
+      case_study_id: site-redesign-dual-pillars
+    - translation_key: service-page-structure-for-technical-b2b
+      case_study_id: site-redesign-dual-pillars
+    - translation_key: internal-linking-between-articles-and-service-pages
+      case_study_id: site-redesign-dual-pillars
     - translation_key: tcp-retransmission-rfc1323-industrial-camera
       case_study_id: industrial-camera-tcp-stall
     - translation_key: handle-leak-industrial-camera-long-run-crash-part1
@@ -21,6 +33,10 @@ ja:
       case_study_id: application-verifier-failure-path-testing
 en:
   case_studies:
+    - id: site-redesign-dual-pillars
+      title: "How We Reframed the Site Around Two Clear Pillars"
+      url: "/en/case-studies/site-redesign-dual-pillars/"
+      description: "Case study for redesigning the KomuraSoft site from a Windows-only presentation into a dual-pillar structure."
     - id: industrial-camera-tcp-stall
       title: "How We Isolated Multi-Second Communication Stalls"
       url: "/en/case-studies/industrial-camera-tcp-stall/"
@@ -34,6 +50,14 @@ en:
       url: "/en/case-studies/application-verifier-failure-path-testing/"
       description: "Case-study page for building a failure-path testing foundation that makes future investigation easier."
   mappings:
+    - translation_key: website-development-why-unclear-business-message
+      case_study_id: site-redesign-dual-pillars
+    - translation_key: inquiry-flow-fix-first-three-places
+      case_study_id: site-redesign-dual-pillars
+    - translation_key: service-page-structure-for-technical-b2b
+      case_study_id: site-redesign-dual-pillars
+    - translation_key: internal-linking-between-articles-and-service-pages
+      case_study_id: site-redesign-dual-pillars
     - translation_key: tcp-retransmission-rfc1323-industrial-camera
       case_study_id: industrial-camera-tcp-stall
     - translation_key: handle-leak-industrial-camera-long-run-crash-part1

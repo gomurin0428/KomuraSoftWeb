@@ -1,25 +1,57 @@
 ja:
+  - id: website-development-seo
+    title: "ホームページ制作・SEO対策"
+    url: "/services/website-development-seo/"
+    description: "ホームページ制作、SEO対策、問い合わせ導線改善をまとめて整理したい方向けの入口です。"
+  - id: website-development
+    title: "ホームページ制作"
+    url: "/services/website-development/"
+    description: "トップページ、サービスページ、会社情報、問い合わせ導線を整理して、何をしている会社かが伝わるサイトへ整えます。"
+  - id: seo-lead-optimization
+    title: "SEO対策・問い合わせ導線改善"
+    url: "/services/seo-lead-optimization/"
+    description: "検索導線、内部リンク、記事導線、問い合わせ導線を一緒に見直したい方向けのサービスです。"
+  - id: windows-development
+    title: "Windows開発"
+    url: "/services/windows-development/"
+    description: "Windows受託開発、改修、技術相談、不具合調査をまとめて確認できる親ページです。"
   - id: windows-app-development
     title: "Windowsアプリ開発"
     url: "/services/windows-app-development/"
-    description: "業務用デスクトップアプリ、常駐処理、装置連携、ログ設計を含む Windows ソフト開発を支援します。"
+    description: "業務アプリ、装置連携、通信ツールなどの Windows ソフト開発を支援します。"
   - id: bug-investigation
     title: "不具合調査・原因解析"
     url: "/services/bug-investigation/"
-    description: "再現しにくい障害、長時間運転後の停止、リーク、通信不具合の切り分けと再発防止を支援します。"
+    description: "再現しにくい障害、長期稼働後の不具合、通信停止などの調査を支援します。"
   - id: technical-consulting
     title: "技術相談・設計レビュー"
     url: "/services/technical-consulting/"
-    description: "実装前の方針整理、設計レビュー、既存資産の扱い、責務分割やライフタイム設計の相談に対応します。"
+    description: "改修方針、設計レビュー、既存資産の扱いを整理するための技術相談です。"
   - id: windows-modernization-maintenance
     title: "既存Windowsソフトの改修・保守"
     url: "/services/windows-modernization-maintenance/"
-    description: "既存 Windows ソフトの機能追加、保守、64bit 対応、段階的なモダナイゼーションを支援します。"
+    description: "既存 Windows ソフトの機能追加、保守、段階的モダナイゼーションを支援します。"
   - id: legacy-asset-migration
     title: "既存資産活用・移行支援"
     url: "/services/legacy-asset-migration/"
-    description: "COM / ActiveX / OCX、C++/CLI、32bit / 64bit を含む既存資産の活用と段階移行を支援します。"
+    description: "COM / ActiveX / OCX、32bit / 64bit 制約を抱える既存資産の活用と移行を支援します。"
 en:
+  - id: website-development-seo
+    title: "Website Development & SEO"
+    url: "/en/services/website-development-seo/"
+    description: "A parent page for website development, SEO, and inquiry-flow improvement."
+  - id: website-development
+    title: "Website Development"
+    url: "/en/services/website-development/"
+    description: "We reorganize the homepage, service pages, company pages, and contact flow so the business is clearly understood."
+  - id: seo-lead-optimization
+    title: "SEO & Inquiry Flow Improvement"
+    url: "/en/services/seo-lead-optimization/"
+    description: "We improve search visibility, internal links, article flow, and inquiry flow together."
+  - id: windows-development
+    title: "Windows Development"
+    url: "/en/services/windows-development/"
+    description: "A parent page for KomuraSoft's Windows development, maintenance, consulting, and investigation services."
   - id: windows-app-development
     title: "Windows App Development"
     url: "/en/services/windows-app-development/"

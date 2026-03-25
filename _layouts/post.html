@@ -5,7 +5,11 @@
 {% assign meta_image = page.og_image | default: site.default_og_image | absolute_url %}
 {% assign article_author = page.author | default: site.founder_name | default: "KomuraSoft" %}
 {% assign translation_candidates = site.posts | where: "translation_key", page.translation_key %}
-{% assign contact_url = site.contact_url %}
+{% if lang == "en" %}
+  {% assign contact_url = site.contact_url_en | default: "/en/contact/" %}
+{% else %}
+  {% assign contact_url = site.contact_url | default: "/contact/" %}
+{% endif %}
 {% assign article_author_profile = site.data.article_authors[lang].default %}
 {% assign article_consulting_services = site.data.article_consulting_services[lang] %}
 {% assign article_related_topics = site.data.article_related_topics[lang] %}
@@ -85,7 +89,7 @@
         <p class="article-service-card-text">{{ consultation_service.reason | default: service.description }}</p>
         <div class="article-consult-cta-actions">
           <a class="article-consult-cta-button article-consult-cta-button-secondary" href="{{ service.url }}">{{ ui.post.service_links_service_button }}</a>
-          <a class="article-consult-cta-button" href="{{ contact_url }}" target="_blank" rel="noopener">{{ ui.post.service_links_contact_button }}</a>
+          <a class="article-consult-cta-button" href="{{ contact_url }}">{{ ui.post.service_links_contact_button }}</a>
         </div>
       </article>
       {% endif %}

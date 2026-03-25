@@ -3,30 +3,43 @@ ja:
     - topics-hub
   topics:
     - id: topics-hub
-      title: "技術トピック"
+      title: "Windows技術トピック"
       url: "/topics/"
-      description: "技術記事と関連サービスを課題別にたどれる一覧ページです。近いテーマから調査や相談の入口を探せます。"
+      description: "Windows 開発、不具合調査、既存資産活用の技術トピックをまとめた入口です。"
+    - id: web-topics
+      title: "Web制作・SEOトピック"
+      url: "/web-topics/"
+      description: "ホームページ制作、SEO対策、サービスページ設計、内部リンク、問い合わせ導線改善をまとめた入口です。"
     - id: activex-migration
       title: "ActiveX / 移行テーマ"
       url: "/topics/activex-migration/"
-      description: "COM / ActiveX / OCX を残すか置き換えるか迷うときに、保守・移行の考え方をまとめて追えるテーマページです。"
+      description: "COM / ActiveX / OCX を残すか、包むか、置き換えるかを整理するトピックです。"
     - id: bitness-interop
       title: "32bit / 64bit テーマ"
       url: "/topics/32bit-64bit/"
-      description: "32bit / 64bit 相互運用、C++/CLI 境界、ネイティブ DLL 連携の論点をまとめて確認できるテーマページです。"
+      description: "32bit / 64bit、ネイティブ連携、C++/CLI まわりを整理するトピックです。"
     - id: generic-host-app-architecture
       title: "Generic Host / アプリ設計テーマ"
       url: "/topics/generic-host-app-architecture/"
-      description: "Generic Host、BackgroundService、DI、設定、ログ、起動と停止の設計をまとめて辿れるテーマページです。"
+      description: "Generic Host、DI、BackgroundService、構成設計を整理するトピックです。"
     - id: ui-threading-timers
-      title: "UI スレッド / 定期処理テーマ"
+      title: "UI スレッド / タイマーテーマ"
       url: "/topics/ui-threading-timers/"
-      description: "WPF / WinForms、UI スレッド、async/await、Dispatcher、タイマーの使い分けをまとめて見られるテーマページです。"
+      description: "WPF / WinForms、UI スレッド、async/await、タイマー設計を整理するトピックです。"
     - id: bug-investigation-long-run
       title: "不具合調査 / 長期稼働テーマ"
       url: "/topics/bug-investigation-long-run/"
-      description: "再現しにくい障害、通信停止、長期稼働後のクラッシュ、異常系テスト基盤をまとめて辿れるテーマページです。"
+      description: "再現しにくい不具合、通信停止、長期稼働障害、失敗パス検証を整理するトピックです。"
   rules:
+    - match_tags:
+        - ホームページ制作
+        - SEO
+        - 問い合わせ導線改善
+        - 既存サイト改善
+        - サービスページ設計
+        - 内部リンク
+      topic_ids:
+        - web-topics
     - match_tags:
         - COM
         - ActiveX
@@ -68,7 +81,7 @@ ja:
         - ハンドルリーク
         - ログ設計
         - Application Verifier
-        - 異常系テスト
+        - 失敗パステスト
       topic_ids:
         - bug-investigation-long-run
 en:
@@ -76,9 +89,13 @@ en:
     - topics-hub
   topics:
     - id: topics-hub
-      title: "Topics"
+      title: "Windows Technical Topics"
       url: "/en/topics/"
-      description: "Topic hub for following KomuraSoft articles and related services by technical problem area."
+      description: "Topic hub for KomuraSoft's Windows development, investigation, and legacy-asset articles."
+    - id: web-topics
+      title: "Web Development & SEO Topics"
+      url: "/en/web-topics/"
+      description: "Topic hub for website development, SEO, inquiry flow, and internal-link design."
     - id: activex-migration
       title: "ActiveX Migration"
       url: "/en/topics/activex-migration/"
@@ -100,6 +117,15 @@ en:
       url: "/en/topics/bug-investigation-long-run/"
       description: "Topic page for intermittent failures, communication diagnosis, long-run crashes, and failure-path test foundations."
   rules:
+    - match_tags:
+        - Website Development
+        - SEO
+        - Inquiry Flow
+        - Existing Site Improvement
+        - Service Pages
+        - Internal Links
+      topic_ids:
+        - web-topics
     - match_tags:
         - COM
         - ActiveX

@@ -9,53 +9,67 @@ page_eyebrow: "Contact"
 schema_type: "ContactPage"
 main_entity_type: "Organization"
 main_entity_name: "KomuraSoft"
-main_entity_description: "KomuraSoft へのお問い合わせページ。Windows受託開発と技術相談の問い合わせ窓口。"
-description: "Windows ソフト開発、改修、技術相談、不具合調査を KomuraSoft に相談したい方向けのお問い合わせページです。"
+main_entity_description: "ホームページ制作、SEO対策、既存サイト改善、Windows受託開発、技術相談を扱う KomuraSoft の共通お問い合わせ窓口。"
+description: "ホームページ制作、SEO対策、既存サイト改善、Windows受託開発、既存ソフト改修、不具合調査、技術相談のご相談窓口です。"
 page_keywords:
   - お問い合わせ
-  - 技術相談
-  - 不具合調査
+  - ホームページ制作
+  - SEO対策
   - Windows受託開発
 related_pages:
   - title: "会社情報"
     url: "/company/"
-  - title: "技術事例"
-    url: "/case-studies/"
-  - title: "技術トピック"
-    url: "/topics/"
+  - title: "ホームページ制作・SEO対策"
+    url: "/services/website-development-seo/"
+  - title: "Windows開発"
+    url: "/services/windows-development/"
 faq:
   - q: "まだ状況整理の段階でも問い合わせてよいですか。"
-    a: "はい。仕様が固まっていなくても大丈夫です。今困っていることと、分かっている範囲の情報だけで問題ありません。"
-  - q: "原因切り分けや調査だけを相談できますか。"
-    a: "はい。不具合調査、長期稼働後の障害、通信異常の切り分け、設計レビューなども対象です。"
+    a: "はい。仕様や要件が固まっていなくても大丈夫です。今困っていることと、分かっている範囲の情報だけで問題ありません。"
+  - q: "調査だけ、整理だけの相談もできますか。"
+    a: "はい。原因切り分け、進め方の整理、ページ構成の見直しだけでも相談できます。"
 ---
 
 ## 相談できる内容
 
-- Windows ソフトウェアの受託開発
-- 既存システムの改修・保守
+- ホームページ制作
+- SEO対策・問い合わせ導線改善
+- 既存サイトの見直し
+- Windowsソフトウェアの受託開発
+- 既存Windowsソフトの改修・保守
 - 技術相談、設計レビュー、改修方針の整理
 - 再現しにくい不具合や長期稼働障害の調査
-- COM / ActiveX / 32bit / 64bit 問題を含む既存資産の扱い
+
+## まだ整理前でも大丈夫です
+
+やりたいことが曖昧でも、まずは何に困っているかだけ分かれば大丈夫です。ホームページを直すべきか、サービスページを増やすべきか、SEOを先に見るべきか、Windows側の技術相談から入るべきかも含めて整理します。
 
 ## 問い合わせ時にあると助かる情報
+
+### Webの相談なら
+
+- 現在のサイトURL
+- 何を改善したいか
+- 問い合わせで困っていること
+- 利用中CMS
+- 参考にしたいサイト
+
+### Windowsの相談なら
 
 - 何に困っているか
 - いつから起きているか
 - 再現条件があるか
-- 関係しそうな構成や制約があるか
-- すでに分かっていることがあるか
+- 関係しそうな構成や制約
+- すでに分かっていること
 
 ## お問い合わせ後の流れ
 
-1. まず内容を確認し、原則として翌営業日以内に受領のご連絡を行います。
-2. 必要に応じて、追加情報や短いヒアリングをお願いします。
-3. そのうえで、技術相談、初期調査、開発・改修の見積りなど、次の進め方をご案内します。
+1. 内容を確認し、受領のご連絡を差し上げます。
+2. 必要に応じて、追加で確認したいことをお送りします。
+3. そのうえで、制作、改善、技術相談、初期調査など次の進め方をご案内します。
 
 ## フォーム
 
-下のボタンからお問い合わせフォームへ進めます。
+下に埋め込んだ Google Forms からそのまま送信できます。何に困っているか、何を増やしたいかを分かる範囲で書いてください。箇条書きでも問題ありません。
 
-<p>
-  <a class="button button--primary" href="https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform?usp=dialog" target="_blank" rel="noopener">お問い合わせフォームへ</a>
-</p>
+{% include contact-form.html lang="ja" %}

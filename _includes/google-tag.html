@@ -1,14 +1,31 @@
+{% assign ga4_id = site.ga4_measurement_id | default: "" %}
+{% assign ads_id = site.google_ads_id | default: "" %}
+{% assign primary_tag_id = ga4_id %}
+{% if primary_tag_id == "" %}
+  {% assign primary_tag_id = ads_id %}
+{% endif %}
+{% if primary_tag_id != "" %}
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17889204549"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ primary_tag_id }}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
+  {% if ga4_id != "" %}
+  gtag('config', '{{ ga4_id }}');
+  {% endif %}
+  {% if ads_id != "" %}
+  gtag('config', '{{ ads_id }}');
+  {% endif %}
 
-  gtag('config', 'AW-17889204549');
-  gtag('event', 'conversion', {
-    'send_to': 'AW-17889204549/9tmOCKzg2OgbEMWyntJC',
-    'value': 1.0,
-    'currency': 'JPY'
-  });
+  window.komurasoftTrackLead = function (payload) {
+    var eventPayload = payload || {};
+    gtag('event', 'generate_lead', eventPayload);
+    {% if site.google_ads_generate_lead_send_to %}
+    gtag('event', 'conversion', Object.assign({
+      send_to: '{{ site.google_ads_generate_lead_send_to }}'
+    }, eventPayload));
+    {% endif %}
+  };
 </script>
+{% endif %}

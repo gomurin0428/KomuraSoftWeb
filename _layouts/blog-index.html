@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 {% assign lang = page.lang | default: "ja" %}
 {% assign ui = site.data.blog_ui[lang] %}
-{% assign contact_url = site.contact_url %}
+{% if lang == "en" %}
+  {% assign contact_url = site.contact_url_en | default: "/en/contact/" %}
+{% else %}
+  {% assign contact_url = site.contact_url | default: "/contact/" %}
+{% endif %}
 {% if lang == "en" %}
   {% assign is_english = true %}
   {% assign ja_url = "/blog/" | relative_url %}
@@ -270,7 +274,7 @@
         <p class="section-description">{{ ui.list.description }}</p>
         <div class="blog-cta">
           <p class="blog-cta-text">{{ ui.list.cta_text }}</p>
-          <a class="blog-cta-button" href="{{ contact_url }}" target="_blank" rel="noopener">{{ ui.contact_cta_label }}</a>
+          <a class="blog-cta-button" href="{{ contact_url }}">{{ ui.contact_cta_label }}</a>
         </div>
         <section class="blog-search" aria-labelledby="blog-search-title">
           <h2 id="blog-search-title" class="blog-search-title">{{ ui.list.search_title }}</h2>
@@ -313,7 +317,7 @@
         </div>
         {% endif %}
 
-        <a href="/" class="back-link" style="display: inline-block; margin-top: 2rem; color: var(--color-accent-light);">{{ ui.list.back_to_home }}</a>
+        <a href="{% if is_english %}/en/{% else %}/{% endif %}" class="back-link" style="display: inline-block; margin-top: 2rem; color: var(--color-accent-light);">{{ ui.list.back_to_home }}</a>
       </div>
     </main>
     <footer class="site-footer">

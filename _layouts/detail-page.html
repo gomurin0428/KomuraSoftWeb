@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 {% assign lang = page.lang | default: "ja" %}
-{% assign contact_url = site.contact_url %}
+{% if lang == "en" %}
+  {% assign contact_url = "/en/contact/" %}
+{% else %}
+  {% assign contact_url = "/contact/" %}
+{% endif %}
 {% assign translation_candidates = site.pages | where: "translation_key", page.translation_key %}
 {% assign service_nav = site.data.service_pages[lang] %}
 {% assign schema_type = page.schema_type | default: "WebPage" %}
 {% if lang == "en" %}
   {% assign home_url = "/en/" %}
-  {% assign services_url = "/en/#service" %}
+  {% assign services_url = page.breadcrumb_parent_url | default: "/en/services/windows-development/" %}
   {% assign blog_url = "/en/blog/" %}
   {% assign home_label = "Home" %}
   {% assign services_label = "Services" %}
@@ -24,7 +28,7 @@
   {% assign en_url = page.url %}
 {% else %}
   {% assign home_url = "/" %}
-  {% assign services_url = "/#service" %}
+  {% assign services_url = page.breadcrumb_parent_url | default: "/services/windows-development/" %}
   {% assign blog_url = "/blog/" %}
   {% assign home_label = "ホーム" %}
   {% assign services_label = "サービス" %}
@@ -155,6 +159,15 @@
   }
   </script>
   <link rel="stylesheet" href="/komura_soft_single_page.css">
+  {% if page.ga_event and site.ga4_measurement_id %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof gtag === 'function') {
+        gtag('event', '{{ page.ga_event }}');
+      }
+    });
+  </script>
+  {% endif %}
   <style>
     .site-nav {
       gap: 1rem;
@@ -249,6 +262,77 @@
     }
     .detail-page-content p + p {
       margin-top: 0.85rem;
+    }
+    .contact-form-note {
+      margin-top: 1rem;
+      color: var(--color-text-muted);
+      font-size: 0.95rem;
+    }
+    .contact-form-embed {
+      margin-top: 1rem;
+      border: 1px solid var(--color-border);
+      border-radius: calc(var(--radius-md) + 0.15rem);
+      overflow: hidden;
+      background: #fff;
+      box-shadow: var(--shadow-sm);
+    }
+    .contact-form-embed iframe {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      height: 1314px;
+      border: 0;
+    }
+    .contact-form {
+      margin-top: 1rem;
+      display: grid;
+      gap: 1rem;
+    }
+    .contact-form-grid {
+      display: grid;
+      gap: 1rem;
+    }
+    .contact-form-field {
+      display: grid;
+      gap: 0.5rem;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .contact-form-field span {
+      font-size: 0.95rem;
+    }
+    .contact-form-field input,
+    .contact-form-field select,
+    .contact-form-field textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: #fff;
+      color: var(--color-text);
+      font: inherit;
+      line-height: 1.6;
+    }
+    .contact-form-field input:focus,
+    .contact-form-field select:focus,
+    .contact-form-field textarea:focus {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+      border-color: var(--color-accent);
+    }
+    .contact-form-field textarea {
+      resize: vertical;
+      min-height: 10rem;
+    }
+    .contact-form-field--full {
+      grid-column: 1 / -1;
+    }
+    .contact-form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.25rem;
     }
     .detail-page-content ul,
     .detail-page-content ol {
@@ -430,6 +514,9 @@
         align-items: start;
         justify-content: center;
       }
+      .contact-form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
       .topic-hub-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -488,7 +575,7 @@
               <h2 class="detail-page-cta-title">{{ cta_title }}</h2>
               <p class="detail-page-cta-text">{{ cta_body }}</p>
               <div class="detail-page-cta-actions">
-                <a class="button button--primary" href="{{ contact_url }}" target="_blank" rel="noopener">{{ cta_button }}</a>
+                <a class="button button--primary" href="{{ contact_url | relative_url }}">{{ cta_button }}</a>
               </div>
             </section>
 

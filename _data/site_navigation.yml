@@ -1,36 +1,38 @@
 ja:
-  secondary_links:
-    - title: "開発できる Windows ソフトの例"
-      url: "/windows-software-examples/"
-    - title: "技術トピック"
-      url: "/topics/"
-    - title: "技術事例"
+  primary_links:
+    - title: "ホームページ制作"
+      url: "/services/website-development/"
+    - title: "SEO対策"
+      url: "/services/seo-lead-optimization/"
+    - title: "Windows開発"
+      url: "/services/windows-development/"
+    - title: "事例"
       url: "/case-studies/"
     - title: "ブログ"
       url: "/blog/"
-  about_links:
     - title: "会社情報"
       url: "/company/"
-    - title: "代表略歴"
-      url: "/profile/go-komura/"
-  contact_link:
-    title: "お問い合わせ"
-    url: "/contact/"
+    - title: "お問い合わせ"
+      url: "/contact/"
+  profile_link:
+    title: "代表略歴"
+    url: "/profile/go-komura/"
 en:
-  secondary_links:
-    - title: "Examples"
-      url: "/en/windows-software-examples/"
-    - title: "Topics"
-      url: "/en/topics/"
+  primary_links:
+    - title: "Website Development"
+      url: "/en/services/website-development/"
+    - title: "SEO"
+      url: "/en/services/seo-lead-optimization/"
+    - title: "Windows Development"
+      url: "/en/services/windows-development/"
     - title: "Case Studies"
       url: "/en/case-studies/"
     - title: "Blog"
       url: "/en/blog/"
-  about_links:
     - title: "Company"
       url: "/en/company/"
-    - title: "Profile"
-      url: "/en/profile/go-komura/"
-  contact_link:
-    title: "Contact"
-    url: "/en/contact/"
+    - title: "Contact"
+      url: "/en/contact/"
+  profile_link:
+    title: "Go Komura Profile"
+    url: "/en/profile/go-komura/"

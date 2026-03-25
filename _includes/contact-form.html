@@ -1,0 +1,9 @@
+{% assign form_lang = include.lang | default: page.lang | default: "ja" %}
+{% if form_lang == "en" %}
+<p class="contact-form-note">The inquiry form is embedded below as a Google Form.</p>
+{% else %}
+<p class="contact-form-note">下の Google Forms からそのまま送信できます。</p>
+{% endif %}
+<div class="contact-form-embed">
+  <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform?embedded=true" width="640" height="1314" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+</div>

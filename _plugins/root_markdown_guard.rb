@@ -5,6 +5,7 @@ module Jekyll
         case-studies.md
         company.md
         contact.md
+        web-topics.md
         topics.md
         windows-software-examples.md
       ].freeze

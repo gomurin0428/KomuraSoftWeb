@@ -1,0 +1,62 @@
+---
+layout: detail-page
+lang: ja
+translation_key: web-topics-hub
+permalink: /web-topics/
+title: "Web制作・SEOトピック | KomuraSoft"
+page_name: "Web制作・SEOトピック"
+page_eyebrow: "Web Topics"
+schema_type: "CollectionPage"
+description: "ホームページ制作、サービスページ設計、内部リンク、問い合わせ導線改善など、関連する記事とサービスをまとめた入口です。"
+page_keywords:
+  - Web制作・SEOトピック
+  - ホームページ制作
+  - SEO対策
+  - 問い合わせ導線改善
+related_pages:
+  - title: "ホームページ制作"
+    url: "/services/website-development/"
+  - title: "SEO対策・問い合わせ導線改善"
+    url: "/services/seo-lead-optimization/"
+  - title: "Windows技術トピック"
+    url: "/topics/"
+---
+
+## このページの役割
+
+ホームページ制作、サービスページ設計、内部リンク、問い合わせ導線改善に関する記事とサービスをまとめた入口です。Windows 文脈の技術トピックとは分けて、Web 側の相談導線を明確にしています。
+
+<div class="topic-hub-grid">
+  <section class="topic-hub-card">
+    <h3>ホームページ制作</h3>
+    <p>何をしている会社かが伝わるトップページ、サービスページ、会社情報ページを整えるための入口です。</p>
+    <div class="topic-hub-links">
+      <a class="topic-hub-link" href="/services/website-development/">ホームページ制作</a>
+      <a class="topic-hub-link" href="/blog/2026/03/25/000-website-development-why-unclear-business-message/">技術系企業のホームページで「何をしている会社か」が伝わらない理由</a>
+    </div>
+  </section>
+  <section class="topic-hub-card">
+    <h3>SEO対策</h3>
+    <p>title、見出し、内部リンク、重要ページの優先順位を整理して、検索から相談につながる土台を作ります。</p>
+    <div class="topic-hub-links">
+      <a class="topic-hub-link" href="/services/seo-lead-optimization/">SEO対策・問い合わせ導線改善</a>
+      <a class="topic-hub-link" href="/blog/2026/03/25/001-inquiry-flow-fix-first-three-places/">問い合わせが来ないサイトで、先に直すべき3つの場所</a>
+    </div>
+  </section>
+  <section class="topic-hub-card">
+    <h3>問い合わせ導線改善</h3>
+    <p>記事、サービスページ、問い合わせページ、フォーム項目のつながりを整えて、相談しやすい流れへ改善します。</p>
+    <div class="topic-hub-links">
+      <a class="topic-hub-link" href="/services/seo-lead-optimization/">SEO対策・問い合わせ導線改善</a>
+      <a class="topic-hub-link" href="/blog/2026/03/25/003-internal-linking-between-articles-and-service-pages/">記事とサービスページをどうつなぐか - 内部リンク設計の基本</a>
+    </div>
+  </section>
+  <section class="topic-hub-card">
+    <h3>サービスページ設計</h3>
+    <p>技術系・B2B向けに、誰向けの何のページかが一目で伝わるサービスページを作るための整理です。</p>
+    <div class="topic-hub-links">
+      <a class="topic-hub-link" href="/services/website-development/">ホームページ制作</a>
+      <a class="topic-hub-link" href="/blog/2026/03/25/002-service-page-structure-for-technical-b2b/">サービスページをどう作るか - 技術系・B2B向けの整理手順</a>
+    </div>
+  </section>
+</div>

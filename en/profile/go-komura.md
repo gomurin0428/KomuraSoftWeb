@@ -10,10 +10,11 @@ schema_type: "ProfilePage"
 main_entity_type: "Person"
 main_entity_name: "Go Komura"
 main_entity_description: "Representative of KomuraSoft, focused on Windows software development, technical consulting, and difficult defect investigation."
-description: "Profile page for Go Komura, covering background, technical focus, and the kinds of Windows software projects where his experience is especially effective."
+description: "Profile page for Go Komura, covering background, technical focus, and the kinds of projects where his experience is especially effective."
 page_keywords:
   - Go Komura
   - Profile
+  - Website Development
   - Windows Development
   - Defect Investigation
 breadcrumb_parent_label: "Company"
@@ -31,7 +32,7 @@ related_pages:
 
 ## Where the experience is strongest
 
-Go Komura's background is especially effective in Windows projects that still carry older assets or have failures whose real cause is hard to see.
+Go Komura's background is especially effective in Windows projects that still carry older assets or have failures whose real cause is hard to see. That also makes the profile a strong fit for technical B2B websites where complex engineering work needs to be reorganized into clearer page structure and language.
 
 That usually includes work such as:
 
@@ -40,6 +41,7 @@ That usually includes work such as:
 - planning changes that must account for 32-bit / 64-bit interoperability
 - investigating crashes, stalls, and leaks that only appear after long uptime
 - improving logging and abnormal-case test foundations so future investigations become easier
+- turning complex technical details into consultation-friendly page structure and copy
 
 ## Education and career
 
@@ -52,10 +54,9 @@ That usually includes work such as:
 
 ## Technical style
 
-The work style is not only to look at the visible symptom, but to look through the structure behind it:
-responsibility boundaries, lifetime design, communication paths, and how the system can be made easier to investigate next time.
+The work style is not only to look at the visible symptom, but to look through the structure behind it: responsibility boundaries, lifetime design, communication paths, and how the system can be made easier to investigate next time.
 
-That makes the profile relevant not only to implementation work, but also to design review and investigation-oriented consulting.
+That makes the profile relevant not only to implementation work, but also to design review, investigation-oriented consulting, and technical website restructuring.
 
 ## Public profiles and representative links
 

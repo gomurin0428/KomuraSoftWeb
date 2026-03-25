@@ -2,8 +2,6 @@
 lang: en
 permalink: /en/
 ---
-{% assign service_links = site.data.service_pages[page.lang] %}
-{% assign homepage_links = site.data.homepage_links[page.lang] %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,8 +11,8 @@ permalink: /en/
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <title>KomuraSoft | Windows Development and Technical Consulting</title>
-  <meta id="meta-description" name="description" content="KomuraSoft helps teams with Windows app development, maintenance and modernization, legacy asset migration, technical consulting, and bug investigation. This page presents five direct service entry points.">
+  <title>KomuraSoft | Website Development, SEO, and Windows Development</title>
+  <meta name="description" content="Website development, SEO, inquiry-flow improvement, and Windows development for technical and B2B businesses. KomuraSoft also handles maintenance, bug investigation, and technical consulting.">
   <link rel="canonical" href="https://comcomponent.com/en/">
   <link rel="alternate" hreflang="ja" href="https://comcomponent.com/">
   <link rel="alternate" hreflang="en" href="https://comcomponent.com/en/">
@@ -22,10 +20,9 @@ permalink: /en/
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
   <meta name="author" content="KomuraSoft">
   <meta name="theme-color" content="#0f172a">
-  <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta id="meta-og-title" property="og:title" content="KomuraSoft | Windows Development and Technical Consulting">
-  <meta id="meta-og-description" property="og:description" content="KomuraSoft helps teams with Windows app development, maintenance and modernization, legacy asset migration, technical consulting, and bug investigation. This page presents five direct service entry points.">
+  <meta property="og:title" content="KomuraSoft | Website Development, SEO, and Windows Development">
+  <meta property="og:description" content="Website development, SEO, inquiry-flow improvement, and Windows development for technical and B2B businesses. KomuraSoft also handles maintenance, bug investigation, and technical consulting.">
   <meta property="og:url" content="https://comcomponent.com/en/">
   <meta property="og:site_name" content="KomuraSoft">
   <meta property="og:locale" content="en_US">
@@ -35,17 +32,15 @@ permalink: /en/
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta property="og:image:alt" content="KomuraSoft logo">
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta id="meta-twitter-title" name="twitter:title" content="KomuraSoft | Windows Development and Technical Consulting">
-  <meta id="meta-twitter-description" name="twitter:description" content="KomuraSoft helps teams with Windows app development, maintenance and modernization, legacy asset migration, technical consulting, and bug investigation. This page presents five direct service entry points.">
+  <meta name="twitter:title" content="KomuraSoft | Website Development, SEO, and Windows Development">
+  <meta name="twitter:description" content="Website development, SEO, inquiry-flow improvement, and Windows development for technical and B2B businesses. KomuraSoft also handles maintenance, bug investigation, and technical consulting.">
   <meta name="twitter:image" content="https://comcomponent.com/logo-og.jpg">
   <meta name="twitter:image:alt" content="KomuraSoft logo">
   <meta name="twitter:site" content="@komurasoft">
   <meta name="twitter:creator" content="@komurasoft">
   <link rel="stylesheet" href="/komura_soft_single_page.css">
   {% include google-tag.html %}
-  <!-- Structured Data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -54,7 +49,7 @@ permalink: /en/
     "url": "https://comcomponent.com/",
     "logo": "https://comcomponent.com/logo-og.jpg",
     "image": "https://comcomponent.com/logo-og.jpg",
-    "description": "Landing page for KomuraSoft, covering five service entry points for Windows app development, modernization, legacy migration, consulting, and bug investigation.",
+    "description": "KomuraSoft supports technical and B2B businesses with website development, SEO, inquiry-flow improvement, and Windows development.",
     "founder": {
       "@type": "Person",
       "name": "Go Komura"
@@ -63,7 +58,7 @@ permalink: /en/
       "@type": "ContactPoint",
       "contactType": "customer service",
       "availableLanguage": ["ja", "en"],
-      "url": "https://docs.google.com/forms/d/e/1FAIpQLSdQz2lqorHFF3fpJtfZv3Ohm5gHG7uyPtm7p_ydGwasc7Xi_g/viewform?usp=dialog"
+      "url": "https://comcomponent.com/en/contact/"
     },
     "address": {
       "@type": "PostalAddress",
@@ -73,46 +68,29 @@ permalink: /en/
       "addressRegion": "Tokyo",
       "addressCountry": "JP"
     },
-    "knowsAbout": ["C#", "VB.NET", ".NET", "WPF", "Windows Forms", "C++", "C++/CLI", "Windows API", "COM", "ActiveX", "OCX", "32-bit / 64-bit interoperability", "Industrial camera integration", "Bug investigation", "Long-running failure analysis", "UML"],
     "makesOffer": [
       {
         "@type": "Offer",
         "itemOffered": {
           "@type": "Service",
-          "name": "Windows App Development",
-          "url": "https://comcomponent.com/en/services/windows-app-development/"
+          "name": "Website Development",
+          "url": "https://comcomponent.com/en/services/website-development/"
         }
       },
       {
         "@type": "Offer",
         "itemOffered": {
           "@type": "Service",
-          "name": "Bug Investigation & Root Cause Analysis",
-          "url": "https://comcomponent.com/en/services/bug-investigation/"
+          "name": "SEO and Inquiry Flow Improvement",
+          "url": "https://comcomponent.com/en/services/seo-lead-optimization/"
         }
       },
       {
         "@type": "Offer",
         "itemOffered": {
           "@type": "Service",
-          "name": "Technical Consulting & Design Review",
-          "url": "https://comcomponent.com/en/services/technical-consulting/"
-        }
-      },
-      {
-        "@type": "Offer",
-        "itemOffered": {
-          "@type": "Service",
-          "name": "Windows Software Maintenance & Modernization",
-          "url": "https://comcomponent.com/en/services/windows-modernization-maintenance/"
-        }
-      },
-      {
-        "@type": "Offer",
-        "itemOffered": {
-          "@type": "Service",
-          "name": "Legacy Asset Reuse & Migration Support",
-          "url": "https://comcomponent.com/en/services/legacy-asset-migration/"
+          "name": "Windows Development",
+          "url": "https://comcomponent.com/en/services/windows-development/"
         }
       }
     ],
@@ -135,9 +113,9 @@ permalink: /en/
   {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "KomuraSoft | Windows Development and Technical Consulting",
+    "name": "KomuraSoft | Website Development, SEO, and Windows Development",
     "url": "https://comcomponent.com/en/",
-    "description": "KomuraSoft helps teams with Windows app development, maintenance and modernization, legacy asset migration, technical consulting, and bug investigation. This page presents five direct service entry points.",
+    "description": "Website development, SEO, inquiry-flow improvement, and Windows development for technical and B2B businesses. KomuraSoft also handles maintenance, bug investigation, and technical consulting.",
     "inLanguage": "en-US",
     "isPartOf": {
       "@type": "WebSite",
@@ -149,14 +127,10 @@ permalink: /en/
       "url": "https://comcomponent.com/logo-og.jpg"
     },
     "about": [
-      "Windows Development",
-      "COM",
-      "ActiveX",
-      "C#",
-      ".NET",
-      "WPF",
-      "WinForms",
-      "C++/CLI"
+      "Website Development",
+      "SEO",
+      "Inquiry Flow",
+      "Windows Development"
     ]
   }
   </script>
@@ -178,108 +152,24 @@ permalink: /en/
   {
     "@context": "https://schema.org",
     "@type": "Service",
-    "name": "Windows Contract Development and Technical Consultation",
-    "serviceType": "Windows software development and technical consulting",
+    "name": "Website Development, SEO, and Windows Development",
+    "serviceType": "Website development, SEO, and Windows development",
     "provider": {
       "@type": "Organization",
       "name": "KomuraSoft",
       "url": "https://comcomponent.com/"
     },
     "areaServed": "JP",
-    "description": "Overview of five KomuraSoft service entry points for Windows app development, modernization, legacy migration, technical consulting, and bug investigation.",
+    "description": "Homepage for website development, SEO, inquiry-flow improvement, and Windows development for technical and B2B businesses.",
     "offers": [
       {
         "@type": "Offer",
-        "name": "Windows App Development"
+        "name": "Website Development and SEO"
       },
       {
         "@type": "Offer",
-        "name": "Bug Investigation & Root Cause Analysis"
-      },
-      {
-        "@type": "Offer",
-        "name": "Technical Consulting & Design Review"
-      },
-      {
-        "@type": "Offer",
-        "name": "Windows Software Maintenance & Modernization"
-      },
-      {
-        "@type": "Offer",
-        "name": "Legacy Asset Reuse & Migration Support"
+        "name": "Windows Development and Technical Consulting"
       }
-    ],
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "Main KomuraSoft Services",
-      "itemListElement": [
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Windows App Development",
-            "description": "Business desktop applications, equipment-linked software, communication tools, and resident processing for Windows",
-            "url": "https://comcomponent.com/en/services/windows-app-development/"
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Bug Investigation & Root Cause Analysis",
-            "description": "Investigation of rare failures, communication stalls, long-running crashes, and leak-related issues",
-            "url": "https://comcomponent.com/en/services/bug-investigation/"
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Technical Consulting & Design Review",
-            "description": "Technical consulting for Windows software architecture, design review, and safe change planning",
-            "url": "https://comcomponent.com/en/services/technical-consulting/"
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Windows Software Maintenance & Modernization",
-            "description": "Feature additions, maintenance, staged upgrades, and modernization of existing Windows software",
-            "url": "https://comcomponent.com/en/services/windows-modernization-maintenance/"
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Legacy Asset Reuse & Migration Support",
-            "description": "Support for staged modernization while continuing to reuse older Windows system assets",
-            "url": "https://comcomponent.com/en/services/legacy-asset-migration/"
-          }
-        }
-      ]
-    }
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "name": "Examples of Windows Software We Can Build",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Business Desktop Applications" },
-      { "@type": "ListItem", "position": 2, "name": "Equipment Integration and Control Applications" },
-      { "@type": "ListItem", "position": 3, "name": "Communication Clients and Monitoring Tools" },
-      { "@type": "ListItem", "position": 4, "name": "Integration Apps That Reuse Existing COM / ActiveX / OCX Assets" },
-      { "@type": "ListItem", "position": 5, "name": "Modernization of Existing Windows Software and 64-bit Support" },
-      { "@type": "ListItem", "position": 6, "name": "Custom Tools for Investigation and Verification" },
-      { "@type": "ListItem", "position": 7, "name": "Serial and USB Device Integration Apps" },
-      { "@type": "ListItem", "position": 8, "name": "Custom Protocol Communication Software" },
-      { "@type": "ListItem", "position": 9, "name": "Windows Services and Resident Programs" },
-      { "@type": "ListItem", "position": 10, "name": "Multi-Threaded and Multi-Process Software" },
-      { "@type": "ListItem", "position": 11, "name": "Office Integration Tools and Add-ins" },
-      { "@type": "ListItem", "position": 12, "name": "Excel-Based Report Output Systems" }
     ]
   }
   </script>
@@ -291,31 +181,45 @@ permalink: /en/
       <section class="section section--hero" id="hero">
         <div class="hero-grid">
           <div class="hero-content">
-            <h1 class="hero-title" data-i18n="heroTitle" data-i18n-html="true">Reuse Legacy Assets,<br><span class='hero-title-accent'>Connect to the Future</span>.</h1>
-            <p class="hero-text" data-i18n="heroText" data-i18n-html="true">KomuraSoft is based in Sumida City, Tokyo, and as a <strong>Windows specialist</strong> we cover everything from legacy technologies such as COM and ActiveX to modern .NET. In addition to contract development, we also offer technical consultation for modernization planning, technology selection, design reviews, and bug investigation.<br><br>Along with serving clients in Tokyo, we also support online consultations from across Japan and overseas.</p>
-            <p class="hero-support-note" data-i18n="heroSupportNote">You do not need to be ready for a full development request. We are happy to start by helping you sort out the situation.</p>
+            <p class="hero-support-note">For technical and B2B businesses</p>
+            <h1 class="hero-title">Website Development, SEO, and Windows Development for Technical B2B Businesses</h1>
+            <p class="hero-text">We help technical and B2B businesses clarify what they actually do, improve discoverability in search, and turn visits into inquiries. We also provide Windows app development, maintenance, bug investigation, and technical consulting.</p>
+            <div class="section-related-links-list" style="margin-top: 1.25rem;">
+              <a class="button button--primary" href="/en/contact/">Talk about Website Development / SEO</a>
+              <a class="button" href="/en/contact/">Talk about Windows Development</a>
+            </div>
+            <p class="hero-support-note">It is okay if your requirements are not fully organized yet.</p>
           </div>
         </div>
       </section>
+
       <section class="section section--service-rail" id="service">
-        <h2 class="section-title">Five Services</h2>
-        <p class="section-description">Start from the service that best matches your current situation.</p>
+        <h2 class="section-title">Two main entry points</h2>
         <div class="primary-service-grid">
-          {% for item in service_links %}
-          <a class="primary-service-card" href="{{ item.url }}">
-            <span class="primary-service-card-title">{{ item.title }}</span>
-            <span class="primary-service-card-body">{{ item.summary }}</span>
+          <a class="primary-service-card" href="/en/services/website-development-seo/">
+            <span class="primary-service-card-title">Website Development & SEO</span>
+            <span class="primary-service-card-body">We redesign homepages, service pages, search visibility, and inquiry flow for technical and B2B businesses.</span>
           </a>
-          {% endfor %}
+          <a class="primary-service-card" href="/en/services/windows-development/">
+            <span class="primary-service-card-title">Windows Development & Technical Consulting</span>
+            <span class="primary-service-card-body">We handle Windows app development, maintenance, bug investigation, and technical consulting.</span>
+          </a>
         </div>
       </section>
-      <section class="section" id="detail-pages">
-        <h2 class="section-title">Other Pages</h2>
-        <p class="section-description">Use the links below for supporting pages outside the five main services.</p>
+
+      <section class="section" id="fit">
+        <h2 class="section-title">Best fit</h2>
+        <p class="section-description">The best fit is usually a technical or B2B business with services that are hard to explain to a generalist agency, especially when existing sites or systems need to be improved rather than replaced all at once.</p>
+      </section>
+
+      <section class="section" id="knowledge">
+        <h2 class="section-title">Case studies and topics</h2>
         <div class="section-related-links-list">
-          {% for item in homepage_links %}
-          <a class="section-related-link" href="{{ item.url }}">{{ item.title }}</a>
-          {% endfor %}
+          <a class="section-related-link" href="/en/case-studies/">Case Studies</a>
+          <a class="section-related-link" href="/en/web-topics/">Web Development & SEO Topics</a>
+          <a class="section-related-link" href="/en/topics/">Windows Technical Topics</a>
+          <a class="section-related-link" href="/en/company/">Company</a>
+          <a class="section-related-link" href="/en/contact/">Contact</a>
         </div>
       </section>
     </main>
