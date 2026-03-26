@@ -7,7 +7,7 @@ title: "Web制作・SEOトピック | KomuraSoft"
 page_name: "Web制作・SEOトピック"
 page_eyebrow: "Web Topics"
 schema_type: "CollectionPage"
-description: "ホームページ制作、サービスページ設計、SEO対策、Google広告運用、内部リンク、問い合わせ導線改善など、関連する記事とサービスをまとめた入口です。"
+description: "ホームページ制作、サービスページ設計、SEO対策、Google広告運用、内部リンク、問い合わせ導線改善など、業種を問わずWeb集客に関する記事とサービスをまとめた入口です。"
 page_keywords:
   - Web制作・SEOトピック
   - ホームページ制作
@@ -25,15 +25,16 @@ related_pages:
 
 ## このページの役割
 
-ホームページ制作、サービスページ設計、SEO対策、Google広告運用、内部リンク、問い合わせ導線改善に関する記事とサービスをまとめた入口です。Windows 文脈の技術トピックとは分けて、Web 側の相談導線を明確にしています。
+ホームページ制作、サービスページ設計、SEO対策、Google広告運用、内部リンク、問い合わせ導線改善に関する記事とサービスをまとめた入口です。業種を問わずWeb側の相談導線を見つけやすくし、Windows文脈の技術トピックとは分けて整理しています。
 
 <div class="topic-hub-grid">
   <section class="topic-hub-card">
     <h3>ホームページ制作</h3>
-    <p>何をしている会社かが伝わるトップページ、サービスページ、会社情報ページを整えるための入口です。</p>
+    <p>業種を問わず、何をしている会社かが伝わるトップページ、サービスページ、会社情報ページを整えるための入口です。</p>
     <div class="topic-hub-links">
       <a class="topic-hub-link" href="/services/website-development/">ホームページ制作</a>
-      <a class="topic-hub-link" href="/blog/2026/03/25/000-website-development-why-unclear-business-message/">技術系企業のホームページで「何をしている会社か」が伝わらない理由</a>
+      <a class="topic-hub-link" href="/blog/2026/03/25/001-inquiry-flow-fix-first-three-places/">問い合わせが来ないサイトで、先に直すべき3つの場所</a>
+      <a class="topic-hub-link" href="/blog/2026/03/25/002-service-page-structure-for-technical-b2b/">サービスページをどう作るか - 技術系・B2B向けの整理手順</a>
     </div>
   </section>
   <section class="topic-hub-card">
@@ -62,7 +63,7 @@ related_pages:
   </section>
   <section class="topic-hub-card">
     <h3>サービスページ設計</h3>
-    <p>技術系・B2B向けに、誰向けの何のページかが一目で伝わるサービスページを作るための整理です。</p>
+    <p>特に、技術系・B2Bのように説明が複雑なサービスで、誰向けの何のページかが一目で伝わるサービスページを作るための整理です。</p>
     <div class="topic-hub-links">
       <a class="topic-hub-link" href="/services/website-development/">ホームページ制作</a>
       <a class="topic-hub-link" href="/blog/2026/03/25/002-service-page-structure-for-technical-b2b/">サービスページをどう作るか - 技術系・B2B向けの整理手順</a>

@@ -6,7 +6,7 @@ permalink: /services/seo-lead-optimization/
 title: "SEO対策・Google広告運用・問い合わせ導線改善 | KomuraSoft"
 service_name: "SEO対策・Google広告運用・問い合わせ導線改善"
 service_type: "SEO, Google Ads, and inquiry flow improvement"
-description: "サービスページ、内部リンク、記事導線、Google広告運用、問い合わせページを見直し、検索から相談につながる土台を整えます。"
+description: "業種を問わず、サービスページ、内部リンク、記事導線、Google広告運用、問い合わせページを見直し、検索から相談につながる土台を整えます。"
 service_keywords:
   - SEO対策
   - Google広告運用
@@ -39,6 +39,7 @@ related_articles:
     url: "/blog/2026/03/25/003-internal-linking-between-articles-and-service-pages/"
   - title: "SEO対策とGoogle広告のベストプラクティス - 一般論でつかむ検索集客の設計図"
     url: "/blog/2026/03/24/000-seo-google-ads-best-practices/"
+related_articles_label: "関連する記事"
 ---
 
 ## こういう状態を改善します

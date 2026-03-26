@@ -6,7 +6,7 @@ permalink: /en/services/seo-lead-optimization/
 title: "SEO, Google Ads, and Inquiry Flow Improvement | KomuraSoft"
 service_name: "SEO, Google Ads, and Inquiry Flow Improvement"
 service_type: "SEO, Google Ads, and inquiry flow improvement"
-description: "We review service pages, internal links, article flow, Google Ads, and contact flow so search visibility turns into inquiries."
+description: "For all industries, we review service pages, internal links, article flow, Google Ads, and contact flow so search visibility turns into inquiries."
 service_keywords:
   - SEO
   - Google Ads

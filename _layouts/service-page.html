@@ -15,7 +15,7 @@
   {% assign services_label = page.breadcrumb_parent_label | default: "Services" %}
   {% assign blog_label = "Blog" %}
   {% assign contact_label = "Contact" %}
-  {% assign related_articles_label = "Related Articles" %}
+  {% assign related_articles_label = page.related_articles_label | default: "Related Articles" %}
   {% assign cta_title = "Get in Touch" %}
   {% assign cta_body = "If this service area matches the problem you are dealing with, please contact us with the current situation and what kind of support you need." %}
   {% assign cta_button = "Contact" %}
@@ -34,7 +34,7 @@
   {% assign services_label = page.breadcrumb_parent_label | default: "サービス" %}
   {% assign blog_label = "ブログ" %}
   {% assign contact_label = "問い合わせる" %}
-  {% assign related_articles_label = "関連する技術記事" %}
+  {% assign related_articles_label = page.related_articles_label | default: "関連する技術記事" %}
   {% assign cta_title = "ご相談はこちら" %}
   {% assign cta_body = "このサービス内容に近い課題がある場合は、現状や困りごとをそのまま共有してください。調査・改修・方針整理のどこから進めるべきかを一緒に整理します。" %}
   {% assign cta_button = "問い合わせる" %}

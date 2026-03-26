@@ -10,8 +10,8 @@ schema_type: "AboutPage"
 main_entity_type: "Organization"
 main_entity_name: "KomuraSoft"
 main_entity_url: "https://comcomponent.com/"
-main_entity_description: "Company overview for KomuraSoft, covering website development, SEO, Google Ads, Windows development, and technical consulting."
-description: "Company overview for KomuraSoft, including website development, SEO, and Google Ads for technical B2B businesses, plus Windows software development and technical consulting."
+main_entity_description: "Company overview for KomuraSoft, where web support is available for all industries and especially strong for complex technical and B2B services."
+description: "Company overview for KomuraSoft. On the web side we support all industries with website development, SEO, Google Ads, and inquiry-flow improvement, plus Windows software development and technical consulting."
 page_keywords:
   - KomuraSoft
   - Company
@@ -34,11 +34,11 @@ related_pages:
     url: "/en/services/website-development-seo/"
 ---
 
-This page summarizes KomuraSoft's business scope, areas of support, location, and public contact channel. It covers website development, SEO, and Google Ads for technical B2B businesses together with Windows software development and technical consulting.
+This page summarizes KomuraSoft's business scope, areas of support, location, and public contact channel. On the web side, we support all industries with website development, SEO, Google Ads, and inquiry-flow improvement together with Windows software development and technical consulting.
 
 ## What kind of business this is
 
-KomuraSoft provides website development, SEO, Google Ads, and inquiry-flow improvement for technical and B2B businesses, together with Windows software contract development and technical consultation. That includes new production work, staged improvement of existing sites, reworking older software structures, and investigating failures that are difficult to reproduce. Based in Sumida City, Tokyo, we support clients across Tokyo and nationwide through online collaboration.
+KomuraSoft provides website development, SEO, Google Ads, and inquiry-flow improvement for all industries. We are especially good at clarifying complex technical and B2B services. We also provide Windows software contract development and technical consultation. That includes new production work, staged improvement of existing sites, reworking older software structures, and investigating failures that are difficult to reproduce. Based in Sumida City, Tokyo, we support clients across Tokyo and nationwide through online collaboration.
 
 ## Main business areas
 
@@ -63,6 +63,8 @@ KomuraSoft provides website development, SEO, Google Ads, and inquiry-flow impro
 ## Common starting points
 
 ### Web side
+
+On the web side, we support all industries, and these are the most common consultations:
 
 - the site does not clearly explain what the business does
 - the business scope has expanded, but the site still reflects the old positioning

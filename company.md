@@ -10,8 +10,8 @@ schema_type: "AboutPage"
 main_entity_type: "Organization"
 main_entity_name: "KomuraSoft"
 main_entity_url: "https://comcomponent.com/"
-main_entity_description: "技術系・B2B向けのホームページ制作・SEO対策・Google広告運用と、Windows受託開発・技術相談を行う KomuraSoft の会社情報ページ。"
-description: "KomuraSoft の事業内容、対応領域、拠点、公開窓口をまとめた会社情報ページです。技術系・B2B向けのホームページ制作・SEO対策・Google広告運用と、Windowsソフト開発・技術相談の概要を確認できます。"
+main_entity_description: "Web支援は業種を問わず対応し、特に技術系・B2Bの複雑なサービス整理を得意とする KomuraSoft の会社情報ページ。"
+description: "KomuraSoft の事業内容、対応領域、拠点、公開窓口をまとめた会社情報ページです。Web支援は業種を問わず、ホームページ制作、SEO対策、Google広告運用、問い合わせ導線改善に対応しています。Windowsソフト開発・技術相談の概要も確認できます。"
 page_keywords:
   - KomuraSoft
   - 会社情報
@@ -40,7 +40,7 @@ related_pages:
 
 ## 何をしている事業者か
 
-KomuraSoft は、技術系・B2B事業者向けのホームページ制作、SEO対策、Google広告運用、問い合わせ導線改善と、Windowsソフトウェアの受託開発・技術相談を行っています。
+KomuraSoft は、Web支援では業種を問わずホームページ制作、SEO対策、Google広告運用、問い合わせ導線改善を行っています。特に、技術系・B2Bのように説明が複雑なサービス整理を得意としています。Windowsソフトウェアの受託開発・技術相談にも対応しています。
 
 新規制作だけでなく、既存サイトや既存システムの改修、古い資産を抱えた構成の整理、再現しにくい不具合の調査まで対応します。東京都墨田区を拠点に、都内・全国オンライン対応を行っています。
 
@@ -57,6 +57,8 @@ KomuraSoft は、技術系・B2B事業者向けのホームページ制作、SEO
 ## 相談の入り口として多いもの
 
 ### Web側
+
+Web支援は業種を問わず、次のような相談が多いです。
 
 - 何の会社か伝わらない
 - 事業範囲を広げたいがサイトが追いついていない

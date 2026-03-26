@@ -6,7 +6,7 @@ permalink: /services/website-development-seo/
 title: "ホームページ制作・SEO対策・Google広告運用 | KomuraSoft"
 service_name: "ホームページ制作・SEO対策・Google広告運用"
 service_type: "Website development, SEO, and Google Ads"
-description: "技術系・B2B向けに、ホームページ制作、SEO対策、Google広告運用、問い合わせ導線改善をまとめて整理するための柱ページです。"
+description: "業種を問わず、ホームページ制作、SEO対策、Google広告運用、問い合わせ導線改善をまとめて整理するための柱ページです。特に、説明が複雑な技術系・B2B案件の整理と相性があります。"
 service_keywords:
   - ホームページ制作
   - SEO対策
@@ -31,12 +31,13 @@ faq:
   - q: "SEO と Google広告はどう使い分けますか。"
     a: "今月の相談数を増やしたいなら Google広告を先に、半年後も効く資産を作りたいなら SEO を先に、高意図も比較検討も取りたいなら両方を並行で進めます。"
 related_articles:
-  - title: "技術系企業のホームページで『何をしている会社か』が伝わらない理由"
-    url: "/blog/2026/03/25/000-website-development-why-unclear-business-message/"
   - title: "問い合わせが来ないサイトで、先に直すべき3つの場所"
     url: "/blog/2026/03/25/001-inquiry-flow-fix-first-three-places/"
+  - title: "記事とサービスページをどうつなぐか - 内部リンク設計の基本"
+    url: "/blog/2026/03/25/003-internal-linking-between-articles-and-service-pages/"
   - title: "SEO対策とGoogle広告のベストプラクティス - 一般論でつかむ検索集客の設計図"
     url: "/blog/2026/03/24/000-seo-google-ads-best-practices/"
+related_articles_label: "関連する記事"
 ---
 
 ## このページの役割
@@ -55,12 +56,13 @@ related_articles:
 
 今月の相談数を増やしたいなら Google広告を先に、半年後も効く資産を作りたいなら SEO を先に、高意図も比較検討も取りたいなら両方を並行で進めます。
 
-## どんな会社に向いているか
+## 特にこういう課題の相談が多いです
 
-- 技術系・B2B・製造業寄りの会社
-- 技術内容が複雑で、一般的な制作会社に伝えにくい会社
-- 既存サイトを活かしながら改善したい会社
-- 問い合わせ導線やサービスページの弱さを見直したい会社
+- 何の会社か伝わらない
+- 既存サイトを活かしながら改善したい
+- サービスページや問い合わせ導線が弱い
+- SEOとGoogle広告を別々ではなくまとめて考えたい
+- 技術系・B2Bのように説明が複雑なサービスを整理したい
 
 ## 詳細ページ
 

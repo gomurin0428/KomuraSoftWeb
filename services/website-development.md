@@ -3,10 +3,10 @@ layout: service-page
 lang: ja
 translation_key: service-website-development
 permalink: /services/website-development/
-title: "ホームページ制作 | 技術系・B2B向け | KomuraSoft"
+title: "ホームページ制作 | KomuraSoft"
 service_name: "ホームページ制作"
 service_type: "Website development"
-description: "技術系・B2B事業者向けに、何をしている会社かが伝わり、問い合わせにつながるホームページを企画・構成・制作します。"
+description: "業種を問わず、何をしている会社かが伝わり、問い合わせにつながるホームページを企画・構成・制作します。特に、説明が複雑な技術系・B2B案件の整理や、既存サイトを活かした再設計と相性があります。"
 service_keywords:
   - ホームページ制作
   - サービスページ
@@ -29,18 +29,19 @@ faq:
   - q: "デザインより先に内容整理をしたいです。"
     a: "はい。まずは誰に何を伝えるか、どのページが必要かを整理します。"
 related_articles:
-  - title: "技術系企業のホームページで『何をしている会社か』が伝わらない理由"
-    url: "/blog/2026/03/25/000-website-development-why-unclear-business-message/"
-  - title: "サービスページをどう作るか - 技術系・B2B向けの整理手順"
-    url: "/blog/2026/03/25/002-service-page-structure-for-technical-b2b/"
+  - title: "問い合わせが来ないサイトで、先に直すべき3つの場所"
+    url: "/blog/2026/03/25/001-inquiry-flow-fix-first-three-places/"
+  - title: "記事とサービスページをどうつなぐか - 内部リンク設計の基本"
+    url: "/blog/2026/03/25/003-internal-linking-between-articles-and-service-pages/"
+related_articles_label: "関連する記事"
 ---
 
 ## こういう課題に対応します
 
 - 何の会社か分からない
 - 事業内容が増えたのにサイトが追いついていない
-- 技術内容が難しく、文章として整理しにくい
-- 制作会社に技術背景を説明しづらい
+- サービス説明が長くなり、何を見ればよいか分からない
+- 外注先に内容を説明しづらい
 - 問い合わせページまでの流れが弱い
 
 ## 対応範囲
@@ -62,12 +63,12 @@ related_articles:
 - CTA 文言
 - 問い合わせフォーム項目
 
-## こんな会社に向いています
+## 特にこういう課題と相性があります
 
-- 技術系・B2B・製造業寄りの会社
-- サービス説明が難しい会社
-- 外注先に内容が伝わりにくい会社
+- 複数のサービスを整理したい会社
 - 既存サイトを活かしながら改善したい会社
+- トップ、サービスページ、問い合わせページの役割を整理したい会社
+- 技術系・B2Bのように説明が複雑なサービスを分かりやすく整理したい会社
 
 ## 進め方
 

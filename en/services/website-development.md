@@ -3,10 +3,10 @@ layout: service-page
 lang: en
 translation_key: service-website-development
 permalink: /en/services/website-development/
-title: "Website Development | Technical B2B | KomuraSoft"
+title: "Website Development | KomuraSoft"
 service_name: "Website Development"
 service_type: "Website development"
-description: "We plan and structure websites for technical and B2B businesses so the company is clearly understood and the site leads to inquiries."
+description: "We support website planning and structure for all industries so visitors quickly understand what the company does and how to contact you. We are especially strong at clarifying complex technical and B2B services while improving existing sites in stages."
 service_keywords:
   - Website Development
   - Service Pages
@@ -27,17 +27,18 @@ faq:
   - q: "Can we talk before the text is fully organized?"
     a: "Yes. Notes and spoken explanations are enough to begin."
 related_articles:
-  - title: "Why Technical Companies Often Fail to Explain What They Actually Do"
-    url: "/en/blog/2026/03/25/000-website-development-why-unclear-business-message/"
-  - title: "How to Structure Service Pages for Technical B2B Businesses"
-    url: "/en/blog/2026/03/25/002-service-page-structure-for-technical-b2b/"
+  - title: "The First Three Places to Fix on a Site That Does Not Generate Inquiries"
+    url: "/en/blog/2026/03/25/001-inquiry-flow-fix-first-three-places/"
+  - title: "How to Connect Articles and Service Pages with Internal Links"
+    url: "/en/blog/2026/03/25/003-internal-linking-between-articles-and-service-pages/"
 ---
 
 ## Problems this service addresses
 
 - the site does not clearly explain what kind of business this is
 - the business scope changed, but the site did not
-- the technical content is hard to organize into clear writing
+- service descriptions are too long and unclear
+- it is hard to explain the scope to an external team
 - the inquiry path is weak
 
 ## Scope
@@ -49,11 +50,12 @@ related_articles:
 - contact-page and form review
 - partial improvements to an existing site
 
-## Best fit
+## Especially good for these challenges
 
-- technical and B2B businesses
-- businesses with services that are hard to explain to a generalist agency
+- teams that need to organize multiple service offerings
 - teams that want to improve an existing site rather than replace everything at once
+- teams that need clearer roles for homepage, service pages, and contact page
+- teams with technical or B2B services that are hard to explain clearly
 
 <p>
   <a class="button button--primary" href="/en/contact/">Talk about Website Development</a>

@@ -34,6 +34,8 @@ faq:
     a: "Yes. Root-cause analysis, planning, and page-structure review are all valid reasons to contact us."
   - q: "Can we ask only for a Google Ads review?"
     a: "Yes. We can review Google Ads on its own, but we will also look at the landing page and inquiry flow when needed."
+  - q: "Can non-technical and non-B2B businesses also contact you?"
+    a: "Yes. Our web support is available for all industries. We are especially strong at clarifying complex services and improving existing sites in stages."
 ---
 
 Contact us about website development, SEO, Google Ads, existing-site improvement, Windows contract development, maintenance, bug investigation, or technical consulting. It is fine if the requirements are not fully organized yet.
