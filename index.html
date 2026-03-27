@@ -7,6 +7,10 @@ lang: ja
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+  <link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+  <link rel="dns-prefetch" href="https://www.google-analytics.com">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
@@ -39,7 +43,9 @@ lang: ja
   <meta name="twitter:image:alt" content="合同会社小村ソフト logo">
   <meta name="twitter:site" content="@komurasoft">
   <meta name="twitter:creator" content="@komurasoft">
-  <link rel="stylesheet" href="./komura_soft_single_page.css">
+  {% include critical-css.html %}
+  <link rel="stylesheet" href="./komura_soft_single_page.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="./komura_soft_single_page.css"></noscript>
   {% include google-tag.html %}
   <script type="application/ld+json">
   {

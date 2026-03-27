@@ -26,7 +26,10 @@
 <header class="site-header">
   <div class="header-inner">
     <a href="{{ header_home_url }}" class="brand">
-      <img src="/logo-google-ads-square.png" alt="{{ site_brand_name }}" class="brand-logo" loading="eager" width="40" height="40" style="width: 2.5rem; height: 2.5rem; max-width: 2.5rem; max-height: 2.5rem;">
+      <picture>
+        <source srcset="/logo-google-ads-square.webp" type="image/webp">
+        <img src="/logo-google-ads-square-small.png" alt="{{ site_brand_name }}" class="brand-logo" loading="eager" width="40" height="40" style="width: 2.5rem; height: 2.5rem; max-width: 2.5rem; max-height: 2.5rem;">
+      </picture>
       <span class="brand-name">{{ site_brand_name }}</span>
     </a>
     <details class="site-nav-shell">
