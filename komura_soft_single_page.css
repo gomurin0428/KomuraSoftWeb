@@ -1131,10 +1131,14 @@ p + p {
   
   .brand {
     order: 1;
+    flex: 1 1 auto;
+    min-width: 0;
   }
 
   .brand-name {
-    display: none;
+    display: inline;
+    font-size: 0.95rem;
+    line-height: 1.2;
   }
   
   .brand-badge {
