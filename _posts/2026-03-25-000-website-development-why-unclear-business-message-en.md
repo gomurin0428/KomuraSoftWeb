@@ -62,7 +62,7 @@ The better order is:
 | 2 | Service page | Explain what can be requested in concrete terms |
 | 3 | Company / profile page | Support the decision with trust and experience |
 
-In a KomuraSoft-style structure, it is natural to review [SEO & Inquiry Flow Improvement](/en/services/seo-lead-optimization/) together with [Company](/en/company/) and the homepage, rather than treating them as separate tasks.
+In a KomuraSoft LLC-style structure, it is natural to review [SEO & Inquiry Flow Improvement](/en/services/seo-lead-optimization/) together with [Company](/en/company/) and the homepage, rather than treating them as separate tasks.
 
 ## 3. Technical B2B pages work better when the message is split
 

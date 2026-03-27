@@ -3,7 +3,7 @@ layout: service-page
 lang: en
 translation_key: service-technical-consulting
 permalink: /en/services/technical-consulting/
-title: "Technical Consulting & Design Review | KomuraSoft"
+title: "Technical Consulting & Design Review | KomuraSoft LLC"
 service_name: "Technical Consulting & Design Review"
 service_type: "Technical consulting and design review"
 description: "Service page for teams that need help choosing architecture, reviewing designs, or planning safe changes in Windows software."
@@ -65,7 +65,7 @@ related_articles:
 
 ## Projects where this works especially well
 
-KomuraSoft is especially compatible with **Windows projects that are slightly old and slightly complicated**.
+KomuraSoft LLC is especially compatible with **Windows projects that are slightly old and slightly complicated**.
 
 - valuable existing assets still exist
 - the current structure is hard to maintain

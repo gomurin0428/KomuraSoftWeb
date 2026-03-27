@@ -3,11 +3,11 @@ layout: detail-page
 lang: en
 translation_key: case-study-site-redesign-dual-pillars
 permalink: /en/case-studies/site-redesign-dual-pillars/
-title: "How We Reframed the Site Around Two Clear Pillars | KomuraSoft"
+title: "How We Reframed the Site Around Two Clear Pillars | KomuraSoft LLC"
 page_name: "How We Reframed the Site Around Two Clear Pillars"
 page_eyebrow: "Case Study"
 schema_type: "Article"
-description: "A case study for redesigning the KomuraSoft site from a Windows-only presentation into a two-pillar structure that also explains website development and SEO."
+description: "A case study for redesigning the KomuraSoft LLC site from a Windows-only presentation into a two-pillar structure that also explains website development and SEO."
 breadcrumb_parent_label: "Case Studies"
 breadcrumb_parent_url: "/en/case-studies/"
 related_pages:
@@ -19,7 +19,7 @@ related_pages:
 
 ## Background
 
-The original KomuraSoft site read consistently as a Windows contract-development site from the homepage through the company page, profile, case studies, and contact page. To add web-side inquiries naturally, the site needed to be repositioned as website development and SEO for technical B2B businesses rather than as a generic agency.
+The original KomuraSoft LLC site read consistently as a Windows contract-development site from the homepage through the company page, profile, case studies, and contact page. To add web-side inquiries naturally, the site needed to be repositioned as website development and SEO for technical B2B businesses rather than as a generic agency.
 
 ## What changed
 

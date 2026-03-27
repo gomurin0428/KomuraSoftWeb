@@ -999,7 +999,7 @@ YUV -> RGB は、最初は少し取っつきにくいです。
 
 ## 9. 参考資料
 
-### KomuraSoft の関連記事
+### 合同会社小村ソフト の関連記事
 
 - [Media Foundation とは何か - COM と Windows メディア API の顔が見えてくる理由](https://comcomponent.com/blog/2026/03/09/002-media-foundation-why-it-feels-like-com/)
 - [Media Foundation で MP4 動画の指定時刻から静止画を取り出す方法 - .cpp にそのまま貼れる 1 ファイル完結版](https://comcomponent.com/blog/2026/03/15/000-media-foundation-extract-still-image-from-mp4-at-specific-time/)

@@ -3,7 +3,7 @@ layout: service-page
 lang: ja
 translation_key: service-legacy-asset-migration
 permalink: /services/legacy-asset-migration/
-title: "既存資産活用・移行支援 | KomuraSoft"
+title: "既存資産活用・移行支援 | 合同会社小村ソフト"
 service_name: "既存資産活用・移行支援"
 service_type: "Legacy asset reuse and migration support"
 description: "COM / ActiveX / OCX や 32bit / 64bit 問題を抱える既存 Windows システムを、安全に段階移行するための支援ページです。"

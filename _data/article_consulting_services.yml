@@ -51,7 +51,7 @@ en:
   - id: windows-development
     title: "Windows Development"
     url: "/en/services/windows-development/"
-    description: "A parent page for KomuraSoft's Windows development, maintenance, consulting, and investigation services."
+    description: "A parent page for KomuraSoft LLC's Windows development, maintenance, consulting, and investigation services."
   - id: windows-app-development
     title: "Windows App Development"
     url: "/en/services/windows-app-development/"

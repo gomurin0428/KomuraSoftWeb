@@ -3,7 +3,7 @@ layout: service-page
 lang: ja
 translation_key: service-windows-app-development
 permalink: /services/windows-app-development/
-title: "Windowsアプリ開発 | KomuraSoft"
+title: "Windowsアプリ開発 | 合同会社小村ソフト"
 service_name: "Windowsアプリ開発"
 service_type: "Windows application development"
 description: "業務アプリや装置連携ツールなど、Windows ソフトを新規開発したい方向けに、要件整理から設計・実装まで支援するサービスページです。"
@@ -65,7 +65,7 @@ related_articles:
 2. 次に、既存資産を活かす部分と新しく作る部分の境界を決めます。
 3. 実装では、保守しやすさと長期運用を前提に、ログ・例外処理・終了処理も含めて整えます。
 
-## KomuraSoft が特に相性のよい領域
+## 合同会社小村ソフト が特に相性のよい領域
 
 Windowsアプリ開発の中でも、次のような**少し複雑な境界を含む案件**と相性があります。
 

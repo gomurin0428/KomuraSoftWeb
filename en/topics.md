@@ -3,11 +3,11 @@ layout: detail-page
 lang: en
 translation_key: topics-hub
 permalink: /en/topics/
-title: "Windows Technical Topics | KomuraSoft"
+title: "Windows Technical Topics | KomuraSoft LLC"
 page_name: "Windows Technical Topics"
 page_eyebrow: "Topics"
 schema_type: "CollectionPage"
-description: "Topic hub for KomuraSoft's Windows engineering articles and related services."
+description: "Topic hub for KomuraSoft LLC's Windows engineering articles and related services."
 page_keywords:
   - Windows Technical Topics
   - COM
@@ -28,7 +28,7 @@ related_pages:
 
 ## What this page is for
 
-This page groups KomuraSoft's Windows engineering articles by theme instead of leaving them as isolated posts. Web-side material lives separately in [Web Topics](/en/web-topics/), so this page stays focused on Windows engineering and difficult investigations.
+This page groups KomuraSoft LLC's Windows engineering articles by theme instead of leaving them as isolated posts. Web-side material lives separately in [Web Topics](/en/web-topics/), so this page stays focused on Windows engineering and difficult investigations.
 
 ## Main themes
 

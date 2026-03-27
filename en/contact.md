@@ -3,14 +3,14 @@ layout: detail-page
 lang: en
 translation_key: contact-page
 permalink: /en/contact/
-title: "Contact | KomuraSoft"
+title: "Contact | KomuraSoft LLC"
 page_name: "Contact"
 page_eyebrow: "Contact"
 schema_type: "ContactPage"
 main_entity_type: "Organization"
-main_entity_name: "KomuraSoft"
-main_entity_description: "Contact page for KomuraSoft covering website development, SEO, Google Ads, Windows development, and technical consultation."
-description: "Contact KomuraSoft about website development, SEO, Google Ads, existing-site improvement, Windows development, maintenance, bug investigation, or technical consulting."
+main_entity_name: "KomuraSoft LLC"
+main_entity_description: "Contact page for KomuraSoft LLC covering website development, SEO, Google Ads, Windows development, and technical consultation."
+description: "Contact KomuraSoft LLC about website development, SEO, Google Ads, existing-site improvement, Windows development, maintenance, bug investigation, or technical consulting."
 page_keywords:
   - Contact
   - Website Development

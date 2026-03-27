@@ -3,7 +3,7 @@ layout: service-page
 lang: en
 translation_key: service-windows-app-development
 permalink: /en/services/windows-app-development/
-title: "Windows App Development | KomuraSoft"
+title: "Windows App Development | KomuraSoft LLC"
 service_name: "Windows App Development"
 service_type: "Windows application development"
 description: "Service page for teams building Windows business apps, device-linked tools, monitoring software, or other desktop applications."
@@ -65,7 +65,7 @@ The goal is not only to build screens, but to design software that remains maint
 2. Next, we separate what should be reused from what should be newly built.
 3. Implementation is then organized with maintainability, logging, exception handling, and shutdown behavior in mind.
 
-## Where KomuraSoft is especially strong
+## Where KomuraSoft LLC is especially strong
 
 This service is especially compatible with projects that include **slightly complicated Windows boundaries**, such as:
 

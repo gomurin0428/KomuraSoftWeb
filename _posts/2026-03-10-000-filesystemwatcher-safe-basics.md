@@ -23,7 +23,7 @@ consultation_services:
 ただし、`Created` や `Changed` をそのまま完了通知だと思って使うと、取りこぼし、重複通知、途中ファイルの誤読でかなり普通に事故ります。
 
 この記事では、`FileSystemWatcher` の使い方と注意点を、主に Windows 上の .NET によるファイル連携を前提に整理します。
-あわせて、前提となる排他制御の考え方は [ファイル連携の排他制御の基礎知識 - ファイルロックと原子的 claim のベストプラクティス](https://comcomponent.com/blog/2026/03/07/001-file-integration-locking-best-practices-komurasoft-style/) も参照できる形にしています。
+あわせて、前提となる排他制御の考え方は [ファイル連携の排他制御の基礎知識 - ファイルロックと原子的 claim のベストプラクティス](https://comcomponent.com/blog/2026/03/07/001-file-integration-locking-best-practices-合同会社小村ソフト-style/) も参照できる形にしています。
 
 `FileSystemWatcher` は便利です。ファイルやディレクトリの作成、変更、削除、名前変更をイベントで受け取れます。
 ただし、ここでイベントを「完了通知」だと思うと、かなり普通に事故ります。
@@ -557,7 +557,7 @@ async Task ScannerLoopAsync(CancellationToken cancellationToken)
 
 ## 8. 参考資料
 
-- [関連記事: ファイル連携の排他制御の基礎知識 - ファイルロックと原子的 claim のベストプラクティス](https://comcomponent.com/blog/2026/03/07/001-file-integration-locking-best-practices-komurasoft-style/)
+- [関連記事: ファイル連携の排他制御の基礎知識 - ファイルロックと原子的 claim のベストプラクティス](https://comcomponent.com/blog/2026/03/07/001-file-integration-locking-best-practices-合同会社小村ソフト-style/)
 - [FileSystemWatcher Class (System.IO)](https://learn.microsoft.com/en-us/dotnet/api/system.io.filesystemwatcher?view=net-10.0)
 - [System.IO.FileSystemWatcher class - .NET](https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-io-filesystemwatcher)
 - [FileSystemWatcher.InternalBufferSize Property (System.IO)](https://learn.microsoft.com/en-us/dotnet/api/system.io.filesystemwatcher.internalbuffersize?view=net-10.0)

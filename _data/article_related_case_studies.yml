@@ -36,7 +36,7 @@ en:
     - id: site-redesign-dual-pillars
       title: "How We Reframed the Site Around Two Clear Pillars"
       url: "/en/case-studies/site-redesign-dual-pillars/"
-      description: "Case study for redesigning the KomuraSoft site from a Windows-only presentation into a dual-pillar structure."
+      description: "Case study for redesigning the KomuraSoft LLC site from a Windows-only presentation into a dual-pillar structure."
     - id: industrial-camera-tcp-stall
       title: "How We Isolated Multi-Second Communication Stalls"
       url: "/en/case-studies/industrial-camera-tcp-stall/"

@@ -3,11 +3,11 @@ layout: detail-page
 lang: ja
 translation_key: contact-thanks-page
 permalink: /contact/thanks/
-title: "お問い合わせありがとうございました | KomuraSoft"
+title: "お問い合わせありがとうございました | 合同会社小村ソフト"
 page_name: "お問い合わせありがとうございました"
 page_eyebrow: "Thanks"
 schema_type: "WebPage"
-description: "KomuraSoft のお問い合わせ案内ページです。"
+description: "合同会社小村ソフト のお問い合わせ案内ページです。"
 related_pages:
   - title: "ホームページ制作・SEO対策"
     url: "/services/website-development-seo/"

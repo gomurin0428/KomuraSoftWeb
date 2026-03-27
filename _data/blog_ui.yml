@@ -1,7 +1,7 @@
 ja:
   locale: ja_JP
   html_lang: ja
-  page_title_suffix: "KomuraSoft Blog"
+  page_title_suffix: "合同会社小村ソフト ブログ"
   home_label: "ホーム"
   blog_label: "ブログ"
   contact_label: "お問い合わせ"
@@ -15,8 +15,8 @@ ja:
   list:
     title: "ブログ"
     description: "ホームページ制作、SEO対策、Google広告運用、Windows開発、既存資産活用、不具合調査について、実務で役立つ考え方を発信します。"
-    meta_title: "ブログ | ホームページ制作・SEO対策・Google広告運用・Windows開発 | KomuraSoft"
-    meta_description: "KomuraSoft のブログ。ホームページ制作、SEO対策、Google広告運用、Windows開発、既存資産活用、不具合調査に関する実務的な記事を公開しています。"
+    meta_title: "ブログ | ホームページ制作・SEO対策・Google広告運用・Windows開発 | 合同会社小村ソフト"
+    meta_description: "合同会社小村ソフトのブログ。ホームページ制作、SEO対策、Google広告運用、Windows開発、既存資産活用、不具合調査に関する実務的な記事を公開しています。"
     cta_text: "ホームページ制作、SEO対策、Google広告運用、既存サイト改善、Windows開発、技術相談までまとめて相談できます。状況整理の段階でも問題ありません。"
     search_title: "記事を検索"
     search_description: "タイトル、要約、タグ、本文から記事を検索できます。"
@@ -36,7 +36,7 @@ ja:
     footer_privacy: "プライバシーポリシー"
     github_links_label: "Author GitHub"
   post:
-    title_suffix: "KomuraSoft Blog"
+    title_suffix: "合同会社小村ソフト ブログ"
     breadcrumb_blog: "ブログ"
     topic_links_title: "関連トピック"
     topic_links_intro: "このテーマと近いトピックページです。記事を起点に、関連するサービスや他の記事へ進めます。"
@@ -76,7 +76,7 @@ ja:
 en:
   locale: en_US
   html_lang: en
-  page_title_suffix: "KomuraSoft Blog"
+  page_title_suffix: "KomuraSoft LLC Blog"
   home_label: "Home"
   blog_label: "Blog"
   contact_label: "Contact"
@@ -89,10 +89,10 @@ en:
   toc_close_label: "Close"
   list:
     title: "Blog"
-    description: "Practical articles from KomuraSoft about website development, SEO, Google Ads, Windows development, legacy asset reuse, and bug investigation."
-    meta_title: "Blog | Website Development, SEO, Google Ads, and Windows Development | KomuraSoft"
-    meta_description: "KomuraSoft blog articles on website development, SEO, Google Ads, inquiry flow improvement, Windows development, and defect investigation."
-    cta_text: "Talk to KomuraSoft about website development, SEO, Google Ads, existing site improvement, Windows development, or technical consulting."
+    description: "Practical articles from KomuraSoft LLC about website development, SEO, Google Ads, Windows development, legacy asset reuse, and bug investigation."
+    meta_title: "Blog | Website Development, SEO, Google Ads, and Windows Development | KomuraSoft LLC"
+    meta_description: "KomuraSoft LLC blog articles on website development, SEO, Google Ads, inquiry flow improvement, Windows development, and defect investigation."
+    cta_text: "Talk to KomuraSoft LLC about website development, SEO, Google Ads, existing site improvement, Windows development, or technical consulting."
     search_title: "Search Articles"
     search_description: "Search by title, summary, tags, or article content."
     search_placeholder: "Search titles, tags, and content"
@@ -111,7 +111,7 @@ en:
     footer_privacy: "Privacy Policy"
     github_links_label: "Author GitHub"
   post:
-    title_suffix: "KomuraSoft Blog"
+    title_suffix: "KomuraSoft LLC Blog"
     breadcrumb_blog: "Blog"
     topic_links_title: "Related Topics"
     topic_links_intro: "These topic pages place the article in a broader service and decision context."

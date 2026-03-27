@@ -3,7 +3,7 @@ layout: detail-page
 lang: en
 translation_key: case-study-application-verifier-failure-path-testing
 permalink: /en/case-studies/application-verifier-failure-path-testing/
-title: "Failure-Path Test Infrastructure with Application Verifier | KomuraSoft"
+title: "Failure-Path Test Infrastructure with Application Verifier | KomuraSoft LLC"
 page_name: "Failure-Path Test Infrastructure with Application Verifier"
 page_eyebrow: "Case Study"
 schema_type: "WebPage"

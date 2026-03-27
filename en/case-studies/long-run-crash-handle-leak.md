@@ -3,7 +3,7 @@ layout: detail-page
 lang: en
 translation_key: case-study-long-run-crash-handle-leak
 permalink: /en/case-studies/long-run-crash-handle-leak/
-title: "How We Traced a Long-Run Crash to a Handle Leak | KomuraSoft"
+title: "How We Traced a Long-Run Crash to a Handle Leak | KomuraSoft LLC"
 page_name: "How We Traced a Long-Run Crash to a Handle Leak"
 page_eyebrow: "Case Study"
 schema_type: "WebPage"

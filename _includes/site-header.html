@@ -2,6 +2,11 @@
 {% assign navigation_groups = site.data.site_navigation[header_lang] %}
 {% assign primary_links = navigation_groups.primary_links %}
 {% if header_lang == "en" %}
+  {% assign site_brand_name = site.organization_name_en | default: "KomuraSoft LLC" %}
+{% else %}
+  {% assign site_brand_name = site.organization_name | default: "合同会社小村ソフト" %}
+{% endif %}
+{% if header_lang == "en" %}
   {% assign header_home_url = include.home_url | default: "/en/" %}
   {% assign header_ja_url = include.ja_url | default: "/" %}
   {% assign header_en_url = include.en_url | default: "/en/" %}
@@ -21,8 +26,8 @@
 <header class="site-header">
   <div class="header-inner">
     <a href="{{ header_home_url }}" class="brand">
-      <img src="/logo-google-ads-square.png" alt="KomuraSoft" class="brand-logo" style="width: 2.5rem; height: 2.5rem; max-width: 2.5rem; max-height: 2.5rem;">
-      <span class="brand-name">KomuraSoft</span>
+      <img src="/logo-google-ads-square.png" alt="{{ site_brand_name }}" class="brand-logo" style="width: 2.5rem; height: 2.5rem; max-width: 2.5rem; max-height: 2.5rem;">
+      <span class="brand-name">{{ site_brand_name }}</span>
     </a>
     <details class="site-nav-shell">
       <summary class="mobile-menu-toggle" aria-controls="site-nav-{{ header_lang }}" aria-label="{{ header_menu_label }}">

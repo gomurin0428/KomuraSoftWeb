@@ -3,7 +3,7 @@ layout: detail-page
 lang: ja
 translation_key: case-study-long-run-crash-handle-leak
 permalink: /case-studies/long-run-crash-handle-leak/
-title: "長期稼働後クラッシュをハンドルリークまで追った事例 | KomuraSoft"
+title: "長期稼働後クラッシュをハンドルリークまで追った事例 | 合同会社小村ソフト"
 page_name: "長期稼働後クラッシュをハンドルリークまで追った事例"
 page_eyebrow: "Case Study"
 schema_type: "WebPage"

@@ -3,11 +3,11 @@ layout: detail-page
 lang: en
 translation_key: contact-thanks-page
 permalink: /en/contact/thanks/
-title: "Thank You | KomuraSoft"
+title: "Thank You | KomuraSoft LLC"
 page_name: "Thank You"
 page_eyebrow: "Thanks"
 schema_type: "WebPage"
-description: "Inquiry completion page for KomuraSoft."
+description: "Inquiry completion page for KomuraSoft LLC."
 related_pages:
   - title: "Website Development & SEO"
     url: "/en/services/website-development-seo/"

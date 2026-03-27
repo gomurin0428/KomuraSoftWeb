@@ -3,7 +3,7 @@ layout: service-page
 lang: en
 translation_key: service-windows-modernization-maintenance
 permalink: /en/services/windows-modernization-maintenance/
-title: "Windows Software Maintenance & Modernization | KomuraSoft"
+title: "Windows Software Maintenance & Modernization | KomuraSoft LLC"
 service_name: "Windows Software Maintenance & Modernization"
 service_type: "Windows software maintenance and modernization"
 description: "Service page for teams that need safe changes, maintenance, and staged modernization for existing Windows software."

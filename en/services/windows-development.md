@@ -3,7 +3,7 @@ layout: service-page
 lang: en
 translation_key: service-windows-development
 permalink: /en/services/windows-development/
-title: "Windows Development | KomuraSoft"
+title: "Windows Development | KomuraSoft LLC"
 service_name: "Windows Development"
 service_type: "Windows development"
 description: "A parent page for Windows app development, maintenance, technical consulting, bug investigation, and legacy-asset migration support."

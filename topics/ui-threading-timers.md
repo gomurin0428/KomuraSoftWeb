@@ -3,7 +3,7 @@ layout: detail-page
 lang: ja
 translation_key: topic-ui-threading-timers
 permalink: /topics/ui-threading-timers/
-title: "UI スレッド / 定期処理テーマ | KomuraSoft"
+title: "UI スレッド / 定期処理テーマ | 合同会社小村ソフト"
 page_name: "UI スレッド / 定期処理テーマ"
 page_eyebrow: "Topic"
 schema_type: "CollectionPage"

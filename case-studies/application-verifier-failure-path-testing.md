@@ -3,7 +3,7 @@ layout: detail-page
 lang: ja
 translation_key: case-study-application-verifier-failure-path-testing
 permalink: /case-studies/application-verifier-failure-path-testing/
-title: "Application Verifier を使った異常系テスト基盤の事例 | KomuraSoft"
+title: "Application Verifier を使った異常系テスト基盤の事例 | 合同会社小村ソフト"
 page_name: "Application Verifier を使った異常系テスト基盤の事例"
 page_eyebrow: "Case Study"
 schema_type: "WebPage"

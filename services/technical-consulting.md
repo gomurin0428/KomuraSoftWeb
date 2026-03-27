@@ -3,7 +3,7 @@ layout: service-page
 lang: ja
 translation_key: service-technical-consulting
 permalink: /services/technical-consulting/
-title: "技術相談・設計レビュー | KomuraSoft"
+title: "技術相談・設計レビュー | 合同会社小村ソフト"
 service_name: "技術相談・設計レビュー"
 service_type: "Technical consulting and design review"
 description: "Windows ソフトの設計や改修方針に迷っている方向けに、技術選定、設計レビュー、既存資産の整理を支援するサービスページです。"
@@ -65,7 +65,7 @@ related_articles:
 
 ## 特に相性のよい案件
 
-KomuraSoft は、**Windows の少し古くて少し複雑な案件**との相性がよいです。
+合同会社小村ソフト は、**Windows の少し古くて少し複雑な案件**との相性がよいです。
 
 - 既存資産がある
 - でも今のままでは保守しにくい

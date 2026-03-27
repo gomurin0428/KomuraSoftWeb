@@ -9,6 +9,13 @@
 {% assign service_nav = site.data.service_pages[lang] %}
 {% assign schema_type = page.schema_type | default: "WebPage" %}
 {% if lang == "en" %}
+  {% assign organization_name = site.organization_name_en | default: "KomuraSoft LLC" %}
+{% else %}
+  {% assign organization_name = site.organization_name | default: "合同会社小村ソフト" %}
+{% endif %}
+{% assign page_title = page.title %}
+{% assign page_description = page.description %}
+{% if lang == "en" %}
   {% assign home_url = "/en/" %}
   {% assign services_url = page.breadcrumb_parent_url | default: "/en/services/windows-development/" %}
   {% assign blog_url = "/en/blog/" %}
@@ -53,33 +60,33 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <title>{{ page.title }}</title>
-  <meta name="description" content="{{ page.description }}">
+  <title>{{ page_title }}</title>
+  <meta name="description" content="{{ page_description }}">
   <link rel="canonical" href="{{ page.url | absolute_url }}">
   {% if alternate_page %}
   <link rel="alternate" hreflang="ja" href="{{ ja_url | absolute_url }}">
   <link rel="alternate" hreflang="en" href="{{ en_url | absolute_url }}">
   {% endif %}
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-  <meta name="author" content="KomuraSoft">
+  <meta name="author" content="{{ organization_name }}">
   <meta name="theme-color" content="#0f172a">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="{{ page.title }}">
-  <meta property="og:description" content="{{ page.description }}">
+  <meta property="og:title" content="{{ page_title }}">
+  <meta property="og:description" content="{{ page_description }}">
   <meta property="og:url" content="{{ page.url | absolute_url }}">
-  <meta property="og:site_name" content="KomuraSoft">
+  <meta property="og:site_name" content="{{ organization_name }}">
   <meta property="og:locale" content="{% if lang == 'en' %}en_US{% else %}ja_JP{% endif %}">
   <meta property="og:image" content="{{ site.logo | absolute_url }}">
   <meta property="og:image:secure_url" content="{{ site.logo | absolute_url }}">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="{{ page.title }}">
+  <meta property="og:image:alt" content="{{ page_title }}">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="{{ page.title }}">
-  <meta name="twitter:description" content="{{ page.description }}">
+  <meta name="twitter:title" content="{{ page_title }}">
+  <meta name="twitter:description" content="{{ page_description }}">
   <meta name="twitter:image" content="{{ site.logo | absolute_url }}">
-  <meta name="twitter:image:alt" content="{{ page.title }}">
+  <meta name="twitter:image:alt" content="{{ page_title }}">
   <meta name="twitter:site" content="{{ site.x_username }}">
   <meta name="twitter:creator" content="{{ site.x_username }}">
   {% include google-tag.html %}
@@ -87,20 +94,20 @@
   {
     "@context": "https://schema.org",
     "@type": {{ schema_type | jsonify }},
-    "name": {{ page.page_name | default: page.title | jsonify }},
-    "description": {{ page.description | jsonify }},
+    "name": {{ page.page_name | default: page_title | jsonify }},
+    "description": {{ page_description | jsonify }},
     "url": {{ page.url | absolute_url | jsonify }},
     "inLanguage": {{ lang | jsonify }},
     "isPartOf": {
       "@type": "WebSite",
-      "name": "KomuraSoft",
+      "name": {{ organization_name | jsonify }},
       "url": {{ home_url | absolute_url | jsonify }}
     }{% if page.page_keywords %},
     "keywords": {{ page.page_keywords | join: ", " | jsonify }}{% endif %}{% if page.about_keywords %},
     "about": {{ page.about_keywords | jsonify }}{% endif %}{% if page.main_entity_type %},
     "mainEntity": {
       "@type": {{ page.main_entity_type | jsonify }},
-      "name": {{ page.main_entity_name | default: page.page_name | default: page.title | jsonify }}{% if page.main_entity_url %},
+      "name": {{ page.main_entity_name | default: page.page_name | default: page_title | jsonify }}{% if page.main_entity_url %},
       "url": {{ page.main_entity_url | jsonify }}{% endif %}{% if page.main_entity_description %},
       "description": {{ page.main_entity_description | jsonify }}{% endif %}
     }{% endif %}
@@ -146,13 +153,13 @@
       {
         "@type": "ListItem",
         "position": 3,
-        "name": {{ page.page_name | default: page.title | jsonify }},
+        "name": {{ page.page_name | default: page_title | jsonify }},
         "item": {{ page.url | absolute_url | jsonify }}
       }{% else %},
       {
         "@type": "ListItem",
         "position": 2,
-        "name": {{ page.page_name | default: page.title | jsonify }},
+        "name": {{ page.page_name | default: page_title | jsonify }},
         "item": {{ page.url | absolute_url | jsonify }}
       }{% endif %}
     ]
@@ -538,8 +545,8 @@
               {% if page.page_eyebrow %}
               <div class="detail-page-eyebrow">{{ page.page_eyebrow }}</div>
               {% endif %}
-              <h1 class="detail-page-title">{{ page.page_name | default: page.title }}</h1>
-              <p class="detail-page-lead">{{ page.description }}</p>
+              <h1 class="detail-page-title">{{ page.page_name | default: page_title }}</h1>
+              <p class="detail-page-lead">{{ page_description }}</p>
             </header>
 
             <section class="detail-page-content">
@@ -599,7 +606,7 @@
     </main>
     <footer class="site-footer">
       <div class="footer-inner">
-        <div>© 2026 KomuraSoft</div>
+        <div>© 2026 {{ organization_name }}</div>
         <div class="footer-links">
           <a class="nav-link" href="{{ home_url }}">{{ home_label }}</a>
           <a class="nav-link" href="{{ blog_url }}">{{ blog_label }}</a>

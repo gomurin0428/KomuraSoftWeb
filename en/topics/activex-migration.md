@@ -3,7 +3,7 @@ layout: detail-page
 lang: en
 translation_key: topic-activex-migration
 permalink: /en/topics/activex-migration/
-title: "ActiveX Migration Topic | KomuraSoft"
+title: "ActiveX Migration Topic | KomuraSoft LLC"
 page_name: "ActiveX Migration"
 page_eyebrow: "Topic"
 schema_type: "CollectionPage"

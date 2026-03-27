@@ -3,13 +3,13 @@ layout: detail-page
 lang: en
 translation_key: go-komura-profile
 permalink: /en/profile/go-komura/
-title: "Go Komura Profile | KomuraSoft"
+title: "Go Komura Profile | KomuraSoft LLC"
 page_name: "Go Komura"
 page_eyebrow: "Profile"
 schema_type: "ProfilePage"
 main_entity_type: "Person"
 main_entity_name: "Go Komura"
-main_entity_description: "Representative of KomuraSoft, focused on Windows software development, technical consulting, and difficult defect investigation."
+main_entity_description: "Representative of KomuraSoft LLC, focused on Windows software development, technical consulting, and difficult defect investigation."
 description: "Profile page for Go Komura, covering background, technical focus, and the kinds of projects where his experience is especially effective."
 page_keywords:
   - Go Komura
@@ -50,7 +50,7 @@ That usually includes work such as:
 - Withdrew from Kyushu University Graduate School of Mathematics
 - Worked as an engineer in SES-style contract development
 - Worked at HST Vision on image-processing products for semiconductor manufacturing equipment
-- Started operating independently as KomuraSoft in December 2025
+- Started operating independently in December 2025 and currently operates as KomuraSoft LLC
 
 ## Technical style
 

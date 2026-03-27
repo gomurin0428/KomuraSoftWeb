@@ -3,7 +3,7 @@ layout: detail-page
 lang: en
 translation_key: case-study-industrial-camera-tcp-stall
 permalink: /en/case-studies/industrial-camera-tcp-stall/
-title: "How We Isolated Multi-Second Communication Stalls | KomuraSoft"
+title: "How We Isolated Multi-Second Communication Stalls | KomuraSoft LLC"
 page_name: "How We Isolated Multi-Second Communication Stalls"
 page_eyebrow: "Case Study"
 schema_type: "WebPage"

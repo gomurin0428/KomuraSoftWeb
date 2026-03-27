@@ -987,7 +987,7 @@ the bytes stop looking mysterious and start looking like a pipeline you can reas
 
 ## 9. References
 
-### Related KomuraSoft articles
+### Related KomuraSoft LLC articles
 
 - [What Media Foundation Is - Why It Starts to Feel Like COM and Windows Media APIs at the Same Time](https://comcomponent.com/en/blog/2026/03/09/002-media-foundation-why-it-feels-like-com/)
 - [How to Extract a Still Image from an MP4 with Media Foundation - A Single .cpp File You Can Paste into a C++ Console App](https://comcomponent.com/en/blog/2026/03/15/000-media-foundation-extract-still-image-from-mp4-at-specific-time/)

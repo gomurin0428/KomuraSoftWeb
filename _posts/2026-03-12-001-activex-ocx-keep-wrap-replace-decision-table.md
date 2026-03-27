@@ -568,9 +568,9 @@ ActiveX / OCX の案件は、急に扱える問題に変わってきます。
   - https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.webbrowser
 - Microsoft Learn: Introduction to Microsoft Edge WebView2
   - https://learn.microsoft.com/en-us/microsoft-edge/webview2/
-- KomuraSoft Blog: COMのSTA/MTAでハングを避けるための基礎知識
+- 合同会社小村ソフト Blog: COMのSTA/MTAでハングを避けるための基礎知識
   - https://comcomponent.com/blog/2026/01/31/000-sta-mta-com-relationship/
-- KomuraSoft Blog: C++のネイティブDLLをC#から使うとき、C++/CLIでラッパーを作ったほうがよい理由
+- 合同会社小村ソフト Blog: C++のネイティブDLLをC#から使うとき、C++/CLIでラッパーを作ったほうがよい理由
   - https://comcomponent.com/blog/2026/03/07/000-cpp-cli-wrapper-for-native-dlls/
-- KomuraSoft Blog: COMが役立つケーススタディ-32bitアプリから64bit DLLを呼び出したいとき
+- 合同会社小村ソフト Blog: COMが役立つケーススタディ-32bitアプリから64bit DLLを呼び出したいとき
   - https://comcomponent.com/blog/2026/01/25/002-com-case-study-32bit-to-64bit/

@@ -3,7 +3,7 @@ layout: service-page
 lang: en
 translation_key: service-legacy-asset-migration
 permalink: /en/services/legacy-asset-migration/
-title: "Legacy Asset Reuse & Migration Support | KomuraSoft"
+title: "Legacy Asset Reuse & Migration Support | KomuraSoft LLC"
 service_name: "Legacy Asset Reuse & Migration Support"
 service_type: "Legacy asset reuse and migration support"
 description: "Service page for teams that need staged modernization of Windows systems while continuing to reuse COM / ActiveX / OCX assets or other older dependencies."

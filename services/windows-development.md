@@ -3,7 +3,7 @@ layout: service-page
 lang: ja
 translation_key: service-windows-development
 permalink: /services/windows-development/
-title: "Windows開発 | KomuraSoft"
+title: "Windows開発 | 合同会社小村ソフト"
 service_name: "Windows開発"
 service_type: "Windows development"
 description: "Windowsアプリ開発、既存ソフト改修、技術相談、不具合調査、既存資産活用・移行支援をまとめて案内する親ページです。"

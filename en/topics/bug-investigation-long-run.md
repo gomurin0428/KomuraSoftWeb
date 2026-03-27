@@ -3,7 +3,7 @@ layout: detail-page
 lang: en
 translation_key: topic-bug-investigation-long-run
 permalink: /en/topics/bug-investigation-long-run/
-title: "Bug Investigation & Long-Run Failures Topic | KomuraSoft"
+title: "Bug Investigation & Long-Run Failures Topic | KomuraSoft LLC"
 page_name: "Bug Investigation & Long-Run Failures"
 page_eyebrow: "Topic"
 schema_type: "CollectionPage"

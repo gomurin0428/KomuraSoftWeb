@@ -3,7 +3,7 @@ layout: service-page
 lang: en
 translation_key: service-seo-lead-optimization
 permalink: /en/services/seo-lead-optimization/
-title: "SEO, Google Ads, and Inquiry Flow Improvement | KomuraSoft"
+title: "SEO, Google Ads, and Inquiry Flow Improvement | KomuraSoft LLC"
 service_name: "SEO, Google Ads, and Inquiry Flow Improvement"
 service_type: "SEO, Google Ads, and inquiry flow improvement"
 description: "For all industries, we review service pages, internal links, article flow, Google Ads, and contact flow so search visibility turns into inquiries."

@@ -3,13 +3,13 @@ layout: detail-page
 lang: ja
 translation_key: contact-page
 permalink: /contact/
-title: "お問い合わせ | KomuraSoft"
+title: "お問い合わせ | 合同会社小村ソフト"
 page_name: "お問い合わせ"
 page_eyebrow: "Contact"
 schema_type: "ContactPage"
 main_entity_type: "Organization"
-main_entity_name: "KomuraSoft"
-main_entity_description: "ホームページ制作、SEO対策、Google広告運用、既存サイト改善、Windows受託開発、技術相談を扱う KomuraSoft の共通お問い合わせ窓口。"
+main_entity_name: "合同会社小村ソフト"
+main_entity_description: "ホームページ制作、SEO対策、Google広告運用、既存サイト改善、Windows受託開発、技術相談を扱う合同会社小村ソフトの共通お問い合わせ窓口。"
 description: "ホームページ制作、SEO対策、Google広告運用、既存サイト改善、Windows受託開発、既存ソフト改修、不具合調査、技術相談のご相談窓口です。"
 page_keywords:
   - お問い合わせ

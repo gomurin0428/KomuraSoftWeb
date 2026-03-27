@@ -3,24 +3,24 @@ layout: detail-page
 lang: ja
 translation_key: company-overview
 permalink: /company/
-title: "会社情報 | KomuraSoft"
+title: "会社情報 | 合同会社小村ソフト"
 page_name: "会社情報"
 page_eyebrow: "Company"
 schema_type: "AboutPage"
 main_entity_type: "Organization"
-main_entity_name: "KomuraSoft"
+main_entity_name: "合同会社小村ソフト"
 main_entity_url: "https://comcomponent.com/"
-main_entity_description: "Web支援は業種を問わず対応し、特に技術系・B2Bの複雑なサービス整理を得意とする KomuraSoft の会社情報ページ。"
-description: "KomuraSoft の事業内容、対応領域、拠点、公開窓口をまとめた会社情報ページです。Web支援は業種を問わず、ホームページ制作、SEO対策、Google広告運用、問い合わせ導線改善に対応しています。Windowsソフト開発・技術相談の概要も確認できます。"
+main_entity_description: "Web支援は業種を問わず対応し、特に技術系・B2Bの複雑なサービス整理を得意とする合同会社小村ソフトの会社情報ページ。"
+description: "合同会社小村ソフトの事業内容、対応領域、拠点、公開窓口をまとめた会社情報ページです。Web支援は業種を問わず、ホームページ制作、SEO対策、Google広告運用、問い合わせ導線改善に対応しています。Windowsソフト開発・技術相談の概要も確認できます。"
 page_keywords:
-  - KomuraSoft
+  - 合同会社小村ソフト
   - 会社情報
   - ホームページ制作
   - SEO対策
   - Google広告運用
   - Windows受託開発
 about_keywords:
-  - KomuraSoft
+  - 合同会社小村ソフト
   - ホームページ制作
   - SEO対策
   - Google広告運用
@@ -40,7 +40,7 @@ related_pages:
 
 ## 何をしている事業者か
 
-KomuraSoft は、Web支援では業種を問わずホームページ制作、SEO対策、Google広告運用、問い合わせ導線改善を行っています。特に、技術系・B2Bのように説明が複雑なサービス整理を得意としています。Windowsソフトウェアの受託開発・技術相談にも対応しています。
+合同会社小村ソフトは、Web支援では業種を問わずホームページ制作、SEO対策、Google広告運用、問い合わせ導線改善を行っています。特に、技術系・B2Bのように説明が複雑なサービス整理を得意としています。Windowsソフトウェアの受託開発・技術相談にも対応しています。
 
 新規制作だけでなく、既存サイトや既存システムの改修、古い資産を抱えた構成の整理、再現しにくい不具合の調査まで対応します。東京都墨田区を拠点に、都内・全国オンライン対応を行っています。
 
@@ -76,9 +76,9 @@ Web支援は業種を問わず、次のような相談が多いです。
 
 ## 基本情報
 
-- 屋号: KomuraSoft
+- 商号: 合同会社小村ソフト
 - 代表: 小村 豪
-- 形態: 個人事業主
+- 形態: 合同会社
 - 主な事業: ホームページ制作、SEO対策・Google広告運用・問い合わせ導線改善、Windows受託開発、技術相談、不具合調査
 - 公開住所（郵便物送付先）: 〒107-0061 東京都港区北青山 1-3-3 三橋ビル 3階
 - 拠点: 東京都墨田区

@@ -74,7 +74,7 @@ Google も、ユーザーが実際に検索に使う言葉を title や見出し
 - ブログは補足説明と比較検討の材料
 
 この分け方ができると、読み手は「この会社は自分の相談を受ける場所か」を判断しやすくなります。  
-KomuraSoft でも、[ホームページ制作](/services/website-development/) と [Windows開発](/services/windows-development/) を分けて案内し、相談の入口をはっきりさせる構成にしています。
+合同会社小村ソフト でも、[ホームページ制作](/services/website-development/) と [Windows開発](/services/windows-development/) を分けて案内し、相談の入口をはっきりさせる構成にしています。
 
 ## 4. 会社情報と代表紹介は、実績の羅列よりも判断材料です
 

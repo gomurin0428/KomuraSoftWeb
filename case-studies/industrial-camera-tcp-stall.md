@@ -3,7 +3,7 @@ layout: detail-page
 lang: ja
 translation_key: case-study-industrial-camera-tcp-stall
 permalink: /case-studies/industrial-camera-tcp-stall/
-title: "産業用カメラ通信の数秒停止を切り分けた事例 | KomuraSoft"
+title: "産業用カメラ通信の数秒停止を切り分けた事例 | 合同会社小村ソフト"
 page_name: "産業用カメラ通信の数秒停止を切り分けた事例"
 page_eyebrow: "Case Study"
 schema_type: "WebPage"

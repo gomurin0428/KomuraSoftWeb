@@ -3,7 +3,7 @@ layout: detail-page
 lang: ja
 translation_key: topic-bug-investigation-long-run
 permalink: /topics/bug-investigation-long-run/
-title: "不具合調査 / 長期稼働テーマ | KomuraSoft"
+title: "不具合調査 / 長期稼働テーマ | 合同会社小村ソフト"
 page_name: "不具合調査 / 長期稼働テーマ"
 page_eyebrow: "Topic"
 schema_type: "CollectionPage"

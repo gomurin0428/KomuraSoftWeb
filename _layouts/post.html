@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 {% assign lang = page.lang | default: "ja" %}
 {% assign ui = site.data.blog_ui[lang] %}
-{% assign meta_description = page.description | default: page.excerpt | strip_html | normalize_whitespace | truncate: 160 %}
+{% assign organization_name = site.organization_name_en | default: "KomuraSoft LLC" %}
+{% if lang != "en" %}
+  {% assign organization_name = site.organization_name | default: "合同会社小村ソフト" %}
+{% endif %}
+{% assign page_title = page.title | replace: "KOMURASOFT", organization_name | replace: "KomuraSoft", organization_name %}
+{% assign meta_description = page.description | default: page.excerpt | strip_html | normalize_whitespace | truncate: 160 | replace: "KOMURASOFT", organization_name | replace: "KomuraSoft", organization_name %}
 {% assign meta_image = page.og_image | default: site.default_og_image | absolute_url %}
-{% assign article_author = page.author | default: site.founder_name | default: "KomuraSoft" %}
+{% assign article_author = page.author | default: site.founder_name | default: "小村 豪" %}
 {% assign translation_candidates = site.posts | where: "translation_key", page.translation_key %}
 {% if lang == "en" %}
   {% assign contact_url = site.contact_url_en | default: "/en/contact/" %}
@@ -118,7 +123,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <title>{{ page.title }} | {{ ui.post.title_suffix }}</title>
+  <title>{{ page_title }} | {{ ui.post.title_suffix }}</title>
   <meta name="description" content="{{ meta_description }}">
   <link rel="canonical" href="{{ page.url | absolute_url }}">
   {% if alternate_post %}
@@ -130,16 +135,16 @@
   <meta name="theme-color" content="#0f172a">
   <!-- Open Graph -->
   <meta property="og:type" content="article">
-  <meta property="og:title" content="{{ page.title }}">
+  <meta property="og:title" content="{{ page_title }}">
   <meta property="og:description" content="{{ meta_description }}">
   <meta property="og:url" content="{{ page.url | absolute_url }}">
-  <meta property="og:site_name" content="KomuraSoft">
+  <meta property="og:site_name" content="{{ organization_name }}">
   <meta property="og:locale" content="{{ ui.locale }}">
   <meta property="og:image" content="{{ meta_image }}">
   <meta property="og:image:secure_url" content="{{ meta_image }}">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="{{ page.title }}">
+  <meta property="og:image:alt" content="{{ page_title }}">
   <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
   <meta property="article:modified_time" content="{{ page.last_modified_at | default: page.date | date_to_xmlschema }}">
   <meta property="article:author" content="{% if article_author_profile %}{{ article_author_profile.profile_url | absolute_url }}{% else %}{{ article_author }}{% endif %}">
@@ -150,10 +155,10 @@
   {% endif %}
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="{{ page.title }}">
+  <meta name="twitter:title" content="{{ page_title }}">
   <meta name="twitter:description" content="{{ meta_description }}">
   <meta name="twitter:image" content="{{ meta_image }}">
-  <meta name="twitter:image:alt" content="{{ page.title }}">
+  <meta name="twitter:image:alt" content="{{ page_title }}">
   <meta name="twitter:site" content="{{ site.x_username | default: '@komurasoft' }}">
   <meta name="twitter:creator" content="{{ site.x_username | default: '@komurasoft' }}">
   {% include google-tag.html %}
@@ -161,7 +166,7 @@
   {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    "headline": {{ page.title | jsonify }},
+    "headline": {{ page_title | jsonify }},
     "description": {{ meta_description | jsonify }},
     "datePublished": "{{ page.date | date_to_xmlschema }}",
     "dateModified": "{{ page.last_modified_at | default: page.date | date_to_xmlschema }}",
@@ -182,7 +187,7 @@
     },
     "publisher": {
       "@type": "Organization",
-      "name": {{ site.organization_name | default: 'KomuraSoft' | jsonify }},
+      "name": {{ organization_name | jsonify }},
       "logo": {
         "@type": "ImageObject",
         "url": "{{ site.logo | absolute_url }}"
@@ -892,7 +897,7 @@
     </main>
     <footer class="site-footer">
       <div class="footer-inner">
-      <div>© 2026 KomuraSoft</div>
+        <div>© 2026 {{ organization_name }}</div>
       <div class="footer-links">
           <a class="nav-link" href="{{ home_url }}">{{ ui.home_label }}</a>
           <a class="nav-link" href="{{ blog_url }}">{{ ui.blog_label }}</a>

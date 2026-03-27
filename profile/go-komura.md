@@ -3,14 +3,14 @@ layout: detail-page
 lang: ja
 translation_key: go-komura-profile
 permalink: /profile/go-komura/
-title: "代表略歴 | 小村 豪 | KomuraSoft"
+title: "代表略歴 | 小村 豪 | 合同会社小村ソフト"
 page_name: "小村 豪"
 page_eyebrow: "Profile"
 schema_type: "ProfilePage"
 main_entity_type: "Person"
 main_entity_name: "小村 豪"
-main_entity_description: "KomuraSoft 代表。Windows ソフトウェア開発、技術相談、不具合調査に対応。"
-description: "KomuraSoft 代表の小村豪について、経歴、得意領域、技術的な強みをまとめたプロフィールページです。"
+main_entity_description: "合同会社小村ソフトの代表。Windows ソフトウェア開発、技術相談、不具合調査に対応。"
+description: "合同会社小村ソフト代表の小村豪について、経歴、得意領域、技術的な強みをまとめたプロフィールページです。"
 page_keywords:
   - 小村豪
   - 代表略歴
@@ -50,7 +50,7 @@ related_pages:
 - 九州大学大学院 数理学府 中退
 - SES 形態でのエンジニア業務を経験
 - HST Vision にて半導体製造装置向け画像処理製品の開発に従事
-- 2025 年 12 月から KomuraSoft として独立
+- 2025 年 12 月に独立し、現在は合同会社小村ソフトとして活動しています
 
 ## 技術的な見方の特徴
 

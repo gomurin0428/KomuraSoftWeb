@@ -3,7 +3,7 @@ layout: detail-page
 lang: en
 translation_key: topic-generic-host-app-architecture
 permalink: /en/topics/generic-host-app-architecture/
-title: "Generic Host & App Architecture Topic | KomuraSoft"
+title: "Generic Host & App Architecture Topic | KomuraSoft LLC"
 page_name: "Generic Host & App Architecture"
 page_eyebrow: "Topic"
 schema_type: "CollectionPage"

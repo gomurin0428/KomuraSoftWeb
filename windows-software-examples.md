@@ -3,13 +3,13 @@ layout: detail-page
 lang: ja
 translation_key: windows-software-examples
 permalink: /windows-software-examples/
-title: "開発できる Windows ソフトの例 | KomuraSoft"
+title: "開発できる Windows ソフトの例 | 合同会社小村ソフト"
 page_name: "開発できる Windows ソフトの例"
 page_eyebrow: "Examples"
 schema_type: "CollectionPage"
 breadcrumb_parent_label: "サービス"
 breadcrumb_parent_url: "/#service"
-description: "KomuraSoft が対応している Windows ソフトの例をまとめたページです。業務アプリ、装置連携、通信監視、常駐処理、Office 連携、Excel 帳票出力などの具体例を見られます。"
+description: "合同会社小村ソフト が対応している Windows ソフトの例をまとめたページです。業務アプリ、装置連携、通信監視、常駐処理、Office 連携、Excel 帳票出力などの具体例を見られます。"
 page_keywords:
   - Windows ソフト
   - 開発例
@@ -34,7 +34,7 @@ related_articles:
 
 ## こういう Windows ソフトに対応しています
 
-KomuraSoft では、単に画面を作るだけでなく、通信、装置連携、常駐処理、既存資産との共存まで含めた Windows ソフトを扱っています。
+合同会社小村ソフト では、単に画面を作るだけでなく、通信、装置連携、常駐処理、既存資産との共存まで含めた Windows ソフトを扱っています。
 ホームに載せていた具体例は、このページにまとめています。
 
 ## 主な開発例

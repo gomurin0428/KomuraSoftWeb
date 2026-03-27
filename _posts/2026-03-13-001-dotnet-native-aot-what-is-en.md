@@ -233,7 +233,7 @@ Compared with a normal framework-dependent .NET app, it feels much more like a c
 
 ### 5.4. Windows desktop and COM-heavy cases need extra caution
 
-In KomuraSoft's kind of work, this point matters a lot.
+In KomuraSoft LLC's kind of work, this point matters a lot.
 
 On Windows, Native AOT does not support built-in COM.  
 And WPF is not friendly to trimming, while WinForms depends heavily on built-in COM marshalling. At least for now, that means neither of them is a calm "first Native AOT candidate."

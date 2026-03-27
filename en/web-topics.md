@@ -3,7 +3,7 @@ layout: detail-page
 lang: en
 translation_key: web-topics-hub
 permalink: /en/web-topics/
-title: "Web Development & SEO Topics | KomuraSoft"
+title: "Web Development & SEO Topics | KomuraSoft LLC"
 page_name: "Web Development & SEO Topics"
 page_eyebrow: "Web Topics"
 schema_type: "CollectionPage"

@@ -3,7 +3,7 @@ layout: detail-page
 lang: ja
 translation_key: case-studies-hub
 permalink: /case-studies/
-title: "事例 | ホームページ制作・SEO対策・Windows開発 | KomuraSoft"
+title: "事例 | ホームページ制作・SEO対策・Windows開発 | 合同会社小村ソフト"
 page_name: "事例"
 page_eyebrow: "Case Studies"
 schema_type: "CollectionPage"

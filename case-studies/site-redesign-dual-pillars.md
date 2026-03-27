@@ -3,7 +3,7 @@ layout: detail-page
 lang: ja
 translation_key: case-study-site-redesign-dual-pillars
 permalink: /case-studies/site-redesign-dual-pillars/
-title: "自社サイトを二本柱へ再設計した事例 | KomuraSoft"
+title: "自社サイトを二本柱へ再設計した事例 | 合同会社小村ソフト"
 page_name: "自社サイトを二本柱へ再設計した事例"
 page_eyebrow: "Case Study"
 schema_type: "Article"
@@ -19,7 +19,7 @@ related_pages:
 
 ## 背景
 
-既存の KomuraSoft サイトは、トップ、会社情報、代表略歴、技術事例、問い合わせまで一貫して Windows 受託開発サイトとして読まれる構造でした。そこに Web 側の相談を足すには、何でもできる制作会社に見せるのではなく、技術系・B2B向けのホームページ制作・SEO対策として位置づけ直す必要がありました。
+既存の 合同会社小村ソフト サイトは、トップ、会社情報、代表略歴、技術事例、問い合わせまで一貫して Windows 受託開発サイトとして読まれる構造でした。そこに Web 側の相談を足すには、何でもできる制作会社に見せるのではなく、技術系・B2B向けのホームページ制作・SEO対策として位置づけ直す必要がありました。
 
 ## 実施内容
 

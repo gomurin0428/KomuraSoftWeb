@@ -3,7 +3,7 @@ layout: detail-page
 lang: ja
 translation_key: topic-generic-host-app-architecture
 permalink: /topics/generic-host-app-architecture/
-title: "Generic Host / アプリ設計テーマ | KomuraSoft"
+title: "Generic Host / アプリ設計テーマ | 合同会社小村ソフト"
 page_name: "Generic Host / アプリ設計テーマ"
 page_eyebrow: "Topic"
 schema_type: "CollectionPage"

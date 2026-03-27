@@ -3,11 +3,11 @@ layout: detail-page
 lang: ja
 translation_key: topics-hub
 permalink: /topics/
-title: "Windows技術トピック | KomuraSoft"
+title: "Windows技術トピック | 合同会社小村ソフト"
 page_name: "Windows技術トピック"
 page_eyebrow: "Topics"
 schema_type: "CollectionPage"
-description: "KomuraSoft の Windows 技術記事と関連サービスを、課題別にたどれるトピック一覧ページです。"
+description: "合同会社小村ソフト の Windows 技術記事と関連サービスを、課題別にたどれるトピック一覧ページです。"
 page_keywords:
   - Windows技術トピック
   - COM
@@ -28,7 +28,7 @@ related_pages:
 
 ## このページの役割
 
-このページは、KomuraSoft の Windows 技術記事を「記事単体」ではなく「テーマのまとまり」で辿れるようにするための入口です。Web制作・SEO 側は [Web制作・SEOトピック](/web-topics/) に分け、ここでは Windows 技術と不具合調査に集中できる構成にしています。
+このページは、合同会社小村ソフト の Windows 技術記事を「記事単体」ではなく「テーマのまとまり」で辿れるようにするための入口です。Web制作・SEO 側は [Web制作・SEOトピック](/web-topics/) に分け、ここでは Windows 技術と不具合調査に集中できる構成にしています。
 
 ## 主なテーマ
 

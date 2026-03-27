@@ -3,7 +3,7 @@ layout: service-page
 lang: ja
 translation_key: service-seo-lead-optimization
 permalink: /services/seo-lead-optimization/
-title: "SEO対策・Google広告運用・問い合わせ導線改善 | KomuraSoft"
+title: "SEO対策・Google広告運用・問い合わせ導線改善 | 合同会社小村ソフト"
 service_name: "SEO対策・Google広告運用・問い合わせ導線改善"
 service_type: "SEO, Google Ads, and inquiry flow improvement"
 description: "業種を問わず、サービスページ、内部リンク、記事導線、Google広告運用、問い合わせページを見直し、検索から相談につながる土台を整えます。"

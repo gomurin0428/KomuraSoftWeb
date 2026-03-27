@@ -3,7 +3,7 @@ layout: service-page
 lang: ja
 translation_key: service-windows-modernization-maintenance
 permalink: /services/windows-modernization-maintenance/
-title: "既存Windowsソフトの改修・保守 | KomuraSoft"
+title: "既存Windowsソフトの改修・保守 | 合同会社小村ソフト"
 service_name: "既存Windowsソフトの改修・保守"
 service_type: "Windows software maintenance and modernization"
 description: "既存 Windows ソフトを壊さずに改修・保守したい方向けに、機能追加、安定化、段階的なモダナイズを支援するサービスページです。"

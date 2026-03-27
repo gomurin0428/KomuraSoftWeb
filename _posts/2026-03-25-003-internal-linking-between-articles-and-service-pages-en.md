@@ -25,7 +25,7 @@ consultation_services:
 Internal links are not only for navigation.  
 For readers, they show what to read next. For Google, they help explain how pages relate to one another. Google recommends crawlable links and meaningful anchor text for that reason.[^links]
 
-KomuraSoft's [Web Development & SEO Topics](/en/web-topics/) hub exists to make that relationship easier to understand.  
+KomuraSoft LLC's [Web Development & SEO Topics](/en/web-topics/) hub exists to make that relationship easier to understand.  
 Once that hub exists, it becomes easier to connect articles to [Website Development & SEO](/en/services/website-development-seo/) and [SEO & Inquiry Flow Improvement](/en/services/seo-lead-optimization/).
 
 ## 1. Internal links are about understanding, not just clicks
@@ -74,7 +74,7 @@ For this topic, it makes sense to return from this article to [SEO & Inquiry Flo
 Articles are not the only place that need links.  
 Service pages should also point back to the pillar page so the reader can move between the broad offer and the specific offer.
 
-KomuraSoft uses [Website Development & SEO](/en/services/website-development-seo/) as the pillar page, then splits into [Website Development](/en/services/website-development/) and [SEO & Inquiry Flow Improvement](/en/services/seo-lead-optimization/). That structure makes it easier to gather readers from different entry points into the same inquiry path.
+KomuraSoft LLC uses [Website Development & SEO](/en/services/website-development-seo/) as the pillar page, then splits into [Website Development](/en/services/website-development/) and [SEO & Inquiry Flow Improvement](/en/services/seo-lead-optimization/). That structure makes it easier to gather readers from different entry points into the same inquiry path.
 
 ## 5. Common mistakes to avoid
 

@@ -3,7 +3,7 @@ layout: detail-page
 lang: en
 translation_key: topic-ui-threading-timers
 permalink: /en/topics/ui-threading-timers/
-title: "UI Threading & Timers Topic | KomuraSoft"
+title: "UI Threading & Timers Topic | KomuraSoft LLC"
 page_name: "UI Threading & Timers"
 page_eyebrow: "Topic"
 schema_type: "CollectionPage"

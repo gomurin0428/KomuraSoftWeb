@@ -95,7 +95,7 @@ en:
     - id: topics-hub
       title: "Windows Technical Topics"
       url: "/en/topics/"
-      description: "Topic hub for KomuraSoft's Windows development, investigation, and legacy-asset articles."
+      description: "Topic hub for KomuraSoft LLC's Windows development, investigation, and legacy-asset articles."
     - id: web-topics
       title: "Web Development & SEO Topics"
       url: "/en/web-topics/"

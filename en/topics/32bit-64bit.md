@@ -3,7 +3,7 @@ layout: detail-page
 lang: en
 translation_key: topic-32bit-64bit
 permalink: /en/topics/32bit-64bit/
-title: "32-bit / 64-bit Topic | KomuraSoft"
+title: "32-bit / 64-bit Topic | KomuraSoft LLC"
 page_name: "32-bit / 64-bit Interoperability"
 page_eyebrow: "Topic"
 schema_type: "CollectionPage"

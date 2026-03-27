@@ -261,7 +261,7 @@ UUID の衝突事故は、たいてい **UUID が弱い** のではなく、**UU
 ## 11. 関連記事
 
 - [FileSystemWatcher の使い方と注意点 - 取りこぼし、重複通知、完了判定の落とし穴](https://comcomponent.com/blog/2026/03/10/000-filesystemwatcher-safe-basics/)
-- [ファイル連携の排他制御の基礎知識 - ファイルロックと原子的 claim のベストプラクティス](https://comcomponent.com/blog/2026/03/07/001-file-integration-locking-best-practices-komurasoft-style/)
+- [ファイル連携の排他制御の基礎知識 - ファイルロックと原子的 claim のベストプラクティス](https://comcomponent.com/blog/2026/03/07/001-file-integration-locking-best-practices-合同会社小村ソフト-style/)
 
 ## 12. 参考資料
 

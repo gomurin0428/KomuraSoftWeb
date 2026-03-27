@@ -3,7 +3,7 @@ layout: service-page
 lang: ja
 translation_key: service-website-development
 permalink: /services/website-development/
-title: "ホームページ制作 | KomuraSoft"
+title: "ホームページ制作 | 合同会社小村ソフト"
 service_name: "ホームページ制作"
 service_type: "Website development"
 description: "業種を問わず、何をしている会社かが伝わり、問い合わせにつながるホームページを企画・構成・制作します。特に、説明が複雑な技術系・B2B案件の整理や、既存サイトを活かした再設計と相性があります。"

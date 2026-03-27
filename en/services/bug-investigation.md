@@ -3,7 +3,7 @@ layout: service-page
 lang: en
 translation_key: service-bug-investigation
 permalink: /en/services/bug-investigation/
-title: "Bug Investigation & Root Cause Analysis | KomuraSoft"
+title: "Bug Investigation & Root Cause Analysis | KomuraSoft LLC"
 service_name: "Bug Investigation & Root Cause Analysis"
 service_type: "Bug investigation and root cause analysis"
 description: "Service page for teams dealing with hard-to-reproduce defects, long-run failures, communication stalls, or other difficult Windows software problems."

@@ -3,7 +3,7 @@ layout: detail-page
 lang: en
 translation_key: case-studies-hub
 permalink: /en/case-studies/
-title: "Case Studies | Website Development, SEO, and Windows Development | KomuraSoft"
+title: "Case Studies | Website Development, SEO, and Windows Development | KomuraSoft LLC"
 page_name: "Case Studies"
 page_eyebrow: "Case Studies"
 schema_type: "CollectionPage"
@@ -29,7 +29,7 @@ related_pages:
 This page collects case studies for website development, SEO, inquiry-flow improvement, Windows development, and bug investigation.
 
 <div class="case-studies-card">
-  <p class="case-studies-note">Public web-development case studies will be added gradually. The first one is the redesign of the KomuraSoft site itself.</p>
+  <p class="case-studies-note">Public web-development case studies will be added gradually. The first one is the redesign of the KomuraSoft LLC site itself.</p>
   <div class="case-study-list">
     <article class="case-study-item">
       <h2 class="case-study-title"><a href="/en/case-studies/site-redesign-dual-pillars/">How We Reframed the Site from a Windows-Only Presentation into Two Clear Pillars</a></h2>

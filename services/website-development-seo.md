@@ -3,7 +3,7 @@ layout: service-page
 lang: ja
 translation_key: service-website-development-seo
 permalink: /services/website-development-seo/
-title: "ホームページ制作・SEO対策・Google広告運用 | KomuraSoft"
+title: "ホームページ制作・SEO対策・Google広告運用 | 合同会社小村ソフト"
 service_name: "ホームページ制作・SEO対策・Google広告運用"
 service_type: "Website development, SEO, and Google Ads"
 description: "業種を問わず、ホームページ制作、SEO対策、Google広告運用、問い合わせ導線改善をまとめて整理するための柱ページです。特に、説明が複雑な技術系・B2B案件の整理と相性があります。"

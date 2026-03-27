@@ -3,7 +3,7 @@ layout: detail-page
 lang: ja
 translation_key: web-topics-hub
 permalink: /web-topics/
-title: "Web制作・SEOトピック | KomuraSoft"
+title: "Web制作・SEOトピック | 合同会社小村ソフト"
 page_name: "Web制作・SEOトピック"
 page_eyebrow: "Web Topics"
 schema_type: "CollectionPage"

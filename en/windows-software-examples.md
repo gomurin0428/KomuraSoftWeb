@@ -3,13 +3,13 @@ layout: detail-page
 lang: en
 translation_key: windows-software-examples
 permalink: /en/windows-software-examples/
-title: "Examples of Windows Software We Can Build | KomuraSoft"
+title: "Examples of Windows Software We Can Build | KomuraSoft LLC"
 page_name: "Examples of Windows Software We Can Build"
 page_eyebrow: "Examples"
 schema_type: "CollectionPage"
 breadcrumb_parent_label: "Services"
 breadcrumb_parent_url: "/en/#service"
-description: "Examples of the kinds of Windows software KomuraSoft can build, including business apps, device integration, communication tools, resident processing, Office integration, and Excel-based reporting."
+description: "Examples of the kinds of Windows software KomuraSoft LLC can build, including business apps, device integration, communication tools, resident processing, Office integration, and Excel-based reporting."
 page_keywords:
   - Windows Software
   - Development Examples
@@ -34,7 +34,7 @@ related_articles:
 
 ## What kinds of Windows software this includes
 
-KomuraSoft handles Windows software that goes beyond simple screens alone.
+KomuraSoft LLC handles Windows software that goes beyond simple screens alone.
 That includes communication, device integration, resident processing, and coexistence with existing assets.
 The detailed examples that used to be shown on the homepage are collected here.
 

@@ -1,12 +1,13 @@
-title: KomuraSoft
-description: 技術系・B2B向けのホームページ制作、SEO対策、問い合わせ導線改善と、Windows受託開発・技術相談を行う KomuraSoft の公式サイトです。
+title: 合同会社小村ソフト
+description: 技術系・B2B向けのホームページ制作、SEO対策、問い合わせ導線改善と、Windows受託開発・技術相談を行う合同会社小村ソフトの公式サイトです。
 url: https://comcomponent.com
 baseurl: ""
 lang: ja
 locale: ja_JP
 logo: /logo-og.jpg
 default_og_image: /logo-og.jpg
-organization_name: KomuraSoft
+organization_name: 合同会社小村ソフト
+organization_name_en: KomuraSoft LLC
 founder_name: 小村 豪
 contact_url: /contact/
 contact_url_en: /en/contact/
