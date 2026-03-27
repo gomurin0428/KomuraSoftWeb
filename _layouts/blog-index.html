@@ -230,11 +230,29 @@
       border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
       background: var(--color-surface);
-      transition: border-color 0.2s ease, transform 0.2s ease;
+      box-shadow: 0 2px 8px rgba(20, 32, 51, 0.04);
+      transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .blog-list-item::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(135deg, var(--color-accent) 0%, #8b5cf6 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
     .blog-list-item:hover {
       border-color: var(--color-accent);
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-sm);
+    }
+    .blog-list-item:hover::before {
+      opacity: 1;
     }
     .blog-list-item a {
       text-decoration: none;
@@ -324,12 +342,20 @@
     </main>
     <footer class="site-footer">
       <div class="footer-inner">
-        <div>© 2026 {{ organization_name }}</div>
+        <div>
+          <div class="footer-brand">{{ organization_name }}</div>
+          <div class="footer-address">{% if is_english %}Mitsuhashi Bldg. 3F, 1-3-3 Kita-Aoyama, Minato-ku, Tokyo{% else %}東京都港区北青山 1-3-3 三橋ビル 3階{% endif %}</div>
+          <div class="footer-social">
+            <a href="https://x.com/komurasoft">X (Twitter)</a>
+            <a href="https://github.com/gomurin0428">GitHub</a>
+          </div>
+        </div>
         <div class="footer-links">
           <a class="nav-link" href="/">{{ ui.home_label }}</a>
           <a class="nav-link" href="{% if is_english %}/en/blog/{% else %}/blog/{% endif %}">{{ ui.blog_label }}</a>
           <a class="nav-link" href="/privacy/">{{ ui.list.footer_privacy }}</a>
         </div>
+        <div>© 2026 {{ organization_name }}</div>
       </div>
     </footer>
   </div>
