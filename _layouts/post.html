@@ -230,7 +230,9 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="/komura_soft_single_page.css">
+  {% include critical-css.html %}
+  <link rel="stylesheet" href="/komura_soft_single_page.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="/komura_soft_single_page.css"></noscript>
   <style>
     .blog-container {
       max-width: 72rem;

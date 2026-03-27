@@ -166,7 +166,9 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="/komura_soft_single_page.css">
+  {% include critical-css.html %}
+  <link rel="stylesheet" href="/komura_soft_single_page.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="/komura_soft_single_page.css"></noscript>
   {% if page.ga_event and site.ga4_measurement_id %}
   <script>
     document.addEventListener('DOMContentLoaded', function () {
