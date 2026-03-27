@@ -35,9 +35,11 @@
   {% if is_english %}
   <link rel="alternate" hreflang="ja" href="{{ '/blog/' | absolute_url }}">
   <link rel="alternate" hreflang="en" href="{{ page.url | absolute_url }}">
+  <link rel="alternate" hreflang="x-default" href="{{ '/blog/' | absolute_url }}">
   {% else %}
   <link rel="alternate" hreflang="ja" href="{{ page.url | absolute_url }}">
   <link rel="alternate" hreflang="en" href="{{ '/en/blog/' | absolute_url }}">
+  <link rel="alternate" hreflang="x-default" href="{{ page.url | absolute_url }}">
   {% endif %}
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
   <meta name="author" content="{{ organization_name }}">

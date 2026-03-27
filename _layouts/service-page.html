@@ -67,6 +67,7 @@
   {% if alternate_page %}
   <link rel="alternate" hreflang="ja" href="{{ ja_url | absolute_url }}">
   <link rel="alternate" hreflang="en" href="{{ en_url | absolute_url }}">
+  <link rel="alternate" hreflang="x-default" href="{{ ja_url | absolute_url }}">
   {% endif %}
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
   <meta name="author" content="{{ organization_name }}">
